@@ -1,0 +1,46 @@
+import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
+import 'package:dietic_mobil/screen/login/login.dart';
+import 'package:dietic_mobil/screen/register/register.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:dietic_mobil/screen/screen.dart';
+
+import '../../screen/profile/profile_screen.dart';
+
+
+
+class AppRouter {
+  static Route onGenerateRoute(RouteSettings settings) {
+    final arguments = settings.arguments;
+    ('The Router is: ${settings.name}');
+
+    switch (settings.name) {
+      case NavScreen.routeName:
+        return NavScreen.route();
+      case LoginScreen.routeName:
+        return LoginScreen.route();
+      case SignUpScreen.routeName:
+        return SignUpScreen.route();
+      case ProfilesScreen.routeName:
+        return ProfilesScreen.route();
+      case HomeScreen.routeName:
+        return HomeScreen.route();
+      case ExerciseScreen.routeName:
+        return ExerciseScreen.route();
+
+
+      default:
+        return _errorRoute();
+    }
+  }
+
+  static Route _errorRoute() {
+    return MaterialPageRoute(
+      builder: (_) => Scaffold(
+        appBar: AppBar(title: Text('error')),
+      ),
+      settings: RouteSettings(name: '/error'),
+    );
+  }
+}
