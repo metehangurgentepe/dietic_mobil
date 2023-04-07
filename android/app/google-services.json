@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "39117304746",
+    "project_id": "dietic-chat",
+    "storage_bucket": "dietic-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39117304746:android:0fca8788b29a4c58e831d3",
+        "android_client_info": {
+          "package_name": "com.example.dietic_mobil"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39117304746-4fptmqsq5bpdjuiugthn1j0t2nonpot1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL4nxn_BChrGLciDclkWex43H0UhkKhOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39117304746-4fptmqsq5bpdjuiugthn1j0t2nonpot1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

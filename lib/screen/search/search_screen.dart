@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dietic_mobil/config/theme/theme.dart';
 import 'package:dietic_mobil/model/search_model.dart';
 import 'package:dietic_mobil/service/search/search_service.dart';
@@ -21,6 +23,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   List<SearchModel>? data=[];
 
+  var _listController;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,9 +32,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _clickedButton
           ? Padding(
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-              child: TextField(
+              child: TextFormField(
+                cursorColor: AppColors.colorAccent,
                 controller: _searchWord,
               decoration: InputDecoration(
+                hintText: 'How much calories',
                 suffixIcon: IconButton(
                   icon:Icon(Icons.close),
                   color: Colors.black, onPressed: () {
@@ -39,7 +45,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       _clickedButton =false;
                       data!.clear();
                     });
-
                 },)
               ),
                 ),
@@ -47,17 +52,26 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           : Padding(
               padding: EdgeInsets.symmetric(vertical: 100, horizontal: 50),
               child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'How much calories'
+                ),
                 controller: _searchWord,
               ),
             ),
       _clickedButton
           ? Container() : ElevatedButton(
               onPressed: () async {
+                void deleteArray() {
+                  Timer(Duration(minutes: 15), () {
+                    data!.clear();
+                  });
+                }
                 setState(() {
+                  _search.searchCall();
                   _clickedButton = true;
                 });
                 await storage.write(key: 'searchWord' ,value: _searchWord.text);
-                _search.searchCall();
+
               },
               child: Text('Search Food'),
               style: ElevatedButton.styleFrom(
@@ -67,7 +81,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 child: FutureBuilder(
                   future: _search.searchCall(),
                     builder: (context,snapshot){
-                    data = snapshot.data;
+                      data = snapshot.data;
                     if(!snapshot.hasData){
                       if(_clickedButton==true){
                       return Text('Food not found',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30),);}
@@ -76,6 +90,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       }
                     }
                     return ListView.builder(
+                      controller:_listController,
+
                       itemCount: data!.length,
                         itemBuilder: (context,index){
                       return Card(

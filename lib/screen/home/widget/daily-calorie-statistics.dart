@@ -78,9 +78,11 @@ class _DailyCalorieStatisticsState extends State<DailyCalorieStatistics> {
       print("Authorization not granted");
     }
     print(steps);
+    print('aktif enerji:');
     print(activeEnergy);
     final storage = FlutterSecureStorage();
     await storage.write(key: 'steps', value: steps.toString());
+    await storage.write(key: 'energy', value: activeEnergy.toString());
   }
 
 
@@ -111,7 +113,7 @@ class _DailyCalorieStatisticsState extends State<DailyCalorieStatistics> {
                   color: Colors.red,
                 ),
                 progressColor: Colors.redAccent,
-                value: steps,
+                value: activeEnergy,
                 progressPercent: 0.7
             )
 
