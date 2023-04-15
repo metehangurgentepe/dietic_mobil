@@ -5,6 +5,8 @@ import 'package:dietic_mobil/message/comps/styles.dart';
 import 'package:dietic_mobil/message/comps/widgets.dart';
 import 'package:intl/intl.dart';
 
+import '../config/theme/theme.dart';
+
 class ChatPage extends StatefulWidget {
   final String id;
   final String name;
@@ -20,9 +22,9 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     final firestore = FirebaseFirestore.instance;
     return Scaffold(
-      backgroundColor: Colors.indigo.shade400,
+      backgroundColor: AppColors.colorAccent,
       appBar: AppBar(
-        backgroundColor: Colors.indigo.shade400,
+        backgroundColor: AppColors.colorAccent,
         title:  Text(widget.name),
         elevation: 0,
         actions: [

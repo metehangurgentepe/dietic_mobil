@@ -24,7 +24,9 @@ class HomeBody extends StatelessWidget {
             HomeScreenAppBar(),
             DailySummary(),
             DailyCalorieStatistics(),
-            MealConsumed()
+            MealConsumed(),
+            MealConsumed(),
+            MealConsumed(),
           ],
         ),
       ),

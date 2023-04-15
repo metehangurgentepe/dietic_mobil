@@ -1,4 +1,7 @@
+import 'package:dietic_mobil/message/comps/take_photo.dart';
 import 'package:flutter/material.dart';
+import 'package:grock/grock.dart';
+import 'package:camera/camera.dart';
 
 class Styles {
   static TextStyle h1() {
@@ -32,7 +35,16 @@ class Styles {
       border: InputBorder.none,
       hintText: 'Enter Message',
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      suffixIcon: IconButton(onPressed: onSubmit, icon: const Icon(Icons.send)),
+      suffixIcon: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(onPressed: () async {
+            final cameras = await availableCameras();
+            final firstCamera = cameras.first;
+            Grock.to(TakePictureScreen(camera:firstCamera));}, icon: const Icon(Icons.camera_alt)),
+          IconButton(onPressed: onSubmit, icon: const Icon(Icons.send))
+        ],
+      ),
     );
   }
   static searchTextFieldStyle() {

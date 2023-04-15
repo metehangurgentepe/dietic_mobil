@@ -9,6 +9,7 @@ import 'package:dietic_mobil/screen/message/AuthGate.dart';
 import 'package:dietic_mobil/screen/message/message_screen.dart';
 import 'package:dietic_mobil/screen/screen.dart';
 import '../../message/authScreen.dart';
+import '../exercise/new_exercises.dart';
 import '../profile/profile_screen.dart';
 import '../search/search_screen.dart';
 
@@ -43,7 +44,7 @@ class _NavScreenState extends State <NavScreen> {
       _currentIndex = index;
     });
   }
-  final pages = [HomeScreen(), SearchScreen(), AuthScreen(), ExerciseScreen(), ProfilesScreen()];
+  final pages = [HomeScreen(), SearchScreen(), AuthScreen(), NewExercises(), ProfilesScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,7 @@ class _NavScreenState extends State <NavScreen> {
               ),
               child: Center(
                 child: FaIcon(
-                  FontAwesomeIcons.message,
+                  FontAwesomeIcons.rocketchat,
                   size: 20. sp,
                 ),
               ),

@@ -3,6 +3,9 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dietic_mobil/message/comps/animated-dialog.dart';
 import 'package:dietic_mobil/message/comps/styles.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../../config/theme/theme.dart';
 
 class ChatWidgets {
   static Widget card({title, time, subtitle, onTap}) {
@@ -24,7 +27,7 @@ class ChatWidgets {
                 )),
           ),
           title: Text(title),
-          subtitle:subtitle !=null? Text(subtitle): null,
+          subtitle: subtitle != null ? Text(subtitle) : null,
           trailing: Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Text(time),
@@ -34,14 +37,14 @@ class ChatWidgets {
     );
   }
 
-  static Widget circleProfile({onTap,name}) {
+  static Widget circleProfile({onTap, name}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: InkWell(
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children:  [
+          children: [
             const CircleAvatar(
               radius: 25,
               backgroundColor: Colors.grey,
@@ -51,7 +54,15 @@ class ChatWidgets {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 50,child: Center(child: Text(name,style: TextStyle(height: 1.5,fontSize: 12,color: Colors.white),overflow: TextOverflow.ellipsis,)))
+            SizedBox(
+                width: 50,
+                child: Center(
+                    child: Text(
+                  name,
+                  style:
+                      TextStyle(height: 1.5, fontSize: 12, color: Colors.white),
+                  overflow: TextOverflow.ellipsis,
+                )))
           ],
         ),
       ),
@@ -59,6 +70,19 @@ class ChatWidgets {
   }
 
   static Widget messagesCard(bool check, message, time) {
+    var _isUrl = false;
+    bool isURL(String message) {
+      RegExp urlRegex = RegExp(
+          r"^(http(s)?:\/\/)?[\w.-]+\.[a-zA-Z]{2,}(\/)?([\w-]+)?(\.[\w-]+)*(\/([\w-]+)\/)*([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$");
+      return urlRegex.hasMatch(message);
+    }
+
+    if (isURL(message)) {
+      print('This is a URL.');
+      _isUrl = true;
+    } else {
+      print('This is not a URL.');
+    }
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -76,18 +100,47 @@ class ChatWidgets {
               backgroundColor: Colors.grey,
               radius: 10,
             ),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 250),
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                '$message\n\n$time',
-                style: TextStyle(color: check ? Colors.white : Colors.black),
+          _isUrl
+              ? Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.grey[700],
+              borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(10),
+                right: Radius.circular(10),
               ),
-              decoration: Styles.messagesCardStyle(check),
             ),
-          ),
+
+
+
+                  child:Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                    Image.network(
+                    message,
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                  ),
+                        Padding(padding: EdgeInsets.all(5),child:(
+                            Text('$time',style: TextStyle(color: Colors.white,))))
+
+
+    ]))
+              : ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 250),
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      '$message\n\n$time',
+                      style:
+                          TextStyle(color: check ? Colors.white : Colors.black),
+                    ),
+                    decoration: Styles.messagesCardStyle(check),
+                  ),
+                ),
           if (check)
             const CircleAvatar(
               child: Icon(
@@ -105,15 +158,22 @@ class ChatWidgets {
   }
 
   static messageField({required onSubmit}) {
+    final storage = FlutterSecureStorage();
     final con = TextEditingController();
-
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(
-        controller: con,
-        decoration: Styles.messageTextFieldStyle(onSubmit: () {
-          onSubmit(con);
+        decoration: Styles.messageTextFieldStyle(onSubmit: () async {
+          String? value = await storage.read(key: 'imageUrl');
+          var imageUrl = TextEditingController();
+          imageUrl.text = value!;
+          if (value.isNotEmpty) {
+            onSubmit(imageUrl);
+          } else {
+            onSubmit(con);
+          }
         }),
+        controller: con,
       ),
       decoration: Styles.messageFieldCardStyle(),
     );
@@ -128,7 +188,7 @@ class ChatWidgets {
           child: Theme(
             data: ThemeData.dark(),
             child: Column(
-              children:  [
+              children: [
                 const CircleAvatar(
                   child: Icon(
                     Icons.person,
@@ -142,17 +202,20 @@ class ChatWidgets {
                 const Divider(
                   color: Colors.white,
                 ),
-                 ListTile(
+                ListTile(
                   leading: Icon(Icons.person),
                   title: Text('Profile'),
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()));
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.logout),
                   title: const Text('Logout'),
-                  onTap: ()async=>await FirebaseAuth.instance.signOut(),
+                  onTap: () async => await FirebaseAuth.instance.signOut(),
                 )
               ],
             ),
@@ -162,11 +225,12 @@ class ChatWidgets {
     );
   }
 
-  static searchBar(bool open, ) {
+  static searchBar(
+    bool open,
+  ) {
     return AnimatedDialog(
       height: open ? 800 : 0,
       width: open ? 400 : 0,
-
     );
   }
 
@@ -174,7 +238,7 @@ class ChatWidgets {
     return Container(
       margin: const EdgeInsets.all(10),
       child: TextField(
-       onChanged: onChange,
+        onChanged: onChange,
         decoration: Styles.searchTextFieldStyle(),
       ),
       decoration: Styles.messageFieldCardStyle(),

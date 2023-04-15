@@ -1,9 +1,16 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:dietic_mobil/screen/daily-summary-detail/widget/date.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../config/theme/theme.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
+import '../home/widget/appbar.dart';
+import '../home/widget/daily-calorie-statistics.dart';
 
 class ExerciseScreen extends StatefulWidget {
   const ExerciseScreen({Key? key}) : super(key: key);
@@ -40,198 +47,217 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   DateTime? _selectedDay;
 
   @override
-  Widget build(BuildContext context) {
-    int month = int.parse(_selectedTime.month.toString());
-    String monthName = '';
+  void initState() {
+    super.initState();
+    getMoveData();
+    getStepData();
+    getEnergyData();
+  }
 
-    switch (month) {
-      case 1:
-        monthName = 'January';
-        break;
-      case 2:
-        monthName = 'February';
-        break;
-      case 3:
-        monthName = 'March';
-        break;
-      case 4:
-        monthName = 'April';
-        break;
-      case 5:
-        monthName = 'May';
-        break;
-      case 6:
-        monthName = 'June';
-        break;
-      case 7:
-        monthName = 'July';
-        break;
-      case 8:
-        monthName = 'August';
-        break;
-      case 9:
-        monthName = 'September';
-        break;
-      case 10:
-        monthName = 'October';
-        break;
-      case 11:
-        monthName = 'November';
-        break;
-      case 12:
-        monthName = 'December';
-        break;
-      default:
-        monthName = 'Invalid month';
-    }
+  final storage = new FlutterSecureStorage();
+
+  Future<String?> getMoveData() async {
+    String? move_mins = await storage.read(key: 'move_min');
+    return move_mins;
+  }
+
+  Future<String?> getStepData() async {
+    String? steps = await storage.read(key: 'steps');
+    return steps;
+  }
+
+  Future<String?> getEnergyData() async {
+    String? energy = await storage.read(key: 'energy');
+    return energy;
+  }
+  final List<Widget> items = [
+    Column(
+      children: [
+        Container(
+            decoration: BoxDecoration(
+                color: Colors.grey
+            ),
+            padding: const EdgeInsets.all(20.0),
+            alignment: Alignment.center,
+            width: 250.0,
+            height: 250.0,
+            child: SfSparkLineChart(
+              // enable the trackball
+                trackball: SparkChartTrackball(
+                  activationMode: SparkChartActivationMode.tap,
+                ),
+                // enable marker
+                marker: SparkChartMarker(
+                  displayMode: SparkChartMarkerDisplayMode.all,
+                ),
+                // enable data label
+                labelDisplayMode: SparkChartLabelDisplayMode.all,
+                // use different data for each chart
+                data: <double>[
+                  92, 89, 85, 84, 83, 82,
+                ]
+
+            )),
+      ],
+    ),
+    Container(
+        decoration: BoxDecoration(
+            color: Colors.grey
+        ),
+        padding: const EdgeInsets.all(20.0),
+        alignment: Alignment.center,
+        width: 250.0,
+        height: 250.0,
+        child: SfSparkLineChart(
+          // enable the trackball
+            trackball: SparkChartTrackball(
+              activationMode: SparkChartActivationMode.tap,
+            ),
+            // enable marker
+            marker: SparkChartMarker(
+              displayMode: SparkChartMarkerDisplayMode.all,
+            ),
+            // enable data label
+            labelDisplayMode: SparkChartLabelDisplayMode.all,
+            // use different data for each chart
+            data: <double>[
+              1, 5, -6, 0, 1, -2,
+            ]
+
+        )
+    )
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Center(child: Text('Exercises')),
-        backgroundColor: AppColors.colorPrimary,
+        title: Text('Two Scrollable Widgets'),
       ),
       body: Column(
-        children: [
-          Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                Text(_selectedTime.day.toString() + " " + monthName,
-                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-                MaterialButton(
-                  height: 80,
-                  minWidth: 150,
-                  color: AppColors.colorAccent,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 200),
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                  onPressed: () {
-                    _showDatePicker();
-                  },
-                  child: Text('Today', style: TextStyle(fontSize: 20)),
+        children: <Widget>[
+          CarouselSlider(
+            options: CarouselOptions(
+              height: 400.0,
+              enlargeCenterPage: true,
+              autoPlay: true,
+              aspectRatio: 16/9,
+              autoPlayCurve: Curves.fastOutSlowIn,
+              enableInfiniteScroll: true,
+              autoPlayAnimationDuration: Duration(milliseconds: 800),
+              viewportFraction: 0.8,
+            ),
+            items: items,
+          ),
+
+          Expanded(
+            child: ListView(
+              children: <Widget>[
+                Container(
+                  height: 200.0,
+                  color: Colors.red,
                 ),
-                SizedBox(height: 50),
-                CircularStepProgressIndicator(
-                  totalSteps: 100,
-                  currentStep: 74,
-                  stepSize: 10,
-                  selectedColor: Colors.red,
-                  unselectedColor: Colors.grey[200],
-                  padding: 0,
-                  width: 150,
-                  height: 150,
-                  selectedStepSize: 15,
-                  roundedCap: (_, __) => true,
+                Container(
+                  height: 200.0,
+                  color: Colors.blue,
+                ),
+                Container(
+                  height: 200.0,
+                  color: Colors.green,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 200.0,
+            child: GridView.count(
+              crossAxisCount: 3,
+              children: List.generate(9, (index) {
+                return Container(
+                  color: Colors.grey,
+                  margin: EdgeInsets.all(5.0),
                   child: Center(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    child: Text(
+                      'Grid Item $index',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _circleProgress() {
+    return SizedBox(
+      width: 250.w,
+      height: 250.w,
+      child: Stack(
+        children: [
+          SizedBox(
+            width: 250.w,
+            height: 250.w,
+            child: CircularProgressIndicator(
+              strokeWidth: 8.w,
+              value: 0.7,
+              backgroundColor: AppColors.colorTint100.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.colorAccent),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              margin: EdgeInsets.all(13.w),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: AppColors.colorAccent.withOpacity(0.2), width: 8.w),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.colorAccent.withOpacity(0.1),
+                ),
+                child: Container(
+                  margin: EdgeInsets.all(22.w),
+                  child: FutureBuilder(
+                      future: getEnergyData(),
+                      builder: (context, snapshot) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                        Text(
-                          '652 kcal',
-                          style: TextStyle(fontSize: 22),
-                        ),
-                        Text(
-                          'Active Calories',
-                          style: TextStyle(fontSize: 11),
-                        )
-                      ])),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 6),
-                    CircularStepProgressIndicator(
-                      totalSteps: 100,
-                      currentStep: 74,
-                      stepSize: 10,
-                      selectedColor: Colors.blueAccent,
-                      unselectedColor: Colors.grey[200],
-                      padding: 0,
-                      width: 100,
-                      height: 100,
-                      selectedStepSize: 15,
-                      roundedCap: (_, __) => true,
-                      child: Center(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
                             Text(
-                              'Steps',
-                              style: TextStyle(fontSize: 11),
+                              'Active Calories',
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 10.sp,
+                              ),
                             ),
                             Text(
-                              '1200',
-                              style: TextStyle(fontSize: 22),
-                            )
-                          ])),
-                    ),
-                    SizedBox(
-                      width: 40,
-                    ),
-                    CircularStepProgressIndicator(
-                      totalSteps: 100,
-                      currentStep: 74,
-                      stepSize: 10,
-                      selectedColor: Colors.blueGrey,
-                      unselectedColor: Colors.grey[200],
-                      padding: 0,
-                      width: 100,
-                      height: 100,
-                      selectedStepSize: 15,
-                      roundedCap: (_, __) => true,
-                      child: Center(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Time',
-                                  style: TextStyle(fontSize: 11),
-                                ),
-                                Text(
-                                  '45 min',
-                                  style: TextStyle(fontSize: 20),
-                                )
-                          ])),
-                    ),
-                    SizedBox(
-                      width: 40,
-                    ),
-                    CircularStepProgressIndicator(
-                      totalSteps: 100,
-                      currentStep: 74,
-                      stepSize: 10,
-                      selectedColor: Colors.pink,
-                      unselectedColor: Colors.grey[200],
-                      padding: 0,
-                      width: 100,
-                      height: 100,
-                      selectedStepSize: 15,
-                      roundedCap: (_, __) => true,
-                      child: Center(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Heart',
-                                  style: TextStyle(fontSize: 11),
-                                ),
-                                Text(
-                                  '75 bpm',
-                                  style: TextStyle(fontSize: 18),
-                                )
-                          ])),
-                    ),
-                  ],
+                              '${snapshot.data} kcal',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        );
+                      }),
                 ),
-                    SizedBox(height:25),
-              ]))
+              ),
+            ),
+          )
         ],
       ),
     );
   }
 }
+

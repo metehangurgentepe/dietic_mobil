@@ -148,7 +148,7 @@ class ChatWidgets {
                   leading: Icon(Icons.person),
                   title: Text('Profile'),
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilesScreen()));
                   },
                 ),
                 ListTile(

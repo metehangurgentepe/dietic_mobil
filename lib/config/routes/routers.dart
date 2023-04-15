@@ -1,3 +1,5 @@
+import 'package:dietic_mobil/dietician-screen/nav/nav_dietician.dart';
+import 'package:dietic_mobil/screen/appointment/appointment.dart';
 import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
 import 'package:dietic_mobil/screen/login/login.dart';
 import 'package:dietic_mobil/screen/register/register.dart';
@@ -22,12 +24,16 @@ class AppRouter {
         return LoginScreen.route();
       case SignUpScreen.routeName:
         return SignUpScreen.route();
-      case ProfilesScreen.routeName:
-        return ProfilesScreen.route();
+      /*case ProfilesScreen.routeName:
+        return ProfilesScreen.route();*/
       case HomeScreen.routeName:
         return HomeScreen.route();
       case ExerciseScreen.routeName:
         return ExerciseScreen.route();
+      case Appointment.routeName:
+        return Appointment.route();
+      case NavDieticianScreen.routeName:
+        return NavDieticianScreen.route();
 
 
       default:
