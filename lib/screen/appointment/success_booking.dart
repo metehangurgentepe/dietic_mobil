@@ -5,6 +5,13 @@ import 'comps/button.dart';
 
 class AppointmentBooked extends StatelessWidget {
   const AppointmentBooked({Key? key}) : super(key: key);
+  static const String routeName = '/success-appointment';
+
+  static Route route() {
+    return MaterialPageRoute(
+        builder: (_) => AppointmentBooked(),
+        settings: const RouteSettings(name: routeName));
+  }
 
   @override
   Widget build(BuildContext context) {

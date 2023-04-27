@@ -1,5 +1,6 @@
-import 'package:my_diary/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
+
+import '../config/theme/fitness_app_theme.dart';
 
 class TitleView extends StatelessWidget {
   final String titleTxt;
@@ -46,7 +47,10 @@ class TitleView extends StatelessWidget {
                     InkWell(
                       highlightColor: Colors.transparent,
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, '/meals_detail');
+
+                      },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Row(

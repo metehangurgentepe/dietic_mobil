@@ -1,12 +1,10 @@
 import 'dart:math' as math;
-import 'package:my_diary/fitness_app_theme.dart';
-import 'package:my_diary/models/tabIcon_data.dart';
-import 'package:my_diary/main.dart';
+import 'package:dietic_mobil/screen/tab-bar/TabIcon.dart';
 import 'package:flutter/material.dart';
 
+import '../../config/theme/fitness_app_theme.dart';
+import '../../hexColor.dart';
 import '../../main.dart';
-import '../hexColor.dart';
-import '../models/tabIcon_data.dart';
 
 class BottomBarView extends StatefulWidget {
   const BottomBarView(
@@ -64,22 +62,28 @@ class _BottomBarViewState extends State<BottomBarView>
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList?[0],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList?[0]);
-                                    widget.changeIndex!(0);
-                                  }),
+                              child: Container(
+                                height:35,
+                                child: TabIcons(
+                                    tabIconData: widget.tabIconsList?[0],
+                                    removeAllSelect: () {
+                                      setRemoveAllSelection(
+                                          widget.tabIconsList?[0]);
+                                      widget.changeIndex!(0);
+                                    }),
+                              ),
                             ),
                             Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList?[1],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList?[1]);
-                                    widget.changeIndex!(1);
-                                  }),
+                              child: Container(
+                                height:35,
+                                child: TabIcons(
+                                    tabIconData: widget.tabIconsList?[1],
+                                    removeAllSelect: () {
+                                      setRemoveAllSelection(
+                                          widget.tabIconsList?[1]);
+                                      widget.changeIndex!(1);
+                                    }),
+                              ),
                             ),
                             SizedBox(
                               width: Tween<double>(begin: 0.0, end: 1.0)
@@ -90,22 +94,28 @@ class _BottomBarViewState extends State<BottomBarView>
                                   64.0,
                             ),
                             Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList?[2],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList?[2]);
-                                    widget.changeIndex!(2);
-                                  }),
+                              child: Container(
+                                height:35,
+                                child: TabIcons(
+                                    tabIconData: widget.tabIconsList?[2],
+                                    removeAllSelect: () {
+                                      setRemoveAllSelection(
+                                          widget.tabIconsList?[2]);
+                                      widget.changeIndex!(2);
+                                    }),
+                              ),
                             ),
                             Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList?[3],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList?[3]);
-                                    widget.changeIndex!(3);
-                                  }),
+                              child: Container(
+                                height:35,
+                                child: TabIcons(
+                                    tabIconData: widget.tabIconsList?[3],
+                                    removeAllSelect: () {
+                                      setRemoveAllSelection(
+                                          widget.tabIconsList?[3]);
+                                      widget.changeIndex!(3);
+                                    }),
+                              ),
                             ),
                           ],
                         ),
@@ -166,9 +176,11 @@ class _BottomBarViewState extends State<BottomBarView>
                           splashColor: Colors.white.withOpacity(0.1),
                           highlightColor: Colors.transparent,
                           focusColor: Colors.transparent,
-                          onTap: widget.addClick,
+                          onTap: (){
+                            Navigator.pushNamed(context, '/auth_screen');
+                          },
                           child: Icon(
-                            Icons.add,
+                            Icons.message,
                             color: FitnessAppTheme.white,
                             size: 32,
                           ),
@@ -254,9 +266,12 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                           parent: widget.tabIconData!.animationController!,
                           curve:
                               Interval(0.1, 1.0, curve: Curves.fastOutSlowIn))),
-                  child: Image.asset(widget.tabIconData!.isSelected
-                      ? widget.tabIconData!.selectedImagePath
-                      : widget.tabIconData!.imagePath),
+                  child: Container(
+                    height: 40,
+                    child: Image.asset(widget.tabIconData!.isSelected
+                        ? widget.tabIconData!.selectedImagePath
+                        : widget.tabIconData!.imagePath),
+                  ),
                 ),
                 Positioned(
                   top: 4,

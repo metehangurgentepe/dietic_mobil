@@ -1,8 +1,11 @@
 import 'package:dietic_mobil/screen/home/home-body.dart';
 import 'package:dietic_mobil/screen/home/home.dart';
 import 'package:dietic_mobil/screen/login/login.dart';
+import 'package:dietic_mobil/screen/my_diary/home-fitness-app.dart';
 import 'package:dietic_mobil/screen/nav/nav.dart';
+import 'package:dietic_mobil/screen/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dietic_mobil/config/routes/routers.dart';
@@ -18,6 +21,7 @@ void main() async {
 
   // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
+
 
   // Get a specific camera from the list of available cameras.
   final firstCamera = cameras.first;*/
@@ -46,7 +50,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
             ),
             debugShowCheckedModeBanner: false,
-            initialRoute: NavScreen.routeName,
+            initialRoute: SplashScreen.routeName,
             onGenerateRoute: AppRouter.onGenerateRoute,
           );
         }

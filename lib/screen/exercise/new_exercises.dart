@@ -1,27 +1,67 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dietic_mobil/model/health_model.dart';
+import 'package:dietic_mobil/service/health/health_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
-
+import 'package:flutter/services.dart';
+import 'package:health/health.dart';
 import '../../config/theme/theme.dart';
 import '../../dietician-screen/home/widget/appbar.dart';
-class NewExercises extends StatefulWidget {
+class NewExercises extends ConsumerStatefulWidget {
   const NewExercises({Key? key}) : super(key: key);
 
   @override
-  State<NewExercises> createState() => _NewExercisesState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _NewExercisesState();
 }
 
-class _NewExercisesState extends State<NewExercises> {
+class _NewExercisesState extends ConsumerState<NewExercises> {
+  Future<List<HealthDataPoint>>? weekSteps;
+  final List<HealthDataPoint> healthDataPoints=[];
+  HealthService healthService = HealthService();
+
+  var stepWeekData;
+
+  var waterData;
+
+
   @override
   void initState() {
     super.initState();
-    getMoveData();
-    getStepData();
-    getEnergyData();
+    healthService.fetchWeekStepData().then((value){
+      if(value != null) {
+        setState(() {
+          stepWeekData = value.value!.numericValue;
+          print('********');
+          print(stepWeekData);
+        });
+      }
+      else{
+        throw Exception('company data null came');
+      }
+    });
+    healthService.fetchWaterData().then((value){
+      if(value != null) {
+        setState(() {
+          waterData = value;
+          print('water');
+          print(waterData);
+        });
+      }
+      else{
+        throw Exception('company data null came');
+      }
+    });
+    healthService.fetchEnergyData();
+    healthService.fetchTodayStepData();
+
   }
+
 
   final storage = new FlutterSecureStorage();
 
@@ -29,74 +69,10 @@ class _NewExercisesState extends State<NewExercises> {
     String? move_mins = await storage.read(key: 'move_min');
     return move_mins;
   }
+  HealthFactory health = HealthFactory(useHealthConnectIfAvailable: true);
 
-  Future<String?> getStepData() async {
-    String? steps = await storage.read(key: 'steps');
-    return steps;
-  }
 
-  Future<String?> getEnergyData() async {
-    String? energy = await storage.read(key: 'energy');
-    return energy;
-  }
-  final List<Widget> items = [
-    Container(
-        decoration: BoxDecoration(
-            color: Colors.grey
-        ),
-        padding: const EdgeInsets.all(20.0),
-        alignment: Alignment.center,
-        width: 250.0,
-        height: 250.0,
-        child: Column(
-          children: [
-            IconButton(onPressed: (){},icon: Icon(Icons.add,color: Colors.black54,)),
-            SfSparkLineChart(
-              // enable the trackball
-                trackball: SparkChartTrackball(
-                  activationMode: SparkChartActivationMode.tap,
-                ),
-                // enable marker
-                marker: SparkChartMarker(
-                  displayMode: SparkChartMarkerDisplayMode.all,
-                ),
-                // enable data label
-                labelDisplayMode: SparkChartLabelDisplayMode.all,
-                // use different data for each chart
-                data: <double>[
-                  92, 89, 85, 84, 83, 82,
-                ]
 
-            ),
-          ],
-        )),
-    Container(
-        decoration: BoxDecoration(
-            color: Colors.grey
-        ),
-        padding: const EdgeInsets.all(20.0),
-        alignment: Alignment.center,
-        width: 250.0,
-        height: 250.0,
-        child: SfSparkLineChart(
-          // enable the trackball
-            trackball: SparkChartTrackball(
-              activationMode: SparkChartActivationMode.tap,
-            ),
-            // enable marker
-            marker: SparkChartMarker(
-              displayMode: SparkChartMarkerDisplayMode.all,
-            ),
-            // enable data label
-            labelDisplayMode: SparkChartLabelDisplayMode.all,
-            // use different data for each chart
-            data: <double>[
-              1, 5, -6, 0, 1, -2,
-            ]
-
-        )
-    )
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,10 +113,7 @@ class _NewExercisesState extends State<NewExercises> {
                                   borderRadius: BorderRadius.circular(30)),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
-                                child: FutureBuilder(
-                                    future: getMoveData(),
-                                    builder: (context, snapshot) {
-                                      return Column(
+                                child: Column(
                                         mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                         children: [
@@ -152,10 +125,10 @@ class _NewExercisesState extends State<NewExercises> {
                                                   size: 30,
                                                   color: Colors.amberAccent),
                                               Text(
-                                                  '${snapshot.data!.isEmpty ? 0 : snapshot.data}')
+                                                  '${stepWeekData ?? 0 }')
                                             ],
                                           ),
-                                          Text('Movement Time',
+                                          Text('Water',
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 15)),
@@ -166,12 +139,11 @@ class _NewExercisesState extends State<NewExercises> {
                                               animation: true,
                                               animationDuration: 10000,
                                               lineHeight: 10,
-                                              percent: 0.1,
+                                              percent: 0.3,
                                               progressColor: Colors.amberAccent,
                                               backgroundColor: Color(0xfffaf1be))
                                         ],
-                                      );
-                                    }),
+                                      ),
                               ),
                             ),
                             Container(
@@ -184,15 +156,16 @@ class _NewExercisesState extends State<NewExercises> {
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
                                 child: FutureBuilder(
-                                    future: getStepData(),
+                                    future: healthService.fetchTodayStepData(),
                                     builder: (context, snapshot) {
-                                      /* double percent=double.parse(snapshot.data != null ? snapshot.data!  : '0')/10000;
-                                      if(percent>=1){
-                                        double percent=0.99;
+                                       double _percent=double.parse(snapshot.data != null ? snapshot.data!  : '0')/15000;
+                                       String percentNumber = (_percent * 100).toStringAsFixed(2);
+                                       if(_percent>1){
+                                         _percent=0.99;
                                       }
-                                      else if(percent==null){
-                                        double percent=0.1;
-                                      }*/
+                                      else if(_percent==null){
+                                         _percent=0.1;
+                                      }
                                       return Column(
                                         mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -205,24 +178,24 @@ class _NewExercisesState extends State<NewExercises> {
                                                   size: 30,
                                                   color: Colors.pinkAccent),
                                               Text(
-                                                  '${snapshot.data == 0 ? 0 : snapshot.data}')
+                                                  '${snapshot.data!}')
                                             ],
                                           ),
                                           Text('Steps',
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18)),
-                                          Text('%30'),
+                                          Text("%$percentNumber"),
                                           LinearPercentIndicator(
                                             barRadius: Radius.circular(20),
                                             width: 130,
                                             animation: true,
                                             animationDuration: 10000,
                                             lineHeight: 10,
-                                            percent: 0.1,
+                                            percent: _percent,
                                             progressColor: Colors.pinkAccent,
                                             backgroundColor: Color(0xffE0A0B2),
-                                          )
+                                          ),
                                         ],
                                       );
                                     }),
@@ -235,6 +208,8 @@ class _NewExercisesState extends State<NewExercises> {
                   ),
                 ),
                 SizedBox(height: 25),
+                ///////////////////////////////////////////////////////////
+                //Carousel
                 CarouselSlider(
                   options: CarouselOptions(
                     height: 400.0,
@@ -244,10 +219,103 @@ class _NewExercisesState extends State<NewExercises> {
                     enableInfiniteScroll: false,
                     viewportFraction: 0.8,
                   ),
-                  items: items,
+                  items:[
+                    FutureBuilder(
+                      future: healthService.fetchWeekStepData(),
+                      builder: (context,snapshot) {
+                       /* var result=snapshot.data!.value!.numericValue;
+                        print(result);*/
+                      //  var steps=double.parse(snapshot.data.value.numericValue) ?? 0;
+                        print('asdasdasdasdasd');
+                        return Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey[600],
+                                borderRadius: BorderRadius.circular(24)
+                            ),
+                            padding: const EdgeInsets.all(20.0),
+                            alignment: Alignment.center,
+                            width: 250.0,
+                            height: 250.0,
+                            child: Column(
+                              mainAxisAlignment:MainAxisAlignment.spaceAround,
+
+                              children: [
+                                Text('Steps',style: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.bold),),
+                                       Container(
+                                        height: 220,
+                                        child: SfSparkLineChart(
+                                            labelStyle: TextStyle(color: Colors.white),
+                                            // enable the trackball
+                                            trackball: SparkChartTrackball(
+                                              activationMode: SparkChartActivationMode.tap,
+                                            ),
+                                            // enable marker
+                                            marker: SparkChartMarker(
+                                              displayMode: SparkChartMarkerDisplayMode.all,
+                                            ),
+                                            // enable data label
+                                            labelDisplayMode: SparkChartLabelDisplayMode.all,
+                                            // use different data for each chart
+                                            data:<double>[stepWeekData ?? 0,23,4,5,69]
+                                        ),
+                                ),
+                              ],
+                            ));
+                      }
+                  ),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: AppColors.colorBackColor,
+                            borderRadius: BorderRadius.circular(24)
+                        ),
+                        padding: const EdgeInsets.all(20.0),
+                        alignment: Alignment.center,
+                        width: 250.0,
+                        height: 250.0,
+                        child: Column(
+                          mainAxisAlignment:MainAxisAlignment.spaceAround,
+                          children: [
+                            Text('Weight',style: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.bold),),
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20)
+                              ),
+                              height: 220,
+                              child: SfSparkLineChart(
+                                  labelStyle: TextStyle(color: Colors.black),
+                                  // enable the trackball
+                                  trackball: SparkChartTrackball(
+                                    activationMode: SparkChartActivationMode.tap,
+                                  ),
+                                  // enable marker
+                                  marker: SparkChartMarker(
+                                    displayMode: SparkChartMarkerDisplayMode.all,
+                                  ),
+                                  // enable data label
+                                  labelDisplayMode: SparkChartLabelDisplayMode.all,
+                                  // use different data for each chart
+                                  data: <double>[
+                                    92, 89, 85, 84, 83, 82,
+                                  ]
+                              ),
+                            ),
+                          ],
+                        )),
+                  ]
                 ),
-                SizedBox(height: 25),
-              ]
+                /*SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                    itemCount: healthDataPoints.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      HealthDataPoint dataPoint = healthDataPoints[index];
+                      return ListTile(
+                        title: Text('Step Count: ${dataPoint.value}'),
+                        subtitle: Text('Date: ${dataPoint.dateFrom}'),
+                      );
+                    },
+                  ),
+                )  */           ]
 
           ),
         ),
@@ -290,16 +358,16 @@ class _NewExercisesState extends State<NewExercises> {
                 child: Container(
                   margin: EdgeInsets.all(22.w),
                   child: FutureBuilder(
-                      future: getEnergyData(),
+                      future: healthService.fetchEnergyData(),
                       builder: (context, snapshot) {
                         return Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
                               'Active Calories',
                               style: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: 10.sp,
+                                color: Colors.grey[600],
+                                fontSize: 20.sp,
                               ),
                             ),
                             Text(

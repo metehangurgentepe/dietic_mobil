@@ -26,6 +26,13 @@ class Body extends StatelessWidget {
             },
           ),
           ProfileMenu(
+            text: "Training",
+            icon: "assets/icons/calendar.svg",
+            press: () {
+              Navigator.pushNamed(context, '/fitness');
+            },
+          ),
+          ProfileMenu(
             text: "Settings",
             icon: "assets/icons/Settings.svg",
             press: () {},

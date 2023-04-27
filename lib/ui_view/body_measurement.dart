@@ -1,5 +1,6 @@
-import 'package:my_diary/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
+
+import '../config/theme/fitness_app_theme.dart';
 
 class BodyMeasurementView extends StatelessWidget {
   final AnimationController? animationController;

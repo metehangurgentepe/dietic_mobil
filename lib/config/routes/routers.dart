@@ -1,14 +1,20 @@
 import 'package:dietic_mobil/dietician-screen/nav/nav_dietician.dart';
+import 'package:dietic_mobil/message/authScreen.dart';
 import 'package:dietic_mobil/screen/appointment/appointment.dart';
+import 'package:dietic_mobil/screen/appointment/success_booking.dart';
 import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
 import 'package:dietic_mobil/screen/login/login.dart';
+import 'package:dietic_mobil/screen/meals_detail/meals_detail.dart';
+import 'package:dietic_mobil/screen/my_diary/home-fitness-app.dart';
 import 'package:dietic_mobil/screen/register/register.dart';
+import 'package:dietic_mobil/screen/training/training_screen.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:dietic_mobil/screen/screen.dart';
 
 import '../../screen/profile/profile_screen.dart';
+import '../../screen/splash/splash_screen.dart';
 
 
 
@@ -34,6 +40,18 @@ class AppRouter {
         return Appointment.route();
       case NavDieticianScreen.routeName:
         return NavDieticianScreen.route();
+      case TrainingScreen.routeName:
+        return TrainingScreen.route();
+      case FitnessAppHomeScreen.routeName:
+        return FitnessAppHomeScreen.route();
+      case AuthScreen.routeName:
+        return AuthScreen.route();
+      case MealsDetailScreen.routeName:
+        return MealsDetailScreen.route();
+      case SplashScreen.routeName:
+        return SplashScreen.route();
+      case AppointmentBooked.routeName:
+        return AppointmentBooked.route();
 
 
       default:

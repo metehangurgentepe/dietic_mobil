@@ -4,6 +4,13 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
+  static const String routeName = '/auth_screen';
+
+  static Route route() {
+    return MaterialPageRoute(
+        builder: (_) => AuthScreen(),
+        settings: const RouteSettings(name: routeName));
+  }
   const AuthScreen({Key? key}) : super(key: key);
 
   @override

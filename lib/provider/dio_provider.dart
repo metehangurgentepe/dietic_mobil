@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioProvider {
@@ -54,8 +55,10 @@ class DioProvider {
   //store booking details
   Future<dynamic> bookAppointment(
       String date, String day, String time, int doctor, String token) async {
+
+
     try {
-      var response = await Dio().post('http://127.0.0.1:8000/api/book',
+      var response = await Dio().post('http://localhost:8080/api/v1/appointments/3/3',
           data: {'date': date, 'day': day, 'time': time, 'doctor_id': doctor},
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 

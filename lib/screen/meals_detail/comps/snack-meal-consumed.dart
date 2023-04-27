@@ -4,22 +4,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
 
-class MealConsumed extends StatefulWidget {
-  const MealConsumed({
+class SnackMealConsumed extends StatefulWidget {
+  const SnackMealConsumed({
     Key ? key
   }): super(key: key);
 
   @override
-  State < MealConsumed > createState() => _MealConsumedState();
+  State < SnackMealConsumed > createState() => _SnackMealConsumedState();
 }
 
-class _MealConsumedState extends State < MealConsumed > {
+class _SnackMealConsumedState extends State < SnackMealConsumed > {
   List < FoodConsumed > consumedFoods = [];
-  @override
-  void didChangeDependencies() {
-    provideConsumedFoods();
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +46,7 @@ class _MealConsumedState extends State < MealConsumed > {
                       ),
                       SizedBox(width: 20. w),
                       Text(
-                        'Breakfast',
+                        'Snack',
                         style: TextStyle(
                           color: AppColors.colorTint700,
                           fontWeight: FontWeight.bold,
@@ -85,65 +80,55 @@ class _MealConsumedState extends State < MealConsumed > {
               ),
             ),
             SizedBox(height: 20. w),
-            ListView.builder(
-              itemCount: consumedFoods.length,
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 70. w,
-                  margin: EdgeInsets.zero,
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        VerticalDivider(
-                          color: AppColors.colorTint300,
-                          thickness: 2,
-                        ),
-                        SizedBox(width: 15. w),
-                        Container(
-                          height: 54. w,
-                          width: 54. w,
-                          decoration: BoxDecoration(
-                            color: consumedFoods[index].boxColor,
-                            borderRadius: BorderRadius.circular(20)
+            Container(
+              child: ListView.builder(
+                itemCount: consumedFoods.length,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 70. w,
+                    margin: EdgeInsets.zero,
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          VerticalDivider(
+                            color: AppColors.colorTint300,
+                            thickness: 2,
                           ),
-                          child: Center(
-                            child: consumedFoods[index].icon
-                          ),
-                        ),
-                        SizedBox(width: 15. w),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              consumedFoods[index].foodName!,
-                              style: TextStyle(
-                                color: AppColors.colorTint700,
-                                fontSize: 15. sp,
-                                fontWeight: FontWeight.bold
+                          SizedBox(width: 15. w),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                consumedFoods[index].foodName!,
+                                style: TextStyle(
+                                  color: AppColors.colorTint700,
+                                  fontSize: 15. sp,
+                                  fontWeight: FontWeight.bold
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5. w),
-                            Text(
-                              consumedFoods[index].consumedAmount!,
-                              style: TextStyle(
-                                color: AppColors.colorTint500,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12. sp,
+                              SizedBox(height: 5. w),
+                              Text(
+                                consumedFoods[index].consumedAmount!,
+                                style: TextStyle(
+                                  color: AppColors.colorTint500,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12. sp,
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      ]
-                    )
-                  ),
-                );
-              },
+                            ],
+                          )
+                        ]
+                      )
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),

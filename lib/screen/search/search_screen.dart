@@ -82,9 +82,34 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   future: _search.searchCall(),
                     builder: (context,snapshot){
                       data = snapshot.data;
+                      print(data);
                     if(!snapshot.hasData){
                       if(_clickedButton==true){
-                      return Text('Food not found',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30),);}
+                      return Column(
+                        children: [
+                          Text('Food not found',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30),),
+                          SizedBox(height: 30),
+                          ElevatedButton(
+                            onPressed: () async {
+                              void deleteArray() {
+                                Timer(Duration(minutes: 15), () {
+                                  data!.clear();
+                                });
+                              }
+                              setState(() {
+                                _search.searchCall();
+                                _clickedButton = true;
+                              });
+                              await storage.write(key: 'searchWord' ,value: _searchWord.text);
+
+                            },
+                            child: Text('Search Food'),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.colorAccent),
+                          ),
+
+                        ],
+                      );}
                       if(_clickedButton==false){
                         return Container();
                       }

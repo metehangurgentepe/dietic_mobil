@@ -1,9 +1,10 @@
-import 'package:my_diary/fitness_app_theme.dart';
-import 'package:my_diary/main.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import '../config/theme/fitness_app_theme.dart';
 import '../hexColor.dart';
+
 
 class MediterranesnDietView extends StatelessWidget {
   final AnimationController? animationController;

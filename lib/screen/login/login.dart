@@ -116,7 +116,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         if(ref.read(loginRiverpod).password!.text != '' && ref.read(loginRiverpod).email!.text != ''){
                           print('burada');
                           ref.read(loginRiverpod).fetch();
-                          Navigator.pushNamed(context,'/nav');
                         }
                         else{
                         }

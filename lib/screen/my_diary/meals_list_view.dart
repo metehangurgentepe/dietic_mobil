@@ -1,10 +1,12 @@
-import 'package:my_diary/fitness_app_theme.dart';
-import 'package:my_diary/models/meals_list_data.dart';
-import 'package:my_diary/main.dart';
+
+import 'package:dietic_mobil/model/diet_plan_model.dart';
+import 'package:dietic_mobil/service/diet_plan/diet_plan_service.dart';
 import 'package:flutter/material.dart';
 
+import '../../config/theme/fitness_app_theme.dart';
+import '../../hexColor.dart';
 import '../../main.dart';
-import '../hexColor.dart';
+import '../../model/meals_list_data.dart';
 
 class MealsListView extends StatefulWidget {
   const MealsListView(
@@ -21,10 +23,62 @@ class MealsListView extends StatefulWidget {
 class _MealsListViewState extends State<MealsListView>
     with TickerProviderStateMixin {
   AnimationController? animationController;
-  List<MealsListData> mealsListData = MealsListData.tabIconsList;
+  DietPlanService service =DietPlanService();
+
+   List<DietPlanModel> lunchPlan=[];
+   List<DietPlanModel> breakfastPlan=[];
+   List<DietPlanModel> dinnerPlan=[];
+  List<int?> energy=[];
+  List<String> breakfastFoodNames=[];
+
+
 
   @override
   void initState() {
+    service.getLunchDietPlan();
+    service.getBreakfastDietPlan().then((value){
+      if(value != null) {
+        setState(() {
+          breakfastPlan=value;
+        });
+      }
+      else{
+        throw Exception('kahvaltı data null geldi');
+      }
+    });
+    service.getLunchDietPlan().then((value){
+      if(value != null) {
+        setState(() {
+          lunchPlan = value;
+        });
+      }
+      else{
+        throw Exception('kahvaltı data null geldi');
+      }
+    });
+    service.getDinnerDietPlan().then((value){
+      if(value != null) {
+        setState(() {
+          dinnerPlan = value;
+        });
+      }
+      else{
+        throw Exception('kahvaltı data null geldi');
+      }
+    });
+    service.getFirstDietPlanEnergy().then((value){
+      if(value != null) {
+        setState(() {
+          energy = value;
+          print(energy);
+          print('value yukarıda');
+
+        });
+      }
+      else{
+        throw Exception('kahvaltı data null geldi');
+      }
+    });
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
     super.initState();
@@ -43,6 +97,13 @@ class _MealsListViewState extends State<MealsListView>
 
   @override
   Widget build(BuildContext context) {
+    List<String>imagePath=['assets/fitness_app/breakfast.png','assets/fitness_app/lunch.png','assets/fitness_app/dinner.png','assets/fitness_app/snack.png'];
+  List<String> titleTxt=['Breakfast','Lunch','Dinner','Snack'];
+  List<String> startColor=['#FA7D82','#738AE6','#6F72CA','#FE95B6'];
+  List<String> endColor=['#FFB295','#5C5EDD','#1E1466','#FF5287'];
+  List<List<DietPlanModel>> dietPlan=[breakfastPlan,lunchPlan,dinnerPlan,breakfastPlan];
+  List<int?> kacl=energy;
+  print(dietPlan);
     return AnimatedBuilder(
       animation: widget.mainScreenAnimationController!,
       builder: (BuildContext context, Widget? child) {
@@ -57,11 +118,10 @@ class _MealsListViewState extends State<MealsListView>
               child: ListView.builder(
                 padding: const EdgeInsets.only(
                     top: 0, bottom: 0, right: 16, left: 16),
-                itemCount: mealsListData.length,
+                itemCount: 4,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
-                  final int count =
-                      mealsListData.length > 10 ? 10 : mealsListData.length;
+                  final int count = 1 > 10 ? 10 : 4;
                   final Animation<double> animation =
                       Tween<double>(begin: 0.0, end: 1.0).animate(
                           CurvedAnimation(
@@ -71,7 +131,12 @@ class _MealsListViewState extends State<MealsListView>
                   animationController?.forward();
 
                   return MealsView(
-                    mealsListData: mealsListData[index],
+                    dietPlan: dietPlan[index],
+                    imagePath: imagePath[index],
+                    titleTxt: titleTxt[index],
+                    startColor: startColor[index],
+                    endColor: endColor[index],
+                    kacl: energy[index],
                     animation: animation,
                     animationController: animationController!,
                   );
@@ -86,16 +151,35 @@ class _MealsListViewState extends State<MealsListView>
 }
 
 class MealsView extends StatelessWidget {
+
+
+
   const MealsView(
-      {Key? key, this.mealsListData, this.animationController, this.animation})
+      {Key? key, this.animationController, this.animation,required this.dietPlan, this.mealsListData, required this.imagePath, required this.titleTxt, required this.startColor, required this.endColor, this.breakfastPlan, required this.kacl})
       : super(key: key);
 
-  final MealsListData? mealsListData;
   final AnimationController? animationController;
   final Animation<double>? animation;
+  final String? breakfastPlan;
+  final String imagePath;
+  final String titleTxt;
+  final int? kacl;
+  final String startColor;
+  final String endColor;
+  final MealsListData? mealsListData;
+  final List<DietPlanModel> dietPlan;
 
   @override
   Widget build(BuildContext context) {
+
+    MealsListData mealsListData = MealsListData.dynamicList(
+      dietPlan:[['sasdfasf'],['asdasfas']],
+        imagePath: imagePath,
+        titleTxt: titleTxt,
+        startColor: startColor,
+        endColor: endColor, mealsList: [], kacl:kacl!);
+    print('kacl burada');
+    print(kacl);
     return AnimatedBuilder(
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -115,15 +199,15 @@ class MealsView extends StatelessWidget {
                       decoration: BoxDecoration(
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                              color: HexColor(mealsListData!.endColor)
+                              color: HexColor('#'+endColor.toString())
                                   .withOpacity(0.6),
                               offset: const Offset(1.1, 4.0),
                               blurRadius: 8.0),
                         ],
                         gradient: LinearGradient(
                           colors: <HexColor>[
-                            HexColor(mealsListData!.startColor),
-                            HexColor(mealsListData!.endColor),
+                            HexColor('#'+startColor.toString()),
+                            HexColor('#'+endColor.toString()),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -143,7 +227,7 @@ class MealsView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              mealsListData!.titleTxt,
+                              titleTxt.toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: FitnessAppTheme.fontName,
@@ -162,7 +246,7 @@ class MealsView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      mealsListData!.meals!.join('\n'),
+                                      '${dietPlan[0].foodName.toString()}\n${dietPlan[1].foodName.toString()}\n${dietPlan[2].foodName.toString()}',
                                       style: TextStyle(
                                         fontFamily: FitnessAppTheme.fontName,
                                         fontWeight: FontWeight.w500,
@@ -175,13 +259,12 @@ class MealsView extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            mealsListData?.kacl != 0
-                                ? Row(
+                            Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                        mealsListData!.kacl.toString(),
+                                        kacl.toString() ?? '',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: FitnessAppTheme.fontName,
@@ -207,28 +290,8 @@ class MealsView extends StatelessWidget {
                                         ),
                                       ),
                                     ],
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      color: FitnessAppTheme.nearlyWhite,
-                                      shape: BoxShape.circle,
-                                      boxShadow: <BoxShadow>[
-                                        BoxShadow(
-                                            color: FitnessAppTheme.nearlyBlack
-                                                .withOpacity(0.4),
-                                            offset: Offset(8.0, 8.0),
-                                            blurRadius: 8.0),
-                                      ],
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(6.0),
-                                      child: Icon(
-                                        Icons.add,
-                                        color: HexColor(mealsListData!.endColor),
-                                        size: 24,
-                                      ),
-                                    ),
                                   ),
+
                           ],
                         ),
                       ),
@@ -252,7 +315,7 @@ class MealsView extends StatelessWidget {
                     child: SizedBox(
                       width: 80,
                       height: 80,
-                      child: Image.asset(mealsListData!.imagePath),
+                      child: Image.asset('${imagePath}'),
                     ),
                   )
                 ],

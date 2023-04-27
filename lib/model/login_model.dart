@@ -1,28 +1,32 @@
 class LoginModel {
-  int? id;
-  String? firstName;
-  String? lastName;
-  String? email;
-  String? token;
+  String? roleName;
+  String? name;
+  String? surname;
+  String? accessToken;
+  String? tokenType;
 
   LoginModel(
-      {this.id, this.firstName, this.lastName, this.email, this.token});
+      {this.roleName,
+      this.name,
+      this.surname,
+      this.accessToken,
+      this.tokenType});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    email = json['email'];
-    token = json['token'];
+    roleName = json['roleName'];
+    name = json['name'];
+    surname = json['surname'];
+    accessToken = json['accessToken'];
+    tokenType = json['tokenType'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['email'] = this.email;
-    data['token'] = this.token;
+    data['roleName'] = this.roleName;
+    data['name'] = this.name;
+    data['surname'] = this.surname;
+    data['accessToken'] = this.accessToken;
+    data['tokenType'] = this.tokenType;
     return data;
   }
 }

@@ -1,17 +1,31 @@
-import 'package:my_diary/models/tabIcon_data.dart';
-import 'package:my_diary/training/training_screen.dart';
+
+import 'package:dietic_mobil/dietician-screen/search/search_screen.dart';
+import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import '../bottom_navigation_view/bottom_bar_view.dart';
-import '../fitness_app_theme.dart';
-import '../my_diary/my_diary_screen.dart';
+import '../../config/theme/fitness_app_theme.dart';
+import '../../dietician-screen/profile/dietcian_profile_screen.dart';
+import '../exercise/new_exercises.dart';
+import '../tab-bar/TabIcon.dart';
+import '../tab-bar/bottom_bar_view.dart';
+import '../training/training_screen.dart';
+import 'my_diary.dart';
 
 class FitnessAppHomeScreen extends StatefulWidget {
+  static const String routeName = '/fitness-home';
+
+  static Route route() {
+    return MaterialPageRoute(
+        builder: (_) => FitnessAppHomeScreen(),
+        settings: const RouteSettings(name: routeName));
+  }
   @override
   _FitnessAppHomeScreenState createState() => _FitnessAppHomeScreenState();
 }
 
 class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     with TickerProviderStateMixin {
+
   AnimationController? animationController;
 
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
@@ -79,7 +93,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
           tabIconsList: tabIconsList,
           addClick: () {},
           changeIndex: (int index) {
-            if (index == 0 || index == 2) {
+            if (index == 0) {
               animationController?.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;
@@ -89,14 +103,36 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                       MyDiaryScreen(animationController: animationController);
                 });
               });
-            } else if (index == 1 || index == 3) {
+            } else if (index == 1) {
               animationController?.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;
                 }
                 setState(() {
                   tabBody =
-                      TrainingScreen(animationController: animationController);
+                      SearchScreen();
+                });
+              });
+            }
+            else if (index == 2) {
+              animationController?.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      NewExercises();
+                });
+              });
+            }
+            else if (index == 3) {
+              animationController?.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      ProfilesScreen();
                 });
               });
             }

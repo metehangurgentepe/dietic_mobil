@@ -1,3 +1,4 @@
+import 'package:dietic_mobil/screen/my_diary/my_diary.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,7 +45,7 @@ class _NavScreenState extends State <NavScreen> {
       _currentIndex = index;
     });
   }
-  final pages = [HomeScreen(), SearchScreen(), AuthScreen(), NewExercises(), ProfilesScreen()];
+  final pages = [MyDiaryScreen(), SearchScreen(), AuthScreen(), NewExercises(), ProfilesScreen()];
 
   @override
   Widget build(BuildContext context) {

@@ -19,17 +19,16 @@ class _DailyCalorieStatisticsState extends State<DailyCalorieStatistics> {
   String? bp;
   String? steps;
   String? activeEnergy;
-
   String? bloodPreSys;
   String? bloodPreDia;
-
   List<HealthDataPoint> healthData = [];
-
   HealthFactory health = HealthFactory();
 
   String? move_mins;
 
   String? height;
+
+  String? water;
 
 
    @override
@@ -38,6 +37,7 @@ class _DailyCalorieStatisticsState extends State<DailyCalorieStatistics> {
     fetchData();
   }
 
+
   /// Fetch data points from the health plugin and show them in the app.
   Future fetchData() async {
     // define the types to get
@@ -45,12 +45,13 @@ class _DailyCalorieStatisticsState extends State<DailyCalorieStatistics> {
       HealthDataType.STEPS,
       HealthDataType.ACTIVE_ENERGY_BURNED,
       HealthDataType.HEIGHT,
-      HealthDataType.MOVE_MINUTES,
+      HealthDataType.WATER,
+     // HealthDataType.MOVE_MINUTES,
     ];
 
     // get data within the last 24 hours
     final now = DateTime.now();
-    final yesterday = now.subtract(const Duration(days: 1));
+    final yesterday = now.subtract(const Duration(days: 5));
 
     // requesting access to the data types before reading them
     bool requested = await health.requestAuthorization(types);
@@ -73,6 +74,9 @@ class _DailyCalorieStatisticsState extends State<DailyCalorieStatistics> {
             }
             else if (h.type == HealthDataType.HEIGHT) {
               height = "${h.value}";
+            }
+            else if (h.type == HealthDataType.WATER) {
+              water = "${h.value}";
             }
           }
           setState(() {
@@ -97,6 +101,8 @@ class _DailyCalorieStatisticsState extends State<DailyCalorieStatistics> {
     await storage.write(key: 'energy', value: activeEnergy.toString());
     await storage.write(key: 'move_min', value: move_mins.toString());
     await storage.write(key: 'height', value: height.toString());
+    await storage.write(key: 'water', value: water.toString());
+    /////////////////////////////////////////////////////////////////
   }
 
 

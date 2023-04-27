@@ -1,9 +1,10 @@
-import 'package:my_diary/ui_view/wave_view.dart';
-import 'package:my_diary/fitness_app_theme.dart';
-import 'package:my_diary/main.dart';
+
 import 'package:flutter/material.dart';
 
-import '../hexColor.dart';
+import '../../config/theme/fitness_app_theme.dart';
+import '../../hexColor.dart';
+import '../../ui_view/wave_view.dart';
+
 
 class WaterView extends StatefulWidget {
   const WaterView(
