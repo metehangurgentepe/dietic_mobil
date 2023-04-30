@@ -41,22 +41,27 @@ class _AppointmentState extends State<Appointment> {
   List<GetAppointmentModel> appointments = [];
   List<String> sumTime = [];
   List<String> sum = [];
-
-
+  List<dynamic> allTimes = [];
+  List<String> zamanlar=['9:00:00','10:00:00','11:00:00','12:00:00','13:00:00','14:00:00','15:00:00','16:00:00'];
+List<String>? differenceList;
   final service = AppointmentService();
+  
+  int? buttonNumber;
   @override
   void initState() {
-    service.getPatientAppointments().then((data) {
-      appointments = data;
-      for (int i = 0; i < appointments.length; i++) {
-        map?[appointments[i].appointmentDate!] =
-            appointments[i].appointmentTime!;
-        print('map');
-        if (map != null) {
-        }
-      }
-      print(dateMap?.keys.elementAt(1));
-    });
+    // service.getPatientAppointments().then((data) {
+    //   appointments = data;
+    //   for (int i = 0; i < appointments.length; i++) {
+    //     print(appointments[i].appointmentDate);
+    //    print(appointments[i].appointmentTime);
+
+    //     Map<String, String> myMap = {};
+    //     myMap['${appointments[i].appointmentDate}']='${appointments[i].appointmentTime}';
+    //     map=myMap;
+
+    //   }
+
+    // });
     super.initState();
   }
 
@@ -85,7 +90,7 @@ class _AppointmentState extends State<Appointment> {
                           EdgeInsets.symmetric(horizontal: 10, vertical: 25),
                       child: Center(
                         child: Text(
-                          'Select Consultation Time',
+                          'Select Available Time',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -121,6 +126,8 @@ class _AppointmentState extends State<Appointment> {
                               setState(() {
                                 _currentIndex = index;
                                 _timeSelected = true;
+                                buttonNumber=8-allTimes.length;
+                                differenceList = zamanlar.where((element) => !allTimes.contains(element)).toList();
                               });
                             },
                             child: Container(
@@ -137,19 +144,27 @@ class _AppointmentState extends State<Appointment> {
                                     : null,
                               ),
                               alignment: Alignment.center,
-                              child: Text(
-                                '${index + 9}:00 ${index + 9 > 11 ? "PM" : "AM"}',
+                              child:differenceList!.isNotEmpty ? Text(
+                                differenceList![index],
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: _currentIndex == index
                                       ? Colors.white
                                       : null,
                                 ),
-                              ),
+                              ): Text(
+                                zamanlar[index],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: _currentIndex == index
+                                      ? Colors.white
+                                      : null,
+                                ),
+                              )
                             ),
                           );
                         },
-                        childCount: 8,
+                        childCount: buttonNumber ?? 8,
                       ),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -217,7 +232,21 @@ class _AppointmentState extends State<Appointment> {
           _currentDay = selectedDay;
           _focusDay = focusedDay;
           _dateSelected = true;
+          String dateWithoutTime = selectedDay.toString().substring(0, 10);
+          print(dateWithoutTime);
 
+          //sıkıntı var
+          service.getAppointmentsByDate(dateWithoutTime).then((value) {
+            allTimes.clear();
+              for (int i = 0; i < value.length; i++) {
+                allTimes.add(value[i].appointmentTime);
+                //print(allTimes[i]);
+              }  
+              allTimes.length=value.length;
+          });
+          buttonNumber=8-allTimes.length;
+         differenceList = zamanlar.where((element) => !allTimes.contains(element)).toList();
+          
           //check if weekend is selected
           if (selectedDay.weekday == 6 || selectedDay.weekday == 7) {
             _isWeekend = true;

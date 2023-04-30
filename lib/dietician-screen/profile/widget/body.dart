@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'profile_menu.dart';
 import 'profile_pic.dart';
 
-class Body extends StatelessWidget {
+class BodyDietician extends StatelessWidget {
+  final storage = new FlutterSecureStorage();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -26,6 +29,13 @@ class Body extends StatelessWidget {
             },
           ),
           ProfileMenu(
+            text: "Appointment",
+            icon: "assets/icons/Call.svg",
+            press: () {
+              Navigator.pushNamed(context, '/show-appointment');
+            },
+          ),
+          ProfileMenu(
             text: "Settings",
             icon: "assets/icons/Settings.svg",
             press: () {},
@@ -38,7 +48,10 @@ class Body extends StatelessWidget {
           ProfileMenu(
             text: "Log Out",
             icon: "assets/icons/Log out.svg",
-            press: () {},
+            press: () async {
+              await storage.deleteAll();
+              Navigator.pop(context);
+            },
           ),
         ],
       ),

@@ -33,8 +33,7 @@ class PlanService {
         for(int i=0;i<listResponse.length;i++){
           myList.add(listResponse[i]);
         }
-        print('lazımdata');
-        print(listResponse.toList());
+       
         return myList;
       }
     }

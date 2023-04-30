@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:dietic_mobil/screen/screen.dart';
 
+import '../../dietician-screen/show-appointment/show_appointment.dart';
 import '../../screen/profile/profile_screen.dart';
 import '../../screen/splash/splash_screen.dart';
 
@@ -52,6 +53,8 @@ class AppRouter {
         return SplashScreen.route();
       case AppointmentBooked.routeName:
         return AppointmentBooked.route();
+      case ShowAppointment.routeName:
+        return ShowAppointment.route();
 
 
       default:

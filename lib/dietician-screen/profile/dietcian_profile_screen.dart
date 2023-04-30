@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/screen/profile/widget/body.dart';
+import 'package:dietic_mobil/dietician-screen/profile/widget/body.dart';
 import 'package:flutter/material.dart';
 
 class ProfilesScreen extends StatelessWidget {
@@ -8,7 +8,7 @@ class ProfilesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Body(),
+      child: BodyDietician(),
     );
   }
 }

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,14 @@ class HomeDietician extends StatefulWidget {
 }
 
 class _HomeDieticianPageState extends State<HomeDietician> {
+  final storage = FlutterSecureStorage();
+
+  String? name;
+  @override
+  initState() {
+    super.initState();
+
+  }
   Map<String, dynamic> user = {};
   Map<String, dynamic> doctor = {};
   List<dynamic> favList = [];
@@ -68,7 +77,7 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('mete gürgen',
+                    Text(name ?? '',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,

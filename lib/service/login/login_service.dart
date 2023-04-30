@@ -9,7 +9,6 @@ class LoginService {
     try {
       Map<String, dynamic> json = {"email": email, "password": password};
       var response = await dio.post(baseUrl, data: json);
-      print('status code burda');
       print(response.statusCode);
       if (response.statusCode == 200) {
         print('burası logincall');

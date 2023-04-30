@@ -17,25 +17,27 @@ class DinnerMealConsumed extends StatefulWidget {
 class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
   List<FoodConsumed> consumedFoods = [];
   DietPlanService service = DietPlanService();
-  List<DietPlanModel> lunchPlan = [];
-  List<String?> lunchName = [];
-  List<int?> kcal = [];
+  List<DietPlanModel> dinnerPlan = [];
   int sumEnergy = 0;
   List<int> selectedKcal = [];
+  List<bool> isSelected = [];
+  List<DietPlanModel> selectedFoods = [];
 
   bool isTicked = false;
-
-
 
   @override
   void initState() {
     service.getDinnerDietPlan().then((value) {
       setState(() {
-        lunchPlan = value;
-        for (int i = 0; i < lunchPlan.length; i++) {
-          lunchName.add(lunchPlan[i].foodName);
-          kcal.add(lunchPlan[i].energy);
-          sumEnergy = kcal.fold(0, (a, b) => a + b!);
+        dinnerPlan = value;
+        isSelected = List<bool>.generate(dinnerPlan.length, (index) => false);
+        for (int i = 0; i < dinnerPlan.length; i++) {
+          sumEnergy += dinnerPlan[i].energy!;
+          if (dinnerPlan[i].eaten!.contains('UNCHECKED')) {
+            isSelected[i] = false;
+          } else {
+            isSelected[i] = true;
+          }
         }
       });
     });
@@ -103,6 +105,14 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                           fontSize: 12.sp,
                         ),
                       ),
+                      IconButton(
+                        icon: Icon(Icons.save),
+                        onPressed: () {
+                          for (int i = 0; i < dinnerPlan.length; i++) {
+                            service.checkedEaten(selectedFoods[i]);
+                          }
+                        },
+                      )
                     ],
                   ),
                 ],
@@ -111,7 +121,7 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
             SizedBox(height: 20.w),
             Container(
               child: ListView.builder(
-                itemCount: lunchName.length,
+                itemCount: dinnerPlan.length,
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -124,6 +134,14 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                         child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                          Checkbox(
+                            value: isSelected[index],
+                            onChanged: (value) {
+                              setState(() {
+                                _updateSelectedItems(value!, index);
+                              });
+                            },
+                          ),
                           VerticalDivider(
                             color: AppColors.colorTint300,
                             thickness: 2,
@@ -134,7 +152,7 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                lunchName[index] ?? '',
+                                dinnerPlan[index].foodName ?? '',
                                 style: TextStyle(
                                     color: AppColors.colorTint700,
                                     fontSize: 15.sp,
@@ -144,7 +162,8 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                               Row(
                                 children: [
                                   Text(
-                                    '${kcal[index].toString()} kcal' ?? '',
+                                    '${dinnerPlan[index].energy.toString()} kcal' ??
+                                        '',
                                     style: TextStyle(
                                       color: AppColors.colorTint500,
                                       fontWeight: FontWeight.bold,
@@ -166,20 +185,20 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
     );
   }
 
-  void provideConsumedFoods() {
-    consumedFoods.add(FoodConsumed(
-      foodName: 'Espresso coffe',
-      consumedAmount: '30 ml',
-      boxColor: AppColors.colorTint200,
-      icon: SvgPicture.asset('assets/icons/tea.svg', width: 25.w, height: 25.w),
-    ));
-
-    consumedFoods.add(FoodConsumed(
-      foodName: 'Croissant',
-      consumedAmount: '100 ml',
-      boxColor: AppColors.colorErrorLight,
-      icon: SvgPicture.asset('assets/icons/croissant.svg',
-          width: 25.w, height: 25.w),
-    ));
+  void _updateSelectedItems(bool value, int index) {
+    setState(() {
+      isSelected[index] = value;
+      selectedFoods.add(dinnerPlan[index]);
+      if (value) {
+        for (int i = 0; i < selectedFoods.length; i++) {
+          selectedFoods[i].eaten = 'CHECKED';
+        }
+        print(selectedFoods[2].foodName);
+      } else {
+        for (int i = 0; i < selectedFoods.length; i++) {
+          selectedFoods[i].eaten = 'UNCHECKED';
+        }
+      }
+    });
   }
 }

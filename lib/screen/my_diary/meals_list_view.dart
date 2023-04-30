@@ -35,7 +35,6 @@ class _MealsListViewState extends State<MealsListView>
 
   @override
   void initState() {
-    service.getLunchDietPlan();
     service.getBreakfastDietPlan().then((value){
       if(value != null) {
         setState(() {
@@ -70,8 +69,7 @@ class _MealsListViewState extends State<MealsListView>
       if(value != null) {
         setState(() {
           energy = value;
-          print(energy);
-          print('value yukarıda');
+          
 
         });
       }
@@ -103,7 +101,7 @@ class _MealsListViewState extends State<MealsListView>
   List<String> endColor=['#FFB295','#5C5EDD','#1E1466','#FF5287'];
   List<List<DietPlanModel>> dietPlan=[breakfastPlan,lunchPlan,dinnerPlan,breakfastPlan];
   List<int?> kacl=energy;
-  print(dietPlan);
+  
     return AnimatedBuilder(
       animation: widget.mainScreenAnimationController!,
       builder: (BuildContext context, Widget? child) {
@@ -178,8 +176,6 @@ class MealsView extends StatelessWidget {
         titleTxt: titleTxt,
         startColor: startColor,
         endColor: endColor, mealsList: [], kacl:kacl!);
-    print('kacl burada');
-    print(kacl);
     return AnimatedBuilder(
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -245,8 +241,8 @@ class MealsView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(
-                                      '${dietPlan[0].foodName.toString()}\n${dietPlan[1].foodName.toString()}\n${dietPlan[2].foodName.toString()}',
+                                     Text(
+                                      '${dietPlan[0].foodName.toString()}\n${dietPlan[1].foodName.toString()}\n${dietPlan[2].foodName.toString()}' ?? ' ',
                                       style: TextStyle(
                                         fontFamily: FitnessAppTheme.fontName,
                                         fontWeight: FontWeight.w500,
@@ -254,7 +250,7 @@ class MealsView extends StatelessWidget {
                                         letterSpacing: 0.2,
                                         color: FitnessAppTheme.white,
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),

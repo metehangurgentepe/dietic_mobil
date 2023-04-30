@@ -35,12 +35,16 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
     service.getLunchDietPlan().then((value){
       setState(() {
         lunchFoods=value;
-        for(int i=0;i<lunchFoods.length;i++){
-          lunchName.add(lunchFoods[i].foodName);
-          kcal.add(lunchFoods[i].energy);
-          sumEnergy = kcal.fold(0, (a, b) => a + b!);
-        }
         isSelected = List<bool>.generate(lunchFoods.length, (index) => false);
+        for(int i=0;i<lunchFoods.length;i++){
+          sumEnergy += lunchFoods[i].energy!;
+           if (lunchFoods[i].eaten!.contains('UNCHECKED')) {
+            isSelected[i] = false;
+          } else {
+            isSelected[i] = true;
+          }
+        }
+        
       });
     });
     super.initState();
@@ -104,6 +108,14 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
                           fontSize: 12. sp,
                         ),
                       ),
+                      IconButton(
+                        icon: Icon(Icons.save),
+                        onPressed: () {
+                          for (int i = 0; i < lunchFoods.length; i++) {
+                            service.checkedEaten(selectedFoods[i]);
+                          }
+                        },
+                      )
                     ],
                   ),
                 ],
@@ -142,10 +154,10 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('${lunchName[index]}'),
+                              Text('${lunchFoods[index].foodName}'),
                               SizedBox(height: 5. w),
                               Text(
-                                '${kcal[index].toString()} kcal',
+                                '${lunchFoods[index].energy.toString()} kcal',
                                 style: TextStyle(
                                   color: AppColors.colorTint500,
                                   fontWeight: FontWeight.bold,
@@ -166,44 +178,20 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
       ),
     );
   }
-  void _updateSelectedItems(bool value, int index) {
+    void _updateSelectedItems(bool value, int index) {
     setState(() {
       isSelected[index] = value;
+      selectedFoods.add(lunchFoods[index]);
       if (value) {
-        selectedFoods.add(lunchFoods[index]);
-        print(selectedFoods);
+        for (int i = 0; i < selectedFoods.length; i++) {
+          selectedFoods[i].eaten = 'CHECKED';
+        }
+        print(selectedFoods[2].foodName);
       } else {
-        selectedFoods.remove(lunchFoods[index]);
+        for (int i = 0; i < selectedFoods.length; i++) {
+          selectedFoods[i].eaten = 'UNCHECKED';
+        }
       }
     });
-  }
-
-
-  void provideConsumedFoods() {
-    consumedFoods.add(
-      FoodConsumed(
-        foodName: 'Espresso coffe',
-        consumedAmount: '30 ml',
-        boxColor: AppColors.colorTint200,
-        icon: SvgPicture.asset(
-          'assets/icons/tea.svg',
-          width: 25. w,
-          height: 25. w
-        ),
-      )
-    );
-
-    consumedFoods.add(
-      FoodConsumed(
-        foodName: 'Croissant',
-        consumedAmount: '100 ml',
-         boxColor: AppColors.colorErrorLight,
-        icon:SvgPicture.asset(
-          'assets/icons/croissant.svg',
-          width: 25. w,
-          height: 25. w
-        ),
-      )
-    );
   }
 }
