@@ -15,6 +15,9 @@ class AppointmentService {
   List<dynamic> appointmentData = [];
   GetAppointmentForDietitian? dietitianRandevu;
   List<GetAppointmentForDietitian> listDietitianRandevu = [];
+  List<GetAppointmentModel> Randevular = [];
+  GetAppointmentModel? diyetisyenRandevu;
+
 
   var jsonResponse; // your dynamic list
 
@@ -63,24 +66,28 @@ class AppointmentService {
 
     return listRandevu;
   }
-//   Future<List<GetAppointmentForDietitian>> getAppointment(String dietitianId) async {
 
-//     String url='http://localhost:8080/api/v1/appointments/dietitian/${dietitianId}';
-//     try{
+  Future<List<GetAppointmentModel>> getAppointment() async {
+    String? token = await storage.read(key: 'token');
+    String url = 'http://localhost:8080/api/v1/appointments/dietitian';
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    try {
+      var response = await dio.get(url);
+      listRandevu.clear();
+      for (int i = 0; i < response.data.length; i++) {
+        diyetisyenRandevu =
+            GetAppointmentModel.fromJson(response.data[i]);
+        Randevular.add(diyetisyenRandevu!);
+      }
+      return Randevular;
+    } catch (e) {
+      return throw Exception('${e} error');
+    }
+  }
 
-// var response = await dio.get(url);
-//     for (int i = 0; i < response.data.length; i++) {
-//       dietitianRandevu = GetAppointmentForDietitian.fromJson(response.data[i]);
-//       listDietitianRandevu.add(dietitianRandevu!);
-//     }
-//     return listDietitianRandevu;
-//     }
-//     catch(e){
-//       return throw Exception('${e} error');
-
-//     }
-
-// }
   Future<List<GetAppointmentForDietitian>> getAppointmentsByDate(
       String datetime) async {
     String? dietitianId = await storage.read(key: 'dietitianId');
@@ -104,17 +111,40 @@ class AppointmentService {
       for (int i = 0; i < response.data.length; i++) {
         dietitianRandevu =
             GetAppointmentForDietitian.fromJson(response.data[i]);
-            listDietitianRandevu.add(dietitianRandevu!);
+        listDietitianRandevu.add(dietitianRandevu!);
       }
-      
+
       for (int i = 0; i < response.data.length; i++) {
         print(listDietitianRandevu[i].appointmentTime);
         print(listDietitianRandevu.length);
       }
-      
+
       return listDietitianRandevu;
     } catch (e) {
       return throw Exception('${e} error');
+    }
+  }
+  Future updateStatus(GetAppointmentModel getAppointmentModel) async {
+    String? token = await storage.read(key: 'token');
+    String url='http://localhost:8080/api/v1/appointments/updateStatus/${getAppointmentModel.appointmentId}';
+    Map<String, dynamic> data ={
+        "appointment_id":getAppointmentModel.appointmentId,
+        "status": "AVAILABLE",
+        "dietitian_id": getAppointmentModel.dietitianId,
+        "patient_id": getAppointmentModel.patientId,
+        "appointmentDate": getAppointmentModel.appointmentDate,
+        "appointmentTime": getAppointmentModel.appointmentTime,
+        "createdAt": getAppointmentModel.createdAt
+        };
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    try{
+      var response = dio.patch(url,data: data);
+      print(response);
+    }catch(e){
+
     }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:dietic_mobil/dietician-screen/nav/nav_dietician.dart';
+import 'package:dietic_mobil/dietician-screen/show-appointment/appointment_detail.dart';
 import 'package:dietic_mobil/message/authScreen.dart';
+import 'package:dietic_mobil/model/get_appointment.dart';
 import 'package:dietic_mobil/screen/appointment/appointment.dart';
 import 'package:dietic_mobil/screen/appointment/success_booking.dart';
 import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
@@ -55,6 +57,9 @@ class AppRouter {
         return AppointmentBooked.route();
       case ShowAppointment.routeName:
         return ShowAppointment.route();
+      case AppointmentDetailScreen.routeName:
+        return AppointmentDetailScreen.route(
+          randevu:settings.arguments as GetAppointmentModel);  
 
 
       default:

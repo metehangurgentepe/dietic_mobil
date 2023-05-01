@@ -17,10 +17,10 @@ class PatientDetailService {
 
     try {
       var response = await dio.get(url);
-      patient = response.data;
+      patient = PatientDetailModel.fromJson(response.data);
       return patient!;
     } catch (e) {
-      throw Exception('patient detail alınamadı');
+      throw Exception('${e} patient detail alınamadı');
     }
   }
 }

@@ -31,13 +31,13 @@ class LoginRiverpod extends ChangeNotifier {
         if (value.roleName == 'ROLE_PATIENT') {
           await storage.write(key: 'dietitianId', value: value.dietitianId.toString());
           await storage.write(key: 'patientId', value: value.id.toString());
-          // patient_service.getPatientDetail().then((value) async {
-          //   await storage.write(key: 'weight', value: value.weight.toString());
-          //   await storage.write(key: 'height', value: value.height.toString());
-          //   await storage.write(key: 'age', value: value.age.toString());
-          //   await storage.write(
-          //       key: 'bodyFat', value: value.bodyFat.toString());
-          // });
+          patient_service.getPatientDetail().then((value) async {
+            await storage.write(key: 'weight', value: value.weight.toString());
+            await storage.write(key: 'height', value: value.height.toString());
+            await storage.write(key: 'age', value: value.age.toString());
+            await storage.write(
+                key: 'bodyFat', value: value.bodyFat.toString());
+          });
 
           Grock.to(FitnessAppHomeScreen());
         }

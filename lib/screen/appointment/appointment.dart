@@ -126,8 +126,6 @@ List<String>? differenceList;
                               setState(() {
                                 _currentIndex = index;
                                 _timeSelected = true;
-                                buttonNumber=8-allTimes.length;
-                                differenceList = zamanlar.where((element) => !allTimes.contains(element)).toList();
                               });
                             },
                             child: Container(
@@ -144,15 +142,7 @@ List<String>? differenceList;
                                     : null,
                               ),
                               alignment: Alignment.center,
-                              child:differenceList!.isNotEmpty ? Text(
-                                differenceList![index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: _currentIndex == index
-                                      ? Colors.white
-                                      : null,
-                                ),
-                              ): Text(
+                              child:differenceList==null?Text(
                                 zamanlar[index],
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -160,7 +150,15 @@ List<String>? differenceList;
                                       ? Colors.white
                                       : null,
                                 ),
-                              )
+                              ) : Text(
+                                differenceList![index],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: _currentIndex == index
+                                      ? Colors.white
+                                      : null,
+                                ),
+                              ),
                             ),
                           );
                         },

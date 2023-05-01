@@ -1,6 +1,7 @@
 import 'package:dietic_mobil/model/patient_detail.dart';
 import 'package:dietic_mobil/service/patient_detail/patient_detail_service.dart';
 import 'package:flutter/material.dart';
+import 'package:grock/grock.dart';
 
 import '../config/theme/fitness_app_theme.dart';
 
@@ -32,6 +33,7 @@ class _BodyMeasurementViewState extends State<BodyMeasurementView> {
         height = patient!.height!;
         bodyFat = patient!.bodyFat!;
       }
+      double BMI = weight/(height*height);
     });
 
     super.initState();
@@ -39,7 +41,7 @@ class _BodyMeasurementViewState extends State<BodyMeasurementView> {
 
   @override
   Widget build(BuildContext context) {
-    double BMI = weight/(height*height);
+    
     return AnimatedBuilder(
       animation: widget.animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -192,7 +194,7 @@ class _BodyMeasurementViewState extends State<BodyMeasurementView> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                      '${BMI} BMI',
+                                      '${(weight/(height*height)*10000).toLimitedString(2)} BMI',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: FitnessAppTheme.fontName,
