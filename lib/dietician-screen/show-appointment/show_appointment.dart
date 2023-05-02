@@ -63,8 +63,10 @@ Navigator.pushNamed(
         );            },
             child:ListTile(
               title: Text('${randevu[index].patientId} burada isim olcak' ?? ' '),
-              subtitle: Text('${randevu[index].appointmentTime} ${randevu[index].appointmentDate}' ?? ' '),
+              subtitle: Text(' ${randevu[index].appointmentDate!.replaceAll('-', '/')}' ?? ' '),
               leading: Text('${randevu[index].status}'),
+              trailing: Text('${randevu[index].appointmentTime!.substring(0,5)}'),
+
             ));
           }),
     ));

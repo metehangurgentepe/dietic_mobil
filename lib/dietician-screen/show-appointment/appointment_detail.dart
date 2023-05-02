@@ -10,26 +10,27 @@ class AppointmentDetailScreen extends StatefulWidget {
 
   static Route route({required GetAppointmentModel randevu}) {
     return MaterialPageRoute(
-        builder: (_) => AppointmentDetailScreen(randevu:randevu),
+        builder: (_) => AppointmentDetailScreen(randevu: randevu),
         settings: const RouteSettings(name: routeName));
   }
-  const AppointmentDetailScreen({Key? key,required  this.randevu}) : super(key: key);
-final GetAppointmentModel randevu;
+
+  const AppointmentDetailScreen({Key? key, required this.randevu})
+      : super(key: key);
+  final GetAppointmentModel randevu;
   @override
-  State<AppointmentDetailScreen> createState() => _AppointmentDetailScreenState();
+  State<AppointmentDetailScreen> createState() =>
+      _AppointmentDetailScreenState();
 }
 
 class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
-  
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
-      appBar: AppBar(title: Text('Appointment Detail'),backgroundColor: AppColors.colorAccent,),
-      body: Column(children: [
-        Text(widget.randevu.appointmentId.toString())
-      ]),
-
+      appBar: AppBar(
+        title: Text('Appointment Detail'),
+        backgroundColor: AppColors.colorAccent,
+      ),
+      body: Column(children: [Text(widget.randevu.appointmentId.toString())]),
     );
   }
 }
