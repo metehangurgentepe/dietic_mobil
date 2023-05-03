@@ -85,7 +85,10 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 //app bar(date and calendar)
-                HomeScreenAppBar(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal:12.0),
+                  child: HomeScreenAppBar(),
+                ),
                 //calories circle
                 _circleProgress(),
                 SizedBox(height: 25),
@@ -185,14 +188,14 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18)),
-                                          Text("%$percentNumber"),
+                                          Text("%${percentNumber}" ?? ' '),
                                           LinearPercentIndicator(
                                             barRadius: Radius.circular(20),
                                             width: 130,
                                             animation: true,
                                             animationDuration: 10000,
                                             lineHeight: 10,
-                                            percent: _percent,
+                                            percent: _percent ?? 0.0,
                                             progressColor: Colors.pinkAccent,
                                             backgroundColor: Color(0xffE0A0B2),
                                           ),
@@ -299,8 +302,10 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                   ]
                               ),
                             ),
+                            
                           ],
                         )),
+                        
                   ]
                 ),
                 /*SizedBox(
@@ -315,7 +320,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                       );
                     },
                   ),
-                )  */           ]
+                )  */      SizedBox(height: 100),     ]
 
           ),
         ),

@@ -24,6 +24,7 @@ class LoginRiverpod extends ChangeNotifier {
     service
         .loginCall(email: email.text, password: password.text)
         .then((value) async {
+          //firebase login
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.text,
         password: password.text,
@@ -46,8 +47,8 @@ class LoginRiverpod extends ChangeNotifier {
           });
           String? email = await storage.read(key: 'email');
           String? password = await storage.read(key: 'password');
-          await FirebaseAuth.instance
-              .signInWithEmailAndPassword(email: email!, password: password!);
+          // await FirebaseAuth.instance
+          //     .signInWithEmailAndPassword(email: email!, password: password!);
           Grock.to(FitnessAppHomeScreen());
         }
         if (value.roleName == 'ROLE_DIETITIAN') {

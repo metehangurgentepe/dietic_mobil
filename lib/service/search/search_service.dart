@@ -10,12 +10,11 @@ class SearchService {
   var data = [];
   List<SearchModel> results = [];
   final storage = FlutterSecureStorage();
-  final String baseUrl = 'http://localhost:8080/api/v1/search?query=';
+  final String baseUrl = 'http://localhost:8080/api/v1/foods/search?query=';
   final dio = Dio();
 
-  Future<List<SearchModel>>searchCall() async {
-    String? value = await storage.read(key: 'searchWord');
-    String? token = await storage.read(key: 'jwt');
+  Future<List<SearchModel>>searchCall(String value) async {
+    String? token = await storage.read(key: 'token');
     print(token);
     print(baseUrl + '$value');
 

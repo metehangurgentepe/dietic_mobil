@@ -15,7 +15,6 @@ import 'package:camera/camera.dart';
 
 import 'package:flutter/material.dart';
 
-import '../../screen/message/components/styles.dart';
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
     super.key,

@@ -10,21 +10,21 @@ import 'package:http/http.dart';
 import '../../config/theme/theme.dart';
 import '../../service/appointment/appointment_service.dart';
 
-class ShowAppointment extends StatefulWidget {
-  static const String routeName = '/show-appointment';
-  const ShowAppointment({Key? key}) : super(key: key);
+class ShowPatientAppointment extends StatefulWidget {
+  static const String routeName = '/show-appointment-patient';
+  const ShowPatientAppointment({Key? key}) : super(key: key);
 
   static Route route() {
     return MaterialPageRoute(
-        builder: (_) => ShowAppointment(),
+        builder: (_) => ShowPatientAppointment(),
         settings: const RouteSettings(name: routeName));
   }
 
   @override
-  State<ShowAppointment> createState() => _ShowAppointmentState();
+  State<ShowPatientAppointment> createState() => _ShowPatientAppointmentState();
 }
 
-class _ShowAppointmentState extends State<ShowAppointment> {
+class _ShowPatientAppointmentState extends State<ShowPatientAppointment> {
   List<int> patient_id = [];
   List<String> appointmentTime = [];
   List<GetAppointmentModel> randevu = [];
@@ -33,7 +33,7 @@ class _ShowAppointmentState extends State<ShowAppointment> {
 
   @override
   void initState() {
-    service.getAppointment().then((value) {
+    service.getPatientAppointment().then((value) {
       randevu = value;
       setState(() {
         if (randevu != null) {
@@ -162,8 +162,7 @@ class _ShowAppointmentState extends State<ShowAppointment> {
                             color: Colors.grey[200]),
                         child: ListTile(
                           title: Text(
-                              '${randevu[index].dietitianName}' ??
-                                  ' '),
+                              '${randevu[index].dietitianName} ',style: TextStyle(fontWeight: FontWeight.bold),),
                           subtitle: Text(
                               ' ${randevu[index].appointmentDate!.replaceAll('-', '/')}' ??
                                   ' '),

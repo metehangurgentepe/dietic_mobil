@@ -9,6 +9,7 @@ import 'package:dietic_mobil/screen/login/login.dart';
 import 'package:dietic_mobil/screen/meals_detail/meals_detail.dart';
 import 'package:dietic_mobil/screen/my_diary/home-fitness-app.dart';
 import 'package:dietic_mobil/screen/register/register.dart';
+import 'package:dietic_mobil/screen/show-appointment/show_appointment.dart';
 import 'package:dietic_mobil/screen/training/training_screen.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,8 @@ class AppRouter {
       case AppointmentDetailScreen.routeName:
         return AppointmentDetailScreen.route(
           randevu:settings.arguments as GetAppointmentModel);  
+      case ShowPatientAppointment.routeName:
+        return ShowPatientAppointment.route();    
 
 
       default:

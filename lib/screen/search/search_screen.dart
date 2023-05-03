@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:dietic_mobil/config/theme/theme.dart';
 import 'package:dietic_mobil/model/search_model.dart';
@@ -21,9 +22,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   SearchService _search = SearchService();
 
-  List<SearchModel>? data=[];
+  List<SearchModel>? foodList=[];
 
   var _listController;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +39,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 controller: _searchWord,
               decoration: InputDecoration(
                 hintText: 'How much calories',
+                // prefixIcon: (_clickedButton && foodList!=null) ? 
+                // IconButton(onPressed: (){
+                //   _search.searchCall(_searchWord.text);
+                // }, icon: Icon(Icons.search)) :Container(),
                 suffixIcon: IconButton(
                   icon:Icon(Icons.close),
                   color: Colors.black, onPressed: () {
                     _searchWord.clear();
                     setState((){
                       _clickedButton =false;
-                      data!.clear();
+                      foodList!.clear();
                     });
                 },)
               ),
@@ -63,11 +69,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               onPressed: () async {
                 void deleteArray() {
                   Timer(Duration(minutes: 15), () {
-                    data!.clear();
+                    foodList!.clear();
                   });
                 }
                 setState(() {
-                  _search.searchCall();
+                  _search.searchCall(_searchWord.text);
                   _clickedButton = true;
                 });
                 await storage.write(key: 'searchWord' ,value: _searchWord.text);
@@ -79,10 +85,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ),
           Expanded(
                 child: FutureBuilder(
-                  future: _search.searchCall(),
+                  future: _search.searchCall(_searchWord.text),
                     builder: (context,snapshot){
-                      data = snapshot.data;
-                      print(data);
+                      foodList = snapshot.data;
+                      print(foodList);
                     if(!snapshot.hasData){
                       if(_clickedButton==true){
                       return Column(
@@ -93,11 +99,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             onPressed: () async {
                               void deleteArray() {
                                 Timer(Duration(minutes: 15), () {
-                                  data!.clear();
+                                  foodList!.clear();
                                 });
                               }
                               setState(() {
-                                _search.searchCall();
+                                _search.searchCall(_searchWord.text);
                                 _clickedButton = true;
                               });
                               await storage.write(key: 'searchWord' ,value: _searchWord.text);
@@ -117,7 +123,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     return ListView.builder(
                       controller:_listController,
 
-                      itemCount: data!.length,
+                      itemCount: foodList!.length,
                         itemBuilder: (context,index){
                       return Card(
                         child: ListTile(

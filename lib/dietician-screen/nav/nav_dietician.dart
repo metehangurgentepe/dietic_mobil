@@ -6,13 +6,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
 import 'package:dietic_mobil/screen/login/login.dart';
-import 'package:dietic_mobil/screen/message/AuthGate.dart';
-import 'package:dietic_mobil/screen/message/message_screen.dart';
 import 'package:dietic_mobil/screen/screen.dart';
 import '../../message/authScreen.dart';
+import '../../screen/search/search_screen.dart';
 import '../diet_plan/diet_plan_screen.dart';
 import '../profile/dietcian_profile_screen.dart';
-import '../search/search_screen.dart';
 
 class NavDieticianScreen extends StatefulWidget {
   static const String routeName = '/nav-dietician';
@@ -45,7 +43,7 @@ class _NavDieticianScreenState extends State <NavDieticianScreen> {
       _currentIndex = index;
     });
   }
-  final pages = [HomeDietician(), SearchScreen(), AuthScreen(), DietPlanScreen(), ProfilesScreen()];
+  final pages = [HomeDietician(), SearchScreen(), AuthScreen(), DietPlanScreen(), DietitianProfilesScreen()];
 
   @override
   Widget build(BuildContext context) {

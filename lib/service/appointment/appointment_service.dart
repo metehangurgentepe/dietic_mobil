@@ -87,6 +87,28 @@ class AppointmentService {
       return throw Exception('${e} error');
     }
   }
+  Future<List<GetAppointmentModel>> getPatientAppointment() async {
+    String? token = await storage.read(key: 'token');
+    String? patientId = await storage.read(key: 'patientId');
+    String url = 'http://localhost:8080/api/v1/appointments/patient/${patientId}';
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    try {
+      print(token);
+      var response = await dio.get(url);
+      listRandevu.clear();
+      for (int i = 0; i < response.data.length; i++) {
+        diyetisyenRandevu =
+            GetAppointmentModel.fromJson(response.data[i]);
+        Randevular.add(diyetisyenRandevu!);
+      }
+      return Randevular;
+    } catch (e) {
+      return throw Exception('${e} error');
+    }
+  }
 
   Future<List<GetAppointmentForDietitian>> getAppointmentsByDate(
       String datetime) async {
@@ -144,6 +166,7 @@ class AppointmentService {
       var response = dio.patch(url,data: data);
       print(response);
     }catch(e){
+      throw Exception('appointment servis hatası');
 
     }
   }

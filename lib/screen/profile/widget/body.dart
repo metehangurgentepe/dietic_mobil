@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -6,6 +7,8 @@ import 'profile_pic.dart';
 
 class Body extends StatelessWidget {
   final storage = new FlutterSecureStorage();
+
+  Body({super.key});
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -28,10 +31,10 @@ class Body extends StatelessWidget {
             },
           ),
           ProfileMenu(
-            text: "Training",
-            icon: "assets/icons/calendar.svg",
+            text: "Your Appointments",
+            icon: "assets/icons/Bell.svg",
             press: () {
-              Navigator.pushNamed(context, '/fitness');
+              Navigator.pushNamed(context, '/show-appointment-patient');
             },
           ),
           ProfileMenu(
@@ -48,6 +51,7 @@ class Body extends StatelessWidget {
             text: "Log Out",
             icon: "assets/icons/Log out.svg",
             press: () async  {
+              await FirebaseAuth.instance.signOut();
               await storage.deleteAll();
               Navigator.pushNamed(context,'/login');
             },

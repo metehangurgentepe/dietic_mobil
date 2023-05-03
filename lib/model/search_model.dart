@@ -1,11 +1,10 @@
 class SearchModel {
   int? foodId;
   String? description;
-  int? protein;
-  int? fat;
-  int? carb;
-  int? energy;
-  List<String>? dietPlans;
+  num? protein;
+  num? fat;
+  num? carb;
+  num? energy;
 
   SearchModel(
       {this.foodId,
@@ -13,8 +12,7 @@ class SearchModel {
         this.protein,
         this.fat,
         this.carb,
-        this.energy,
-        this.dietPlans});
+        this.energy});
 
   SearchModel.fromJson(Map<String, dynamic> json) {
     foodId = json['food_id'];
@@ -23,7 +21,6 @@ class SearchModel {
     fat = json['fat'];
     carb = json['carb'];
     energy = json['energy'];
-    dietPlans = json['dietPlans'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -34,7 +31,6 @@ class SearchModel {
     data['fat'] = this.fat;
     data['carb'] = this.carb;
     data['energy'] = this.energy;
-    data['dietPlans'] = this.dietPlans;
     return data;
   }
 }

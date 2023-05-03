@@ -30,7 +30,16 @@ class _AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
         title: Text('Appointment Detail'),
         backgroundColor: AppColors.colorAccent,
       ),
-      body: Column(children: [Text(widget.randevu.appointmentId.toString())]),
+      body: Column(children: [
+        Text(''+widget.randevu.appointmentId.toString()),
+        Text(widget.randevu.appointmentTime.toString()),
+        Text('Dietitan Name:'+widget.randevu.dietitianId.toString()),
+        Text('Randevu:'+widget.randevu.status.toString()),
+
+
+
+        
+        ]),
     );
   }
 }

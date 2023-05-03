@@ -38,16 +38,16 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
-            child: IconButton(
-                onPressed: () {
-                  setState(() {
-                    open == true ? open = false : open = true;
-                  });
-                },
-                icon: Icon(
-                  open == true ? Icons.close_rounded : Icons.search_rounded,
-                  size: 30,
-                )),
+            // child: IconButton(
+            //     onPressed: () {
+            //       setState(() {
+            //         open == true ? open = false : open = true;
+            //       });
+            //     },
+            //     icon: Icon(
+            //       open == true ? Icons.close_rounded : Icons.search_rounded,
+            //       size: 30,
+            //     )),
           )
         ],
       ),
@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 10),
                           child: Text(
-                            'Recent Users',
+                            'Your Dietitian',
                             style: Styles.h1(),
                           ),
                         ),

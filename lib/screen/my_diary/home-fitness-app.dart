@@ -1,14 +1,11 @@
 
-import 'package:dietic_mobil/dietician-screen/search/search_screen.dart';
-import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme/fitness_app_theme.dart';
-import '../../dietician-screen/profile/dietcian_profile_screen.dart';
 import '../exercise/new_exercises.dart';
+import '../profile/profile_screen.dart';
+import '../search/search_screen.dart';
 import '../tab-bar/TabIcon.dart';
 import '../tab-bar/bottom_bar_view.dart';
-import '../training/training_screen.dart';
 import 'my_diary.dart';
 
 class FitnessAppHomeScreen extends StatefulWidget {

@@ -6,8 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
 import 'package:dietic_mobil/screen/login/login.dart';
-import 'package:dietic_mobil/screen/message/AuthGate.dart';
-import 'package:dietic_mobil/screen/message/message_screen.dart';
 import 'package:dietic_mobil/screen/screen.dart';
 import '../../message/authScreen.dart';
 import '../exercise/new_exercises.dart';
