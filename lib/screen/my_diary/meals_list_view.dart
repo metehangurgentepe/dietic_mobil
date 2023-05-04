@@ -69,8 +69,6 @@ class _MealsListViewState extends State<MealsListView>
       if(value != null) {
         setState(() {
           energy = value;
-          
-
         });
       }
       else{

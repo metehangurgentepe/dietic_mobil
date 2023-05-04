@@ -31,7 +31,7 @@ class _AppointmentState extends State<Appointment> {
   CalendarFormat _format = CalendarFormat.month;
   DateTime _focusDay = DateTime.now();
   DateTime _currentDay = DateTime.now();
-  int? _currentIndex;
+  String? _currentIndex;
   bool _isWeekend = false;
   bool _dateSelected = false;
   bool _timeSelected = false;
@@ -124,20 +124,21 @@ List<String>? differenceList;
                             splashColor: Colors.transparent,
                             onTap: () {
                               setState(() {
-                                _currentIndex = index;
+                                 _currentIndex = differenceList![index];
                                 _timeSelected = true;
+                                print(index);
                               });
                             },
                             child: Container(
                               margin: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: _currentIndex == index
+                                  color: _currentIndex == differenceList![index]
                                       ? Colors.white
                                       : Colors.black,
                                 ),
                                 borderRadius: BorderRadius.circular(15),
-                                color: _currentIndex == index
+                                color: _currentIndex == differenceList![index]
                                     ? AppColors.colorAccent
                                     : null,
                               ),
@@ -146,7 +147,7 @@ List<String>? differenceList;
                                 zamanlar[index],
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: _currentIndex == index
+                                  color: _currentIndex == differenceList![index]
                                       ? Colors.white
                                       : null,
                                 ),
@@ -179,17 +180,18 @@ List<String>? differenceList;
                       //convert date/day/time into string first
                       final getDate = DateConverted.getDate(_currentDay);
                       final getDay = DateConverted.getDay(_currentDay.weekday);
-                      final getTime = DateConverted.getTime(_currentIndex!);
-                      print(getTime);
-                      print(getDate);
+                      print('current index'+_currentIndex!);
+                      //final getTime = DateConverted.getTime(int.parse(_currentIndex!));
+                      
+                      //String time= '${getTime.substring(0,5)}:00';
+                      
+                      
 
-                      DateTime dateTime = DateFormat('hh:mm a').parse(getTime);
-                      String timeString =
-                          DateFormat('HH:mm:ss').format(dateTime);
+                      //DateTime dateTime = DateFormat('hh:mm a').parse(getTime);
                       DateTime date = DateTime.parse(_currentDay.toString());
                       String DateString = date.toString().substring(0, 10);
 
-                      service.postAppointment(DateString, timeString);
+                      service.postAppointment(DateString, _currentIndex!);
 
                       Navigator.pushNamed(context, '/success-appointment');
                     },
