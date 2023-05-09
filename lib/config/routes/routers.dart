@@ -1,3 +1,4 @@
+import 'package:dietic_mobil/dietician-screen/diet_plan/diet_plan_detail/diet_plan_detail.dart';
 import 'package:dietic_mobil/dietician-screen/nav/nav_dietician.dart';
 import 'package:dietic_mobil/dietician-screen/show-appointment/appointment_detail.dart';
 import 'package:dietic_mobil/message/authScreen.dart';
@@ -5,6 +6,7 @@ import 'package:dietic_mobil/model/get_appointment.dart';
 import 'package:dietic_mobil/screen/appointment/appointment.dart';
 import 'package:dietic_mobil/screen/appointment/success_booking.dart';
 import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
+import 'package:dietic_mobil/screen/exercise/health_app.dart';
 import 'package:dietic_mobil/screen/login/login.dart';
 import 'package:dietic_mobil/screen/meals_detail/meals_detail.dart';
 import 'package:dietic_mobil/screen/my_diary/home-fitness-app.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/widgets.dart';
 import 'package:dietic_mobil/screen/screen.dart';
 
 import '../../dietician-screen/show-appointment/show_appointment.dart';
+import '../../model/patient_detail.dart';
 import '../../screen/profile/profile_screen.dart';
 import '../../screen/splash/splash_screen.dart';
 
@@ -62,7 +65,13 @@ class AppRouter {
         return AppointmentDetailScreen.route(
           randevu:settings.arguments as GetAppointmentModel);  
       case ShowPatientAppointment.routeName:
-        return ShowPatientAppointment.route();    
+        return ShowPatientAppointment.route();   
+      case HealthApp.routeName:
+        return HealthApp.route();    
+      case DietPlanDetail.routeName:
+        return DietPlanDetail.route(
+          patients:settings.arguments as PatientModel);
+      
 
 
       default:

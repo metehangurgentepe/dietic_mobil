@@ -18,7 +18,7 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
   List<FoodConsumed> consumedFoods = [];
   DietPlanService service = DietPlanService();
   List<DietPlanModel> dinnerPlan = [];
-  int sumEnergy = 0;
+  double sumEnergy = 0;
   List<int> selectedKcal = [];
   List<bool> isSelected = [];
   List<DietPlanModel> selectedFoods = [];

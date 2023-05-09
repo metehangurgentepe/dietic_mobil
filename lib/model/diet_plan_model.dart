@@ -1,15 +1,16 @@
 class DietPlanModel {
   int? planId;
-  int? day;
+  String? day;
   int? meal;
   int? foodId;
   String? foodName;
   double? carb;
   double? protein;
   double? fat;
-  int? energy;
+  double? energy;
   String? details;
   String? eaten;
+  double? portion;
 
   DietPlanModel(
       {this.planId,
@@ -22,7 +23,8 @@ class DietPlanModel {
       this.fat,
       this.energy,
       this.details,
-      this.eaten});
+      this.eaten,
+      this.portion});
 
   DietPlanModel.fromJson(Map<String, dynamic> json) {
     planId = json['plan_id'];
@@ -36,6 +38,7 @@ class DietPlanModel {
     energy = json['energy'];
     details = json['details'];
     eaten = json['eaten'];
+    portion = json['portion'];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +54,7 @@ class DietPlanModel {
     data['energy'] = this.energy;
     data['details'] = this.details;
     data['eaten'] = this.eaten;
+    data['portion'] = this.portion;
     return data;
   }
 }

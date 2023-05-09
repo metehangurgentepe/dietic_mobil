@@ -11,7 +11,7 @@ class HealthService{
   var water;
   final List<HealthDataPoint> healthDataPoints=[];
 
-  Future<HealthModel> fetchWeekStepData() async {
+  Future<List<HealthDataPoint>> fetchWeekStepData() async {
     var permissions = [
       HealthDataAccess.READ,
     ];
@@ -19,44 +19,40 @@ class HealthService{
     int? steps;
     int? todaySteps;
     var result;
-
+    List<HealthDataPoint>? stepsList;
     // get steps for today (i.e., since midnight)
     final now = DateTime.now();
-    final week = DateTime(now.year, now.month,now.day-7);
-
+    final month = DateTime.now().subtract(Duration(days: 30));
     bool requested = await health.requestAuthorization([HealthDataType.STEPS],permissions: permissions);
 
     if (requested) {
       try {
-        steps = await health.getTotalStepsInInterval(week, now);
-        todaySteps = await health.getTotalStepsInInterval(week, now);
-        weekSteps=health.getHealthDataFromTypes(week, now, [HealthDataType.STEPS]);
-        print(weekSteps);
-        print(healthDataPoints);
+        weekSteps=health.getHealthDataFromTypes(month, now, [HealthDataType.STEPS]);
+        print('week step');
+        print(weekSteps!.then((value) => print(value.first)));
+        
         weekSteps!.then((List<HealthDataPoint> data){
-          result = jsonEncode(data);
-          print("json encode");
-
-          print(jsonEncode(data));
-        });
+          stepsList=data;
+          });
+          
         //jsonDecode(jsonData) as List<dynamic>
         print("*****************");
+        
+        print(steps);
 
-
-
-
-        return HealthModel.fromJson(result);
+        return stepsList!;
       } catch (error) {
         return throw Exception('$error');
       }
 
-      print('Total number of steps: $steps');
+     
 
 
     } else {
       return throw Exception();
     }
   }
+  
   Future fetchTodayStepData() async {
     int? todaySteps;
 
@@ -131,5 +127,6 @@ class HealthService{
       return throw("Authorization not granted - error in authorization");
     }
   }
+  
 
 }

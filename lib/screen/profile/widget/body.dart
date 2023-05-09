@@ -21,7 +21,9 @@ class Body extends StatelessWidget {
           ProfileMenu(
             text: "My Account",
             icon: "assets/icons/User Icon.svg",
-            press: () => {},
+            press: () => {
+              Navigator.pushNamed(context,'/health-app')
+            },
           ),
           ProfileMenu(
             text: "Appointment",

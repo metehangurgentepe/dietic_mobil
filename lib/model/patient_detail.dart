@@ -1,4 +1,4 @@
-class PatientDetailModel {
+class PatientModel {
   int? patientId;
   int? dietitianId;
   String? email;
@@ -6,10 +6,11 @@ class PatientDetailModel {
   String? surname;
   int? age;
   int? height;
-  int? weight;
-  int? bodyFat;
+  double? weight;
+  double? bodyFat;
+  String? about;
 
-  PatientDetailModel(
+  PatientModel(
       {this.patientId,
       this.dietitianId,
       this.email,
@@ -18,9 +19,10 @@ class PatientDetailModel {
       this.age,
       this.height,
       this.weight,
-      this.bodyFat});
+      this.bodyFat,
+      this.about});
 
-  PatientDetailModel.fromJson(Map<String, dynamic> json) {
+  PatientModel.fromJson(Map<String, dynamic> json) {
     patientId = json['patient_id'];
     dietitianId = json['dietitian_id'];
     email = json['email'];
@@ -30,6 +32,7 @@ class PatientDetailModel {
     height = json['height'];
     weight = json['weight'];
     bodyFat = json['bodyFat'];
+    about = json['about'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +46,7 @@ class PatientDetailModel {
     data['height'] = this.height;
     data['weight'] = this.weight;
     data['bodyFat'] = this.bodyFat;
+    data['about'] = this.about;
     return data;
   }
 }

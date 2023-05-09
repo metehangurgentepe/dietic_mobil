@@ -20,10 +20,7 @@ class AppointmentBooked extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(
-              flex: 3,
-              child: Lottie.asset('assets/success.json'),
-            ),
+
             Container(
               width: double.infinity,
               alignment: Alignment.center,

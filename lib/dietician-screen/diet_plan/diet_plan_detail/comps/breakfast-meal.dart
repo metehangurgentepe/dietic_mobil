@@ -6,14 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
 
-class BreakfastMealConsumed extends StatefulWidget {
-  const BreakfastMealConsumed({Key? key}) : super(key: key);
-
+class BreakfastMeal extends StatefulWidget {
+  const BreakfastMeal({Key? key, required this.patientId}) : super(key: key);
+final int patientId;
   @override
-  State<BreakfastMealConsumed> createState() => _BreakfastMealConsumedState();
+  State<BreakfastMeal> createState() => _BreakfastMealState();
 }
 
-class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
+class _BreakfastMealState extends State<BreakfastMeal> {
   List<FoodConsumed> consumedFoods = [];
   DietPlanService service = DietPlanService();
   List<DietPlanModel> breakfastFoods = [];
@@ -23,14 +23,19 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
 
   var value;
   DateTime now = DateTime.now();
+  
 
   double sumEnergy = 0;
+  
   @override
   void initState() {
     DateTime date =DateTime.now();
-    String time= date.toString().substring(0,10);
-    service.getBreakfastDietPlan(time).then((value) {
+    String time= date.toString().substring(0,10);  
+    print(widget.patientId);
+    service.BreakfastDietPlan(time,widget.patientId).then((value) {
       breakfastFoods = value;
+      print('yemekler');
+      print(breakfastFoods);
       isSelected = List<bool>.generate(breakfastFoods.length, (index) => false);
       setState(() {
         for (int i = 0; i < breakfastFoods.length; i++) {
@@ -49,6 +54,7 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
 
   @override
   Widget build(BuildContext context) {
+    
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: double.infinity,
@@ -107,14 +113,6 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                           fontSize: 12.sp,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.save),
-                        onPressed: () {
-                          for (int i = 0; i < breakfastFoods.length; i++) {
-                            service.checkedEaten(selectedFoods[i]);
-                          }
-                        },
-                      )
                     ],
                   ),
                 ],
@@ -161,7 +159,7 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                              '${breakfastFoods[index].foodName}'),
+                                              '${breakfastFoods[index].foodName} (x${breakfastFoods[index].portion!.toStringAsFixed(0)})'),
                                           SizedBox(height: 5.w),
                                           Text(
                                             '${breakfastFoods[index].energy} kcal',
@@ -179,7 +177,7 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                           );
                         },
                       )
-                    : CircularProgressIndicator()),
+                    : Text('There is no breakfast for you :)')),
           ],
         ),
       ),

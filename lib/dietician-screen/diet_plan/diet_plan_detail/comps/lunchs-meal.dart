@@ -6,16 +6,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
 
-class LunchMealConsumed extends StatefulWidget {
-  const LunchMealConsumed( {
-    Key ? key
-  }): super(key: key);
+class LunchMeal extends StatefulWidget {
+  const LunchMeal( {Key ? key, required this.patientId}): super(key: key);
+  final int patientId;
 
   @override
-  State < LunchMealConsumed > createState() => _LunchMealConsumedState();
+  State < LunchMeal > createState() => _LunchMealState();
 }
 
-class _LunchMealConsumedState extends State < LunchMealConsumed > {
+class _LunchMealState extends State < LunchMeal > {
   List < FoodConsumed > consumedFoods = [];
   DietPlanService service =DietPlanService();
   List<DietPlanModel> lunchFoods=[];
@@ -32,7 +31,9 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
   List<bool> isSelected=[];
   @override
   void initState() {
-    service.getLunchDietPlan().then((value){
+    DateTime date =DateTime.now();
+    String time= date.toString().substring(0,10); 
+    service.LunchDietPlan(time,widget.patientId).then((value){
       setState(() {
         lunchFoods=value;
         isSelected = List<bool>.generate(lunchFoods.length, (index) => false);
@@ -108,14 +109,7 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
                           fontSize: 12. sp,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.save),
-                        onPressed: () {
-                          for (int i = 0; i < lunchFoods.length; i++) {
-                            service.checkedEaten(selectedFoods[i]);
-                          }
-                        },
-                      )
+                      
                     ],
                   ),
                 ],
@@ -123,7 +117,7 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
             ),
             SizedBox(height: 20. w),
             Container(
-              child: ListView.builder(
+              child: lunchFoods.isNotEmpty ? ListView.builder(
                 itemCount: lunchFoods.length,
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
@@ -154,7 +148,8 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('${lunchFoods[index].foodName}'),
+                              Text(
+                                '${lunchFoods[index].foodName} (x ${lunchFoods[index].portion!.toStringAsFixed(0)})'),
                               SizedBox(height: 5. w),
                               Text(
                                 '${lunchFoods[index].energy.toString()} kcal',
@@ -171,7 +166,7 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
                     ),
                   );
                 },
-              ),
+              ):Text('There is no lunch for you :)')
             ),
           ],
         ),

@@ -16,7 +16,7 @@ class MealsListData {
   String titleTxt;
   String startColor;
   String endColor;
-  int kacl;
+  double kacl;
  List<List<String>>? dietPlan;
 
   MealsListData.dynamicList({

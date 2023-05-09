@@ -19,10 +19,10 @@ class BodyMeasurementView extends StatefulWidget {
 
 class _BodyMeasurementViewState extends State<BodyMeasurementView> {
   final service = PatientDetailService();
-  PatientDetailModel? patient;
-  int weight = 0;
+  PatientModel? patient;
+  double weight = 0;
   int height = 0;
-  int bodyFat = 0;
+  double bodyFat = 0;
   
   @override
   void initState() {

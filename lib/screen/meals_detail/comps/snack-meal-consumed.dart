@@ -23,7 +23,7 @@ class _SnackMealConsumedState extends State < SnackMealConsumed > {
   List<int?> kcal = [];
   List<bool> isSelected = [];
   List<DietPlanModel> selectedFoods = [];
-  int sumEnergy=0;
+  double sumEnergy=0;
 
    @override
   void initState() {
