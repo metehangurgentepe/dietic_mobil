@@ -1,3 +1,5 @@
+import 'package:dietic_mobil/dietician-screen/appointment/appointment.dart';
+import 'package:dietic_mobil/dietician-screen/appointment/choose_patient.dart';
 import 'package:dietic_mobil/dietician-screen/diet_plan/diet_plan_detail/diet_plan_detail.dart';
 import 'package:dietic_mobil/dietician-screen/nav/nav_dietician.dart';
 import 'package:dietic_mobil/dietician-screen/show-appointment/appointment_detail.dart';
@@ -71,6 +73,11 @@ class AppRouter {
       case DietPlanDetail.routeName:
         return DietPlanDetail.route(
           patients:settings.arguments as PatientModel);
+      case ChoosePatientScreen.routeName:
+        return ChoosePatientScreen.route(); 
+      case DytAppointment.routeName:
+        return DytAppointment.route(
+          patientId:settings.arguments as int);         
       
 
 

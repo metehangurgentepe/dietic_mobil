@@ -43,24 +43,36 @@ class DietPlanService {
   List<DietPlanModel> FirstDayFoods = [];
   List<DietPlanModel> SortedFoods = [];
 
-  //get breakfast data
-  Future<List<DietPlanModel>> getFirstDietPlan() async {
-    String? dieticianId = await storage.read(key: 'dieticianId');
-    String? patientId = await storage.read(key: 'patientId');
-    String Url = 'http://localhost:8080/api/v1/dietPlans/patient/3/day/1';
 
-    final result = await http.get(
-      Uri.parse(baseUrl),
-    );
+
+
+
+
+
+  Future<List<DietPlanModel>> getFirstDietPlan() async {
+    DateTime today=DateTime.now();
+    String time = today.toString().substring(0,10);
+   
+    String? patientId = await storage.read(key: 'patientId');
+    String? token = await storage.read(key: 'token');
+   
+    String Url = 'http://localhost:8080/api/v1/dietPlans/patient/${patientId}';
+   
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    
     try {
+       final result = await dio.post(Url, data: {"day": "$time"});
       if (result.statusCode == 200) {
-        jsonResponse = jsonDecode(result.body);
         //yemekleri öğüne göre listeye ekleme
-        for (int i = 0; i < jsonResponse.length; i++) {
-          foodNamesFirstDay = DietPlanModel.fromJson(jsonResponse[i]);
+        for (int i = 0; i < result.data.length; i++) {
+          foodNamesFirstDay = DietPlanModel.fromJson(result.data[i]);
 
           FirstDayFoods.add(foodNamesFirstDay);
-          int j = 1;
+          
 
           SortedFoods.add(FirstDayFoods[i]);
         }
@@ -75,33 +87,7 @@ class DietPlanService {
     return throw Exception('hata diet plan first day servis');
   }
 
-  Future<List<DietPlanModel>> getBreakfastDietPlan(String time) async {
-    String? dieticianId = await storage.read(key: 'dieticianId');
-    String? patientId = await storage.read(key: 'patientId');
 
-    final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/1';
-
-    final result = await http.post(Uri.parse(baseUrl), body: {"day": time});
-    try {
-      if (result.statusCode == 200) {
-        jsonResponse = jsonDecode(result.body);
-        foodItems = jsonDecode(result.body);
-
-        //yemekleri öğüne göre listeye ekleme
-        for (int i = 0; i < foodItems.length; i++) {
-          breakfastPlan = DietPlanModel.fromJson(jsonResponse[i]);
-          breakfastList.add(breakfastPlan);
-        }
-        return breakfastList;
-      } else {
-        print('api error');
-      }
-    } catch (e) {
-      print('error: $e');
-    }
-    return throw Exception('hata diet plan breakfast servis');
-  }
 
   // diyetisyen patient kahvaltı diet plan datasını çekerken kullanacağı service
   Future<List<DietPlanModel>> BreakfastDietPlan(
@@ -123,6 +109,7 @@ class DietPlanService {
       final result = await dio.post(Url, data: {"day": "$time"});
       if (result.statusCode == 200) {
         print(result.data);
+        breakfastList.clear();
 
         //yemekleri öğüne göre listeye ekleme
         for (int i = 0; i < result.data.length; i++) {
@@ -154,11 +141,12 @@ class DietPlanService {
     try {
       if (result.statusCode == 200) {
         //yemekleri öğüne göre listeye ekleme
+        lunchList.clear();
         for (int i = 0; i < result.data.length; i++) {
-          breakfastPlan = DietPlanModel.fromJson(result.data[i]);
-          breakfastList.add(breakfastPlan);
+          lunchPlan = DietPlanModel.fromJson(result.data[i]);
+          lunchList.add(lunchPlan);
         }
-        return breakfastList;
+        return lunchList;
       } else {
         print('api error');
       }
@@ -182,12 +170,13 @@ class DietPlanService {
     final result = await dio.post(Url, data: {"day": "$time"});
     try {
       if (result.statusCode == 200) {
+        dinnerList.clear();
         //yemekleri öğüne göre listeye ekleme
         for (int i = 0; i < result.data.length; i++) {
-          breakfastPlan = DietPlanModel.fromJson(result.data[i]);
-          breakfastList.add(breakfastPlan);
+          dinnerPlan = DietPlanModel.fromJson(result.data[i]);
+          dinnerList.add(dinnerPlan);
         }
-        return breakfastList;
+        return dinnerList;
       } else {
         print('api error');
       }
@@ -215,12 +204,13 @@ class DietPlanService {
     final result = await dio.post(Url, data: {"day": "$time"});
     try {
       if (result.statusCode == 200) {
+        snackList.clear();
         //yemekleri öğüne göre listeye ekleme
         for (int i = 0; i < result.data.length; i++) {
-          breakfastPlan = DietPlanModel.fromJson(result.data[i]);
-          breakfastList.add(breakfastPlan);
+          snackPlan = DietPlanModel.fromJson(result.data[i]);
+          snackList.add(snackPlan);
         }
-        return breakfastList;
+        return snackList;
       } else {
         print('api error');
       }
@@ -230,39 +220,46 @@ class DietPlanService {
     return throw Exception('hata diet plan breakfast servis');
   }
 
+
+
+
+
+
   Future<List<double?>> getFirstDietPlanEnergy() async {
+    DateTime today =DateTime.now();
+    String time =today.toString().substring(0,10);
     String? dieticianId = await storage.read(key: 'dieticianId');
     String? patientId = await storage.read(key: 'patientId');
+    String? token = await storage.read(key: 'token');
 
-    final String Url = 'http://localhost:8080/api/v1/dietPlans/patient/3/day/1';
+    final String Url = 'http://localhost:8080/api/v1/dietPlans/patient/${patientId}';
+         dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
 
-    final result = await http.get(
-      Uri.parse(baseUrl),
-    );
+    final result = await dio.post(Url, data: {"day": "$time"});
     try {
       if (result.statusCode == 200) {
-        jsonResponse = jsonDecode(result.body);
-
-        foodItems = jsonDecode(result.body);
         double total1 = 0;
         double total2 = 0;
         double total3 = 0;
         double total4 = 0;
 
         print(foodItems.length);
-        for (int i = 0; i < jsonResponse.length; i++) {
-          if (DietPlanModel.fromJson(jsonResponse[i]).meal == 1) {
+        for (int i = 0; i < result.data.length; i++) {
+          if (DietPlanModel.fromJson(result.data[i]).meal == 1) {
             breakfastEnergy
-                .add(DietPlanModel.fromJson(jsonResponse[i]).energy!);
+                .add(DietPlanModel.fromJson(result.data[i]).energy!);
             total1 = breakfastEnergy.reduce((a, b) => a + b);
-          } else if (DietPlanModel.fromJson(jsonResponse[i]).meal == 2) {
-            lunchEnergy.add(DietPlanModel.fromJson(jsonResponse[i]).energy!);
+          } else if (DietPlanModel.fromJson(result.data[i]).meal == 2) {
+            lunchEnergy.add(DietPlanModel.fromJson(result.data[i]).energy!);
             total2 = lunchEnergy.reduce((a, b) => a + b);
-          } else if (DietPlanModel.fromJson(jsonResponse[i]).meal == 3) {
-            dinnerEnergy.add(DietPlanModel.fromJson(jsonResponse[i]).energy!);
+          } else if (DietPlanModel.fromJson(result.data[i]).meal == 3) {
+            dinnerEnergy.add(DietPlanModel.fromJson(result.data[i]).energy!);
             total3 = dinnerEnergy.reduce((a, b) => a + b);
-          } else if (DietPlanModel.fromJson(jsonResponse[i]).meal == 4) {
-            snackEnergy.add(DietPlanModel.fromJson(jsonResponse[i]).energy!);
+          } else if (DietPlanModel.fromJson(result.data[i]).meal == 4) {
+            snackEnergy.add(DietPlanModel.fromJson(result.data[i]).energy!);
             total4 = snackEnergy.reduce((a, b) => a + b);
           }
         }
@@ -277,93 +274,186 @@ class DietPlanService {
     return throw Exception('hata diet plan energy servis');
   }
 
-  Future<List<DietPlanModel>> getLunchDietPlan() async {
-    String? dieticianId = await storage.read(key: 'dieticianId');
-    String? patientId = await storage.read(key: 'patientId');
-    final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/3/day/1/meal/2';
 
-    final result = await http.get(
-      Uri.parse(baseUrl + '/meal/2'),
-    );
+
+
+
+
+
+  //// PATIENT ANASAYFADAKİ APİLER
+    Future<List<DietPlanModel>> getBreakfastDietPlan(String time) async {
+    //   DateTime today =DateTime.now();
+    // String time =today.toString().substring(0,10);
+    String? patientId = await storage.read(key: 'patientId');
+    String? token = await storage.read(key: 'token');
+    print(patientId! +'ssdfsdf');
+    print('timing');
+    print(time);
+     final String Url =
+        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/1';
+    print('zaman');
+    print(time);
+    print(patientId);
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
     try {
+      final result = await dio.post(Url, data: {"day": "$time"});
       if (result.statusCode == 200) {
-        jsonResponse = jsonDecode(result.body);
-        foodItems = jsonDecode(result.body);
+        print(result.data);
+        breakfastList.clear();
+
         //yemekleri öğüne göre listeye ekleme
-        for (int i = 0; i < foodItems.length; i++) {
-          lunchPlan = DietPlanModel.fromJson(jsonResponse[i]);
-          lunchList.add(lunchPlan);
+        for (int i = 0; i < result.data.length; i++) {
+          breakfastPlan = DietPlanModel.fromJson(result.data[i]);
+          breakfastList.add(breakfastPlan);
         }
-        return lunchList;
-      } else {
-        print('api error');
+        print(breakfastList);
+
+        return breakfastList;
       }
     } catch (e) {
       print('error: $e');
     }
-    return throw Exception('hata diet plan breakfast servis');
+    return throw Exception('kahvaltı dyt hata');
   }
 
-  Future<List<DietPlanModel>> getDinnerDietPlan() async {
+
+
+
+
+  Future<List<DietPlanModel>> getLunchDietPlan(String time) async {
+    String? patientId = await storage.read(key: 'patientId');
+    String? token = await storage.read(key: 'token');
+
+     final String Url =
+        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/2';
+    print('zaman');
+    print(time);
+    print(patientId);
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    try {
+      final result = await dio.post(Url, data: {"day": "$time"});
+      if (result.statusCode == 200) {
+        print(result.data);
+        breakfastList.clear();
+
+        //yemekleri öğüne göre listeye ekleme
+        for (int i = 0; i < result.data.length; i++) {
+          lunchPlan = DietPlanModel.fromJson(result.data[i]);
+          lunchList.add(lunchPlan);
+        }
+
+        return lunchList;
+      }
+    } catch (e) {
+      print('error: $e');
+    }
+    return throw Exception('kahvaltı dyt hata');
+  }
+
+
+
+
+
+
+
+
+
+
+
+  Future<List<DietPlanModel>> getDinnerDietPlan(String time) async {
     String? dieticianId = await storage.read(key: 'dieticianId');
     String? patientId = await storage.read(key: 'patientId');
 
-    final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/3/day/1/meal/3';
+    String? token = await storage.read(key: 'token');
 
-    final result = await http.get(
-      Uri.parse(baseUrl + '/meal/3'),
-    );
+     final String Url =
+        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/3';
+    print('zaman');
+    print(time);
+    print(patientId);
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
     try {
+      final result = await dio.post(Url, data: {"day": "$time"});
       if (result.statusCode == 200) {
-        jsonResponse = jsonDecode(result.body);
-        foodItems = jsonDecode(result.body);
+        print(result.data);
+        dinnerList.clear();
 
         //yemekleri öğüne göre listeye ekleme
-        for (int i = 0; i < foodItems.length; i++) {
-          dinnerPlan = DietPlanModel.fromJson(jsonResponse[i]);
+        for (int i = 0; i < result.data.length; i++) {
+          dinnerPlan = DietPlanModel.fromJson(result.data[i]);
           dinnerList.add(dinnerPlan);
         }
+
         return dinnerList;
-      } else {
-        print('api error');
       }
-    } on Exception catch (e) {
+    } catch (e) {
       print('error: $e');
     }
-    return throw Exception('hata diet plan breakfast servis');
+    return throw Exception('kahvaltı dyt hata');
   }
 
-  Future<List<DietPlanModel>> getSnackDietPlan() async {
+
+
+
+
+
+
+
+
+
+
+  Future<List<DietPlanModel>> getSnackDietPlan(String time) async {
     String? dieticianId = await storage.read(key: 'dieticianId');
     String? patientId = await storage.read(key: 'patientId');
 
-    final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/3/day/1/meal/4';
+    String? token = await storage.read(key: 'token');
 
-    final result = await http.get(
-      Uri.parse(baseUrl + '/meal/4'),
-    );
+     final String Url =
+        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/4';
+    print('zaman');
+    print(time);
+    print(patientId);
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
     try {
+      final result = await dio.post(Url, data: {"day": "$time"});
       if (result.statusCode == 200) {
-        jsonResponse = jsonDecode(result.body);
-        foodItems = jsonDecode(result.body);
+        print(result.data);
+        breakfastList.clear();
 
         //yemekleri öğüne göre listeye ekleme
-        for (int i = 0; i < foodItems.length; i++) {
-          snackPlan = DietPlanModel.fromJson(jsonResponse[i]);
+        for (int i = 0; i < result.data.length; i++) {
+          snackPlan = DietPlanModel.fromJson(result.data[i]);
           snackList.add(snackPlan);
         }
+
         return snackList;
-      } else {
-        print('api error');
       }
-    } on Exception catch (e) {
+    } catch (e) {
       print('error: $e');
     }
-    return throw Exception('hata diet plan breakfast servis');
+    return throw Exception('kahvaltı dyt hata');
   }
+
+
+
+
+
+
+
+
+
 
   Future checkedEaten(DietPlanModel dietPlanModel) async {
     Dio dio = Dio();

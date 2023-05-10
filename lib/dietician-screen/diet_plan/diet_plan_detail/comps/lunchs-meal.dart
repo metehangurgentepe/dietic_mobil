@@ -7,8 +7,9 @@ import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
 
 class LunchMeal extends StatefulWidget {
-  const LunchMeal( {Key ? key, required this.patientId}): super(key: key);
+  const LunchMeal( {Key ? key, required this.patientId, required  this.time}): super(key: key);
   final int patientId;
+  final String time;
 
   @override
   State < LunchMeal > createState() => _LunchMealState();
@@ -33,7 +34,7 @@ class _LunchMealState extends State < LunchMeal > {
   void initState() {
     DateTime date =DateTime.now();
     String time= date.toString().substring(0,10); 
-    service.LunchDietPlan(time,widget.patientId).then((value){
+    service.LunchDietPlan(widget.time,widget.patientId).then((value){
       setState(() {
         lunchFoods=value;
         isSelected = List<bool>.generate(lunchFoods.length, (index) => false);
@@ -133,11 +134,7 @@ class _LunchMealState extends State < LunchMeal > {
                         children: [
                           Checkbox(
                             value: isSelected[index],
-                            onChanged: (value) {
-                              setState(() {
-                                _updateSelectedItems(value!,index);
-                              });
-                            },
+                            onChanged: null,
                           ),
                           VerticalDivider(
                             color: AppColors.colorTint300,

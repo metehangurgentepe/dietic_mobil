@@ -27,7 +27,10 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
 
   @override
   void initState() {
-    service.getDinnerDietPlan().then((value) {
+
+    DateTime date =DateTime.now();
+    String time= date.toString().substring(0,10);
+    service.getDinnerDietPlan(time).then((value) {
       setState(() {
         dinnerPlan = value;
         isSelected = List<bool>.generate(dinnerPlan.length, (index) => false);

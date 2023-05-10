@@ -34,6 +34,10 @@ class LoginRiverpod extends ChangeNotifier {
         await storage.write(key: 'email', value: email.text);
         await storage.write(key: 'password', value: password.text);
         await storage.write(key: 'roleName', value: value.roleName);
+        
+        
+        
+        
         if (value.roleName == 'ROLE_PATIENT') {
           await storage.write(
               key: 'dietitianId', value: value.dietitianId.toString());
@@ -51,10 +55,11 @@ class LoginRiverpod extends ChangeNotifier {
           //     .signInWithEmailAndPassword(email: email!, password: password!);
           Grock.to(FitnessAppHomeScreen());
         }
+        
         if (value.roleName == 'ROLE_DIETITIAN') {
-          await storage.write(key: 'dietitian-name', value: value.name);
+          await storage.write(key: 'dietitian-name', value: '${value.name} ${value.surname}');
           await storage.write(key: 'dietitianId', value: value.id.toString());
-          Grock.to(NavDieticianScreen());
+          Grock.to(NavDieticianScreen(),);
         }
       } else if (value == null) {
         Grock.snackBar(

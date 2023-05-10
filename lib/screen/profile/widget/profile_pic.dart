@@ -6,6 +6,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../model/user_model.dart';
+import '../../../service/update_profile_pic/update_profile_pic.dart';
+
 class ProfilePic extends StatefulWidget {
   const ProfilePic({
     Key? key,
@@ -21,6 +24,9 @@ class _ProfilePicState extends State<ProfilePic> {
   Color primary = const Color(0xffeef444c);
   String profilePicLink = "";
   final storage = FlutterSecureStorage();
+    final service =UpdateProfilePic();
+    UserModel? user;
+
 
 
   void pickUploadProfilePic() async {
@@ -40,6 +46,9 @@ class _ProfilePicState extends State<ProfilePic> {
       setState(() {
         profilePicLink = value;
       });
+      if(profilePicLink.contains('firebase')){
+        service.postProfilePic(profilePicLink);
+      }
       await storage.write(key: 'profile_pic', value:profilePicLink );
     });
   }
@@ -47,12 +56,16 @@ class _ProfilePicState extends State<ProfilePic> {
   void initState(){
     super.initState();
     String url= profilePicLink;
+    service.getProfilePic().then((value){
+      setState(() {
+        user=value;
+      });
+      
+    });
 
   }
-    Future<String?> getProfilePic() async {
-      String? value = await storage.read(key: 'profile_pic');
-      return value;
-    }
+    
+   
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +74,16 @@ class _ProfilePicState extends State<ProfilePic> {
       height: 115,
       width: 115,
       child: FutureBuilder(
-        future: getProfilePic(),
+        future: service.getProfilePic(),
         builder: (context,snapshot) {
           return Stack(
             fit: StackFit.expand,
             clipBehavior: Clip.none,
             children: [
-             profilePicLink == ' ' ? CircleAvatar(
-                backgroundImage: AssetImage("assets/images/Profile Image.png"),
-              ) : Image.network(snapshot.data ?? ''),
+                snapshot.data==null 
+                ? const Icon(Icons.person_2_outlined,size: 100) 
+                : Image.network(user!.picture ?? ''),
+
               Positioned(
                 right: -16,
                 bottom: 0,

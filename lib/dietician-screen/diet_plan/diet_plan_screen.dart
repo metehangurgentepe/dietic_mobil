@@ -43,11 +43,9 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
     } else {
       filteredPatients = patients;
     }
-    
       _filteredPatients = filteredPatients;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +66,8 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
             decoration: InputDecoration(
               hintText: 'Search Patients',
               prefixIcon: Icon(Icons.search),
+              focusColor: AppColors.colorAccent,
+              iconColor: AppColors.colorAccent
             ),
           ),
             ),

@@ -66,6 +66,8 @@ class HealthService{
       try {
         DateTime midnight=DateTime(now.year,now.month,now.day);
         todaySteps = await health.getTotalStepsInInterval(midnight, now);
+        print('today steps');
+        print(todaySteps);
         return todaySteps.toString();
       } catch (error) {
         print("Caught exception in getTotalStepsInInterval: $error");

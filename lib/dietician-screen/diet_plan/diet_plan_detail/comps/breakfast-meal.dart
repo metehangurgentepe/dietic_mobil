@@ -7,8 +7,10 @@ import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
 
 class BreakfastMeal extends StatefulWidget {
-  const BreakfastMeal({Key? key, required this.patientId}) : super(key: key);
-final int patientId;
+  const BreakfastMeal({Key? key, required this.patientId, required this.time})
+      : super(key: key);
+  final int patientId;
+  final String time;
   @override
   State<BreakfastMeal> createState() => _BreakfastMealState();
 }
@@ -23,21 +25,18 @@ class _BreakfastMealState extends State<BreakfastMeal> {
 
   var value;
   DateTime now = DateTime.now();
-  
 
   double sumEnergy = 0;
-  
+
   @override
   void initState() {
-    DateTime date =DateTime.now();
-    String time= date.toString().substring(0,10);  
-    print(widget.patientId);
-    service.BreakfastDietPlan(time,widget.patientId).then((value) {
+    service.BreakfastDietPlan(widget.time, widget.patientId).then((value) {
       breakfastFoods = value;
-      print('yemekler');
       print(breakfastFoods);
+      print(widget.time);
       isSelected = List<bool>.generate(breakfastFoods.length, (index) => false);
       setState(() {
+        print(widget.time);
         for (int i = 0; i < breakfastFoods.length; i++) {
           sumEnergy += breakfastFoods[i].energy!;
           if (breakfastFoods[i].eaten!.contains('UNCHECKED')) {
@@ -46,7 +45,6 @@ class _BreakfastMealState extends State<BreakfastMeal> {
             isSelected[i] = true;
           }
         }
-        
       });
     });
     super.initState();
@@ -136,14 +134,10 @@ class _BreakfastMealState extends State<BreakfastMeal> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Checkbox(
-                                        value: isSelected[index],
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _updateSelectedItems(value!, index);
-                                          });
-                                        },
-                                      ),
+                                  Checkbox(
+                                    value: isSelected[index],
+                                    onChanged: null,
+                                  ),
                                   VerticalDivider(
                                     color: AppColors.colorTint300,
                                     thickness: 2,
@@ -151,7 +145,6 @@ class _BreakfastMealState extends State<BreakfastMeal> {
                                   SizedBox(width: 15.w),
                                   Row(
                                     children: [
-                                
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,

@@ -8,8 +8,9 @@ import '../../../../model/diet_plan_model.dart';
 import '../../../../service/diet_plan/diet_plan_service.dart';
 
 class SnackMeal extends StatefulWidget {
-  const SnackMeal({Key? key,required this.patientId}) : super(key: key);
+  const SnackMeal({Key? key,required this.patientId, required this.time}) : super(key: key);
   final int patientId;
+  final String time;
 
   @override
   State<SnackMeal> createState() => _SnackMealState();
@@ -28,7 +29,7 @@ class _SnackMealState extends State<SnackMeal> {
   void initState() {
     DateTime date = DateTime.now();
     String time = date.toString().substring(0, 10);
-    service.SnackDietPlan(time, widget.patientId).then((value) {
+    service.SnackDietPlan(widget.time, widget.patientId).then((value) {
       snackFoods = value;
       isSelected = List<bool>.generate(snackFoods.length, (index) => false);
       setState(() {
@@ -130,11 +131,7 @@ class _SnackMealState extends State<SnackMeal> {
                                     children: [
                                   Checkbox(
                                     value: isSelected[index],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _updateSelectedItems(value!, index);
-                                      });
-                                    },
+                                    onChanged: null
                                   ),
                                   VerticalDivider(
                                     color: AppColors.colorTint300,

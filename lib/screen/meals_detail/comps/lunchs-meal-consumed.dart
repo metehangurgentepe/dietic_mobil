@@ -32,7 +32,9 @@ class _LunchMealConsumedState extends State < LunchMealConsumed > {
   List<bool> isSelected=[];
   @override
   void initState() {
-    service.getLunchDietPlan().then((value){
+    DateTime date =DateTime.now();
+    String time= date.toString().substring(0,10);
+    service.getLunchDietPlan(time).then((value){
       setState(() {
         lunchFoods=value;
         isSelected = List<bool>.generate(lunchFoods.length, (index) => false);

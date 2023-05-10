@@ -35,6 +35,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   double fat=0;
   @override
   void initState() {
+
     service.getFirstDietPlan().then((value){
       foods=value;
       for(int i = 0;i<foods.length;i++){

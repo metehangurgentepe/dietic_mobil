@@ -218,7 +218,13 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                 child: FutureBuilder(
                                     future: healthService.fetchTodayStepData(),
                                     builder: (context, snapshot) {
-                                      double _percent = double.parse(
+                                      print('snap');
+                                      print(snapshot.data.toString());
+                                      if(snapshot.hasData==true){
+                                        return Text('No Steps Data');
+                                      }
+                                      else{
+                                        double _percent = double.parse(
                                               snapshot.data != null
                                                   ? snapshot.data!
                                                   : '0') /
@@ -261,6 +267,9 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                           ),
                                         ],
                                       );
+
+                                      }
+                                      
                                     }),
                               ),
                             ),

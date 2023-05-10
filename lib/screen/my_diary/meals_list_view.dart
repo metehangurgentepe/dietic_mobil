@@ -33,8 +33,8 @@ class _MealsListViewState extends State<MealsListView>
 
   @override
   void initState() {
-    DateTime date =DateTime.now();
-    String time= date.toString().substring(0,10);
+    DateTime date = DateTime.now();
+    String time = date.toString().substring(0, 10);
 
     service.getBreakfastDietPlan(time).then((value) {
       if (value != null) {
@@ -45,22 +45,22 @@ class _MealsListViewState extends State<MealsListView>
         throw Exception('kahvaltı data null geldi');
       }
     });
-    service.getLunchDietPlan().then((value) {
+    service.getLunchDietPlan(time).then((value) {
       if (value != null) {
         setState(() {
           lunchPlan = value;
         });
       } else {
-        throw Exception('kahvaltı data null geldi');
+        throw Exception('lunch data null geldi');
       }
     });
-    service.getDinnerDietPlan().then((value) {
+    service.getDinnerDietPlan(time).then((value) {
       if (value != null) {
         setState(() {
           dinnerPlan = value;
         });
       } else {
-        throw Exception('kahvaltı data null geldi');
+        throw Exception('dinner data null geldi');
       }
     });
     service.getFirstDietPlanEnergy().then((value) {
@@ -69,7 +69,7 @@ class _MealsListViewState extends State<MealsListView>
           energy = value;
         });
       } else {
-        throw Exception('kahvaltı data null geldi');
+        throw Exception('getFirstDietPlanEnergy data null geldi');
       }
     });
     animationController = AnimationController(
@@ -132,8 +132,20 @@ class _MealsListViewState extends State<MealsListView>
                               curve: Interval((1 / count) * index, 1.0,
                                   curve: Curves.fastOutSlowIn)));
                   animationController?.forward();
+                  if(energy.isEmpty){
+                    return MealsView(
+                    dietPlan: dietPlan[index],
+                    imagePath: imagePath[index],
+                    titleTxt: titleTxt[index],
+                    startColor: startColor[index],
+                    endColor: endColor[index],
+                    kacl: 0,
+                    animation: animation,
+                    animationController: animationController!,
+                  );
 
-                  return MealsView(
+                  }else{
+                    return MealsView(
                     dietPlan: dietPlan[index],
                     imagePath: imagePath[index],
                     titleTxt: titleTxt[index],
@@ -143,6 +155,9 @@ class _MealsListViewState extends State<MealsListView>
                     animation: animation,
                     animationController: animationController!,
                   );
+                  }
+
+            
                 },
               ),
             ),
@@ -253,18 +268,34 @@ class MealsView extends StatelessWidget {
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     itemCount: dietPlan.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return Text(
-                                        '${dietPlan[index].foodName.toString()}' ??
-                                            ' ',
-                                        style: TextStyle(
-                                          fontFamily: FitnessAppTheme.fontName,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 10,
-                                          letterSpacing: 0.2,
-                                          color: FitnessAppTheme.white,
-                                        ),
-                                      );
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      if (dietPlan[index].foodName != null) {
+                                        return Text(
+                                          'yemek' ??
+                                              ' ',
+                                          style: TextStyle(
+                                            fontFamily:
+                                                FitnessAppTheme.fontName,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 10,
+                                            letterSpacing: 0.2,
+                                            color: FitnessAppTheme.white,
+                                          ),
+                                        );
+                                      } else {
+                                        Text(
+                                          'yemek',
+                                          style: TextStyle(
+                                            fontFamily:
+                                                FitnessAppTheme.fontName,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 10,
+                                            letterSpacing: 0.2,
+                                            color: FitnessAppTheme.white,
+                                          ),
+                                        );
+                                      }
                                     },
                                   )),
                             ),

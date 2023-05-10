@@ -25,7 +25,7 @@ class BodyDietician extends StatelessWidget {
             text: "Appointment",
             icon: "assets/icons/calendar.svg",
             press: () {
-              Navigator.pushNamed(context, '/appointment');
+              Navigator.pushNamed(context, '/choose_patient');
             },
           ),
           ProfileMenu(
@@ -49,7 +49,7 @@ class BodyDietician extends StatelessWidget {
             text: "Log Out",
             icon: "assets/icons/Log out.svg",
             press: () async {
-              await storage.deleteAll();
+              
               Navigator.pop(context);
             },
           ),

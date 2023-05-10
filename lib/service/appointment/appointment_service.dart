@@ -14,6 +14,8 @@ class AppointmentService {
   List<GetAppointmentModel> listRandevu = [];
   List<dynamic> appointmentData = [];
   GetAppointmentForDietitian? dietitianRandevu;
+  GetAppointmentModel? patientRandevu;
+  List<GetAppointmentModel> listPatientRandevu=[];
   List<GetAppointmentForDietitian> listDietitianRandevu = [];
   List<GetAppointmentModel> Randevular = [];
   GetAppointmentModel? diyetisyenRandevu;
@@ -27,6 +29,41 @@ class AppointmentService {
   ) async {
     String? dietitianId = await storage.read(key: 'dietitianId');
     String? patientId = await storage.read(key: 'patientId');
+    String? token = await storage.read(key: 'token');
+
+    Dio dio = Dio();
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    Map<String, dynamic> data = {
+      'appointmentDate': getDate,
+      'appointmentTime': getTime
+    };
+
+    String url =
+        'http://localhost:8080/api/v1/appointments/book/${dietitianId}/${patientId}';
+    print(getDate + ' ' + getTime);
+    print('${dietitianId} + ${patientId}');
+
+    try {
+      var response = await dio.post(url, data: data);
+      print(response.statusCode);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+
+
+
+  Future<dynamic> postDytAppointment(
+    String getDate,
+    String getTime,
+    int patientId
+  ) async {
+    String? dietitianId = await storage.read(key: 'dietitianId');
     String? token = await storage.read(key: 'token');
 
     Dio dio = Dio();
@@ -146,6 +183,41 @@ class AppointmentService {
       return throw Exception('${e} error');
     }
   }
+    Future<List<GetAppointmentModel>> getAppointmentsToday() async {
+       DateTime today =DateTime.now();
+    String date =today.toString().substring(0,10);
+    String? dietitianId = await storage.read(key: 'dietitianId');
+    String? token = await storage.read(key: 'token');
+    String? patientID = await storage.read(key: 'patientId');
+
+    String url =
+        'http://localhost:8080/api/v1/appointments/dietitian/byDate/${dietitianId}';
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    Map<String, dynamic> data = {
+      'appointmentDate': '${date}',
+    };
+
+    try {
+      var response = await dio.post(url, data: data);
+      print(response.data);
+      listDietitianRandevu.clear();
+      for (int i = 0; i < response.data.length; i++) {
+        patientRandevu =
+            GetAppointmentModel.fromJson(response.data[i]);
+        listPatientRandevu.add(patientRandevu!);
+      }
+      print(listPatientRandevu);
+
+      return listPatientRandevu;
+    } catch (e) {
+      return throw Exception('${e} error');
+    }
+  }
+
+
   Future updateStatus(GetAppointmentModel getAppointmentModel) async {
     String? token = await storage.read(key: 'token');
     String url='http://localhost:8080/api/v1/appointments/updateStatus/${getAppointmentModel.appointmentId}';

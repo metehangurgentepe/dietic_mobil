@@ -34,8 +34,9 @@ class _ShowAppointmentState extends State<ShowAppointment> {
   @override
   void initState() {
     service.getAppointment().then((value) {
-      randevu = value;
       setState(() {
+         randevu = value;
+
         if (randevu != null) {
           // for (int i = 0; i < randevu.length; i++) {
           //   patient_id[i] = randevu[i].patientId!;
