@@ -1,11 +1,12 @@
 import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../config/theme/theme.dart';
 import '../../model/user_model.dart';
 
-class UpdateProfileScreen extends StatelessWidget {
+class UpdateProfileScreen extends StatefulWidget {
   UpdateProfileScreen({Key? key, required this.user}) : super(key: key);
   static const String routeName = '/update_profile';
 
@@ -16,129 +17,147 @@ class UpdateProfileScreen extends StatelessWidget {
   }
 
   final UserModel user;
+
+  @override
+  State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
+}
+
+class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    bool isPasswordVisible = false;
+
     //final controller = Get.put(ProfileController());
-    String name = '${user.name} ${user.surname}';
+    String name = '${widget.user.name} ${widget.user.surname}';
     name = nameController.text;
     return Scaffold(
       appBar: AppBar(
-        
+        backgroundColor: AppColors.colorAccent,
         title:
-            Text('EditProfile', style: Theme.of(context).textTheme.headline4),
+            Text('EditProfile',)
       ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(8),
-          child: Column(
-            children: [
-              // -- IMAGE with ICON
-              Stack(
-                children: [
-                  SizedBox(
-                    width: 120,
-                    height: 120,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: Image(image: NetworkImage('${user.picture}'))),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: AppColors.colorAccent),
-                      child: const Icon(LineAwesomeIcons.camera,
-                          color: Colors.black, size: 20),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 50),
-
-              // -- Form Fields
-              Form(
-                child: Column(
+          child: Padding(
+            padding: const EdgeInsets.only(top:18.0),
+            child: Column(
+              children: [
+                // -- IMAGE with ICON
+                Stack(
                   children: [
-                    TextFormField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                          label: Text('Full name'),
-                          prefixIcon: Icon(LineAwesomeIcons.user)),
-                    ),
-                    const SizedBox(height: 50 - 20),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          label: Text('email'),
-                          prefixIcon: Icon(LineAwesomeIcons.envelope_1)),
-                    ),
-                    const SizedBox(height: 50 - 20),
-                    TextFormField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        label: const Text('Password'),
-                        prefixIcon: const Icon(Icons.fingerprint),
-                        suffixIcon: IconButton(
-                            icon: const Icon(LineAwesomeIcons.eye_slash),
-                            onPressed: () {}),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-
-                    // -- Form Submit Button
                     SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: FitnessAppTheme.nearlyWhite,
-                            side: BorderSide.none,
-                            shape: const StadiumBorder()),
-                        child: const Text('EditProfile',
-                            style: TextStyle(color: AppColors.colorAccentDark)),
+                      width: 120,
+                      height: 120,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image(
+                              image: NetworkImage('${widget.user.picture}'))),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: FitnessAppTheme.dark_grey),
+                        child: const Icon(LineAwesomeIcons.camera,
+                            color: Colors.black, size: 20),
                       ),
                     ),
-                    const SizedBox(height: 30),
-
-                    // -- Created Date and Delete Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text.rich(
-                          TextSpan(
-                            text: 'Join',
-                            style: TextStyle(fontSize: 12),
-                            children: [
-                              TextSpan(
-                                  text: 'Join',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12))
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.redAccent.withOpacity(0.1),
-                              elevation: 0,
-                              foregroundColor: Colors.red,
-                              shape: const StadiumBorder(),
-                              side: BorderSide.none),
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                    )
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 50),
+          
+                // -- Form Fields
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CupertinoTextField.borderless(
+                            cursorColor: FitnessAppTheme.nearlyDarkBlue,
+                            controller: nameController,
+                            padding: EdgeInsets.only(
+                                left: 15, top: 10, right: 6, bottom: 10),
+                            prefix: Text('Full Name'),
+                            placeholder: 'Required'),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.black,
+                        ),
+                        CupertinoTextField.borderless(
+                          controller: ageController,
+                            cursorColor: FitnessAppTheme.nearlyDarkBlue,
+                          padding: EdgeInsets.only(
+                              left: 45, top: 10, right: 6, bottom: 10),
+                          prefix: Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text('Age'),
+                          ),
+                          placeholder: 'Required',
+                        ),Divider(
+                          thickness: 1,
+                          color: Colors.black,
+                        ),
+                        CupertinoTextField.borderless(
+                          obscureText: !isPasswordVisible,
+                          controller: passwordController,
+                            cursorColor: FitnessAppTheme.nearlyDarkBlue,
+                          padding: EdgeInsets.only(
+                              left: 15, top: 10, right: 6, bottom: 10),
+                          prefix: Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text('Password'),
+                          ),
+                          placeholder: 'Required',
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                // -- Created Date and Delete Button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text.rich(
+                      TextSpan(
+                        text: 'Join',
+                        style: TextStyle(fontSize: 12),
+                        children: [
+                          TextSpan(
+                              text: 'Join',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 12))
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent.withOpacity(0.1),
+                          elevation: 0,
+                          foregroundColor: Colors.red,
+                          shape: const StadiumBorder(),
+                          side: BorderSide.none),
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

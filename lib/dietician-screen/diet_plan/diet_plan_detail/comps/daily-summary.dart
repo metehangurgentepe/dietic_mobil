@@ -1,4 +1,5 @@
 import 'package:dietic_mobil/service/diet_plan/diet_plan_service.dart';
+import 'package:dietic_mobil/service/diet_plan/dyt_plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dietic_mobil/config/config.dart';
@@ -6,17 +7,21 @@ import 'package:dietic_mobil/screen/screen.dart';
 import 'package:grock/grock.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import '../../../model/diet_plan_model.dart';
+import '../../../../model/diet_plan_model.dart';
 
-class DailySummary extends StatefulWidget {
-  const DailySummary({Key? key}) : super(key: key);
+
+class DailySummaryDyt extends StatefulWidget {
+  const DailySummaryDyt({Key? key,required this.foods}) : super(key: key);
+  final List<DietPlanModel> foods;
+
 
   @override
-  State<DailySummary> createState() => _DailySummaryState();
+  State<DailySummaryDyt> createState() => _DailySummaryDytState();
 }
 
-class _DailySummaryState extends State<DailySummary> {
+class _DailySummaryDytState extends State<DailySummaryDyt> {
   final service = DietPlanService();
+  final dytService = PlanService();
   List<DietPlanModel> dietPlan = [];
   double carbonhydrate = 0;
   double protein = 0;
@@ -30,12 +35,8 @@ class _DailySummaryState extends State<DailySummary> {
 
   @override
   void initState() {
-    service.getFirstDietPlan().then((value) {
-      setState(() {
-        dietPlan = value;
-        print('buralar');
-        print(dietPlan);
-      });
+    dietPlan =widget.foods;
+    
       for (int i = 0; i < dietPlan.length; i++) {
         carbonhydrate += dietPlan[i].carb!;
         protein += dietPlan[i].protein!;
@@ -49,7 +50,7 @@ class _DailySummaryState extends State<DailySummary> {
           eatenFats += dietPlan[i].fat!;
         }
       }
-    });
+    
     super.initState();
   }
 

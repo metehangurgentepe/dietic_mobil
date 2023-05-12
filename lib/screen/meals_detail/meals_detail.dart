@@ -1,6 +1,7 @@
 import 'package:dietic_mobil/dietician-screen/home/widget/meal-consumed.dart';
 import 'package:dietic_mobil/screen/home/widget/daily-summary.dart';
-import 'package:dietic_mobil/service/diet_plan/plan_service.dart';
+import 'package:dietic_mobil/screen/meals_detail/comps/out_record_meal.dart';
+import 'package:dietic_mobil/service/diet_plan/dyt_plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -55,6 +56,7 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
                     LunchMealConsumed(),
                     DinnerMealConsumed(),
                     SnackMealConsumed(),
+                    OutOfRecordMealConsumed(),
                   ],
                 ),
               ),

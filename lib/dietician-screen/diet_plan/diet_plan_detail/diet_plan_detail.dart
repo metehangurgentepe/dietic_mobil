@@ -1,3 +1,4 @@
+import 'package:dietic_mobil/dietician-screen/diet_plan/diet_plan_detail/comps/daily-summary.dart';
 import 'package:dietic_mobil/model/patient_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../config/theme/theme.dart';
 import '../../../model/diet_plan_model.dart';
 import '../../../service/diet_plan/diet_plan_service.dart';
+import '../../../service/diet_plan/dyt_plan_service.dart';
 
 class DietPlanDetail extends StatefulWidget {
   const DietPlanDetail({super.key, required this.patients});
@@ -29,20 +31,30 @@ class DietPlanDetail extends StatefulWidget {
 class _DietPlanDetailState extends State<DietPlanDetail> {
   DateTime selectedDate = DateTime.now();
 
+
+  final dytService = PlanService();
   DietPlanService service = DietPlanService();
+  
+  
+  List<DietPlanModel> allFoods = [];
   List<DietPlanModel> breakfastFoods = [];
   List<DietPlanModel> lunchFoods = [];
   List<DietPlanModel> dinnerPlan = [];
   List<DietPlanModel> snackFoods = [];
+  List<DietPlanModel> outOfRecordFoods = [];
 
   List<bool> isSelectedBreakfast = [];
   List<bool> isSelectedLunch = [];
   List<bool> isSelectedDinner = [];
   List<bool> isSelectedSnack = [];
+  List<bool> isSelectedOutOfRecord = [];
+  
+  
   double sumBreakfastEnergy = 0;
   double sumLunchEnergy = 0;
   double sumDinnerEnergy = 0;
   double sumSnackEnergy = 0;
+  double sumoutOfRecordEnergy = 0;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -72,6 +84,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   Widget build(BuildContext context) {
     String time = selectedDate.toString().substring(0, 10);
 
+
     ValueNotifier<String?> timeNotifier = ValueNotifier<String?>(time);
 
     return Scaffold(
@@ -89,6 +102,9 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                 children: [
                   IconButton(
                     onPressed: () {
+                      setState(() {
+                        timeNotifier;
+                      });
                       _selectDate(context);
                     },
                     icon: Icon(Icons.calendar_month),
@@ -97,6 +113,15 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                       .toString()
                       .substring(0, 10)
                       .replaceAll('-', '/')),
+                      ValueListenableBuilder<String?>(
+                      valueListenable: timeNotifier,
+                      builder:
+                          (BuildContext context, String? value, Widget? child) {
+                            dytService.getFirstDietPlanForDyt(timeNotifier.value!, widget.patients.patientId!).then((value) {
+                              allFoods=value;
+                            });
+                        return  DailySummaryDyt(foods:allFoods);
+                      }),
                   ValueListenableBuilder<String?>(
                       valueListenable: timeNotifier,
                       builder:
@@ -105,9 +130,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                         service.BreakfastDietPlan(
                                 timeNotifier.value!, widget.patients.patientId!)
                             .then((value) {
-                          setState(() {
                             breakfastFoods = value;
-                          });
                         });
                         return BreakfastMeal(breakfastFoods);
                       }),
@@ -140,12 +163,24 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                       builder:
                           (BuildContext context, String? value, Widget? child) {
                         print(timeNotifier);
-                        service.DinnerDietPlan(
+                        service.SnackDietPlan(
                                 timeNotifier.value!, widget.patients.patientId!)
                             .then((value) {
                           snackFoods = value;
                         });
                         return SnackMeal(snackFoods);
+                      }),
+                      ValueListenableBuilder<String?>(
+                      valueListenable: timeNotifier,
+                      builder:
+                          (BuildContext context, String? value, Widget? child) {
+                        print(timeNotifier);
+                        service.OutOfRecordDietPlan(
+                                timeNotifier.value!, widget.patients.patientId!)
+                            .then((value) {
+                          outOfRecordFoods = value;
+                        });
+                        return OutOfRecordMeal(outOfRecordFoods);
                       }),
                 ],
               ),
@@ -666,6 +701,135 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                         },
                       )
                     : Text('There is no snack foods for you :)')),
+          ],
+        ),
+      ),
+    );
+  }
+    Widget OutOfRecordMeal(List<DietPlanModel> outOfRecordFoods) {
+    List<DietPlanModel> outOfRecordPlan = this.outOfRecordFoods;
+    List<bool> isSelectedOutOfRecord =
+        List<bool>.generate(outOfRecordPlan.length, (index) => false);
+    print('plan burada');
+    print(outOfRecordPlan);
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: double.infinity,
+      ),
+      child: Container(
+        margin: EdgeInsets.only(top: 30.w, bottom: 30.w),
+        padding: EdgeInsets.only(left: 10.w),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 40.w,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 25.w,
+                        width: 25.w,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 4.w,
+                          value: 0.7,
+                          backgroundColor:
+                              AppColors.colorAccent.withOpacity(0.2),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.colorWarning),
+                        ),
+                      ),
+                      SizedBox(width: 20.w),
+                      Text(
+                        'Out Of Record',
+                        style: TextStyle(
+                          color: AppColors.colorTint700,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${sumoutOfRecordEnergy.toString()}',
+                        style: TextStyle(
+                          color: AppColors.colorTint500,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      SizedBox(width: 1.w),
+                      Text(
+                        'kcal',
+                        style: TextStyle(
+                          color: AppColors.colorTint500,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20.w),
+            Container(
+                child: outOfRecordPlan.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: outOfRecordPlan.length,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            height: 70.w,
+                            margin: EdgeInsets.zero,
+                            child: IntrinsicHeight(
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                  Checkbox(
+                                    value: isSelectedOutOfRecord[index],
+                                    onChanged: null,
+                                  ),
+                                  VerticalDivider(
+                                    color: AppColors.colorTint300,
+                                    thickness: 2,
+                                  ),
+                                  SizedBox(width: 15.w),
+                                  Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              '${outOfRecordPlan[index].foodName} (x${outOfRecordPlan[index].portion!.toStringAsFixed(0)})'),
+                                          SizedBox(height: 5.w),
+                                          Text(
+                                            '${outOfRecordPlan[index].energy} kcal',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint500,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ])),
+                          );
+                        },
+                      )
+                    : Text('There is no breakfast for you :)')),
           ],
         ),
       ),

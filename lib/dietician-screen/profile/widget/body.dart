@@ -15,13 +15,16 @@ class _BodyDieticianState extends State<BodyDietician> {
   final storage = new FlutterSecureStorage();
   final service = UpdateProfilePic();
   UserModel? user;
+  String name = '';
+  String email = '';
   @override
   void initState() {
-    service.getProfilePic().then((value){
+    service.getProfilePic().then((value) {
       setState(() {
-      user=value;  
+        user = value;
       });
-      
+      name = '${user!.name} ${user!.surname}';
+      email='${user!.email}';
     });
     super.initState();
   }
@@ -35,11 +38,15 @@ class _BodyDieticianState extends State<BodyDietician> {
           SizedBox(height: 30),
           ProfilePic(),
           SizedBox(height: 20),
-          Column(children: [
-            Text.rich(TextSpan(text: '${user!.name} ${user!.surname} ',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold))),
-            Text.rich(TextSpan(text: '${user!.email} ',style: TextStyle(fontSize: 15)))
-
-          ],),
+          Column(
+            children: [
+              Text.rich(TextSpan(
+                  text: name,
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold))),
+              Text.rich(TextSpan(
+                  text: email, style: TextStyle(fontSize: 15)))
+            ],
+          ),
           SizedBox(height: 30),
           ProfileMenu(
             text: "My Account",
@@ -74,7 +81,6 @@ class _BodyDieticianState extends State<BodyDietician> {
             text: "Log Out",
             icon: "assets/icons/Log out.svg",
             press: () async {
-              
               Navigator.pop(context);
             },
           ),

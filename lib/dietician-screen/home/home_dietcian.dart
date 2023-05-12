@@ -12,6 +12,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/get_appointment_for_dietitian.dart';
+import '../../model/user_model.dart';
 import '../../screen/appointment/comps/config.dart';
 import 'comps/appointment_card.dart';
 import 'comps/chart_painter.dart';
@@ -35,8 +36,12 @@ class _HomeDieticianPageState extends State<HomeDietician> {
   Map hastalar = {};
   String? patientName;
   String? randevuSaat;
+  String profilePic='';
+  UserModel? user;
 
   String? name;
+  
+  String string='No appointment';
   @override
   initState() {
     service.getAppointmentsToday().then((value) {
@@ -68,39 +73,15 @@ class _HomeDieticianPageState extends State<HomeDietician> {
       print('next appointment');
       print(getNextAppointment(appointmentTimes));
 
-      // for (int i = 0; i < appointments.length; i++) {
-      //   appointmentTimes!.add(appointments[i].appointmentTime!);
-      // }
 
-      // TimeOfDay convertToTimeOfDay(String timeString) {
-      //   List<String> parts = timeString.split(":");
-      //   int hour = int.parse(parts[0]);
-      //   int minute = int.parse(parts[1]);
-      //   return TimeOfDay(hour: hour, minute: minute);
-      // }
+      userService.getProfilePic().then((value){
+        setState(() {
+          user=value;
+        });
+        profilePic=user!.picture!;
+      });
 
-      // TimeOfDay findNextAppointment(List<String> appointmentTimes) {
-      //   appointmentTimes.sort();
-      //   final now = TimeOfDay.now();
-      //   for (final appointmentTime in appointmentTimes) {
-      //     TimeOfDay appointment = convertToTimeOfDay(appointmentTime);
-      //     DateTime nowDateTime = DateTime.now();
-      //     DateTime appointmentDateTime = DateTime(
-      //       nowDateTime.year,
-      //       nowDateTime.month,
-      //       nowDateTime.day,
-      //       appointment.hour,
-      //       appointment.minute,
-      //     );
-      //     if (appointmentDateTime.isAfter(nowDateTime)) {
-      //       return appointment;
-      //     }
-      //   }
-      //   return throw Exception();
-      // }
 
-      // TimeOfDay nextAppointmentTime = findNextAppointment(appointmentTimes!);
-      // print(nextAppointmentTime);
     });
     super.initState();
   }
@@ -154,19 +135,13 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                                 ),
                               );
                             }),
-                        FutureBuilder(
-                            future: userService.getProfilePic(),
-                            builder: (context, snapshot) {
-                           
-
-                              return snapshot.data!.picture!.isNotEmpty
+                         profilePic.isNotEmpty
                                   ? CircleAvatar(
                                       radius: 50,
                                       backgroundImage:
-                                          NetworkImage(snapshot.data!.picture!),
+                                          NetworkImage(profilePic),
                                     )
-                                  : const Icon(Icons.person);
-                            })
+                                  : const Icon(Icons.person)
                       ],
                     ),
                     FutureBuilder(
@@ -196,32 +171,37 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                         shrinkWrap: true,
                         itemCount: 1,
                         itemBuilder: (BuildContext context, int index) {
-                             void getNextAppointment(List<String> randevu) {
-                                for (String appointment in randevu) {
-                                  final now = DateTime.now();
-                                  final dateFormat = DateFormat('yyyy-MM-dd');
-                                  final appointmentTime = DateTime.parse(
-                                      '${dateFormat.format(now)} $appointment');
+                          void getNextAppointment(List<String> randevu) {
+                            
+                            List<String> listWithoutDuplicates =
+                                randevu.toSet().toList();
+                            
+                            for (String appointment in listWithoutDuplicates) {
+                              final now = DateTime.now();
+                              final dateFormat = DateFormat('yyyy-MM-dd');
+                              final appointmentTime = DateTime.parse(
+                                  '${dateFormat.format(now)} $appointment');
 
-                                  if (appointmentTime.isAfter(DateTime.now())) {
-                                    for (var entry in hastalar.entries) {
-                                      if (entry.value == appointment) {
-                                        patientName = entry.key;
-                                        randevuSaat = appointment;
-                                        return entry.key;
-                                      }
-                                    }
+                              if (appointmentTime.isAfter(DateTime.now())) {
+                                for (var entry in hastalar.entries) {
+                                  if (entry.value == appointment) {
+                                    patientName = entry.key;
+                                    randevuSaat = appointment;
+                                    return entry.key;
                                   }
                                 }
                               }
-                              getNextAppointment(appointmentTimes);
+                            }
+                          }
+
+                          getNextAppointment(appointmentTimes);
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              _buildItem(
-                                  '${patientName}',
-                                  '${randevuSaat} ',
+                              patientName!=null ?
+                              _buildItem('${patientName}', '${randevuSaat} ',
+                                  Color(0xff0074ff)): _buildItem(string, ' ',
                                   Color(0xff0074ff)),
                               _buildDivider(),
                               _buildItem(
@@ -246,7 +226,11 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    TextButton(onPressed: () {}, child: Text('See All'))
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/show-appointment');
+                        },
+                        child: Text('See All'))
                   ],
                 ),
                 Config.spaceSmall,
@@ -395,7 +379,7 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                       Text(
                         title,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
