@@ -92,7 +92,7 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                   Row(
                     children: [
                       Text(
-                        sumEnergy.toString(),
+                        sumEnergy.toInt().toString(),
                         style: TextStyle(
                           color: AppColors.colorTint500,
                           fontWeight: FontWeight.bold,
@@ -123,7 +123,7 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
             ),
             SizedBox(height: 20.w),
             Container(
-              child: ListView.builder(
+              child: dinnerPlan.isNotEmpty ? ListView.builder(
                 itemCount: dinnerPlan.length,
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
@@ -155,17 +155,31 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                dinnerPlan[index].foodName ?? '',
+                                '${dinnerPlan[index].foodName} x(${dinnerPlan[index].portion}) ' ?? '',
                                 style: TextStyle(
                                     color: AppColors.colorTint700,
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 5.w),
-                              Row(
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Visibility(
+                                    visible: dinnerPlan[index].details!.trim().isNotEmpty,
+                                    child: Text(
+                                      'Description: ${dinnerPlan[index].details!}',
+                                      style: TextStyle(
+                                        color: AppColors.colorTint600,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                  ),
+
                                   Text(
-                                    '${dinnerPlan[index].energy.toString()} kcal' ??
+                                    '${dinnerPlan[index].energy!.toInt()} kcal' ??
                                         '',
                                     style: TextStyle(
                                       color: AppColors.colorTint500,
@@ -180,7 +194,7 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                         ])),
                   );
                 },
-              ),
+              ):Text("Don't have dinner today")
             ),
           ],
         ),

@@ -1,4 +1,6 @@
+import 'package:dietic_mobil/screen/my_diary/home-fitness-app.dart';
 import 'package:flutter/material.dart';
+import 'package:grock/grock.dart';
 import 'package:lottie/lottie.dart';
 
 import 'comps/button.dart';
@@ -39,7 +41,11 @@ class AppointmentBooked extends StatelessWidget {
               child: Button(
                 width: double.infinity,
                 title: 'Back to Home Page',
-                onPressed: () => Navigator.of(context).pushNamed('/nav'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  }
+                ,
                 disable: false,
               ),
             )

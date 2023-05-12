@@ -1,4 +1,5 @@
 import 'package:dietic_mobil/dietician-screen/home/widget/meal-consumed.dart';
+import 'package:dietic_mobil/screen/home/widget/daily-summary.dart';
 import 'package:dietic_mobil/service/diet_plan/plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,8 @@ import 'comps/breakfast-meal-consumed.dart';
 import 'comps/dinner-meal-consumed.dart';
 import 'comps/lunchs-meal-consumed.dart';
 import 'comps/snack-meal-consumed.dart';
+import 'package:getwidget/getwidget.dart';
+
 
 class MealsDetailScreen extends StatefulWidget {
   static const String routeName = '/meals_detail';
@@ -46,6 +49,8 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
               child: Container(
                 child: Column(
                   children: [
+                    
+                    DailySummary(),
                     BreakfastMealConsumed(),
                     LunchMealConsumed(),
                     DinnerMealConsumed(),

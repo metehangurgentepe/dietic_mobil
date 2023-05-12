@@ -27,8 +27,8 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
   double sumEnergy = 0;
   @override
   void initState() {
-    DateTime date =DateTime.now();
-    String time= date.toString().substring(0,10);
+    DateTime date = DateTime.now();
+    String time = date.toString().substring(0, 10);
     service.getBreakfastDietPlan(time).then((value) {
       breakfastFoods = value;
       isSelected = List<bool>.generate(breakfastFoods.length, (index) => false);
@@ -41,7 +41,6 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
             isSelected[i] = true;
           }
         }
-        
       });
     });
     super.initState();
@@ -50,9 +49,7 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: double.infinity,
-      ),
+      constraints: BoxConstraints(),
       child: Container(
         margin: EdgeInsets.only(top: 30.w, bottom: 30.w),
         padding: EdgeInsets.only(left: 10.w),
@@ -91,7 +88,7 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                   Row(
                     children: [
                       Text(
-                        '${sumEnergy.toString()}',
+                        '${sumEnergy.toInt().toString()}',
                         style: TextStyle(
                           color: AppColors.colorTint500,
                           fontWeight: FontWeight.bold,
@@ -138,14 +135,14 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Checkbox(
-                                        value: isSelected[index],
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _updateSelectedItems(value!, index);
-                                          });
-                                        },
-                                      ),
+                                  Checkbox(
+                                    value: isSelected[index],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _updateSelectedItems(value!, index);
+                                      });
+                                    },
+                                  ),
                                   VerticalDivider(
                                     color: AppColors.colorTint300,
                                     thickness: 2,
@@ -153,18 +150,41 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                                   SizedBox(width: 15.w),
                                   Row(
                                     children: [
-                                
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                              '${breakfastFoods[index].foodName}'),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${breakfastFoods[index].foodName} ',
+                                                style: TextStyle(
+                                                    color: AppColors.colorTint700,
+                                                    fontSize: 15.sp,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                              Text('x(${breakfastFoods[index].portion})',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 12),)
+                                            ],
+                                          ),
                                           SizedBox(height: 5.w),
+                                          Visibility(
+                                            visible: breakfastFoods[index]
+                                                .details!
+                                                .trim()
+                                                .isNotEmpty,
+                                            child: Text(
+                                              'Description: ${breakfastFoods[index].details!}',
+                                              style: TextStyle(
+                                                color: AppColors.colorTint600,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12.sp,
+                                              ),
+                                            ),
+                                          ),
                                           Text(
-                                            '${breakfastFoods[index].energy} kcal',
+                                            '${breakfastFoods[index].energy!.toInt()} kcal',
                                             style: TextStyle(
                                               color: AppColors.colorTint500,
                                               fontWeight: FontWeight.bold,
@@ -179,7 +199,7 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                           );
                         },
                       )
-                    : CircularProgressIndicator()),
+                    : Text("Won't have breakfast today")),
           ],
         ),
       ),

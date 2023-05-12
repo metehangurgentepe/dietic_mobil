@@ -67,6 +67,8 @@ List<String>? differenceList;
     // });
     super.initState();
   }
+    ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
+
 
   @override
   Widget build(BuildContext context) {
@@ -120,57 +122,70 @@ List<String>? differenceList;
                         ),
                       ),
                     )
-                  : SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return InkWell(
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              setState(() {
-                                 _currentIndex = differenceList![index];
-                                _timeSelected = true;
-                                print(index);
-                              });
+                  : ValueListenableBuilder<int>(
+                      valueListenable: _currentIndexNotifier,
+                      builder: (context, value, child) {
+                        return SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return InkWell(
+                                splashColor: Colors.transparent,
+                                onTap: () {
+                                  setState(() {
+                                    print('index burada');
+                                    print(index);
+                                    _currentIndexNotifier.value = index;
+                                    _currentIndex = differenceList![index];
+                                    _timeSelected = true;
+                                    // Other code logic
+                                    print(index);
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: value == index
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: value == index
+                                        ? AppColors.colorAccent
+                                        : null,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: differenceList == null
+                                      ? Text(
+                                          zamanlar[index],
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: value == index
+                                                ? Colors.white
+                                                : null,
+                                          ),
+                                        )
+                                      : Text(
+                                          differenceList![index],
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: value == index
+                                                ? Colors.white
+                                                : null,
+                                          ),
+                                        ),
+                                ),
+                              );
                             },
-                            child: Container(
-                              margin: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: _currentIndex == differenceList![index]
-                                      ? Colors.white
-                                      : Colors.black,
-                                ),
-                                borderRadius: BorderRadius.circular(15),
-                                color: _currentIndex == differenceList![index]
-                                    ? AppColors.colorAccent
-                                    : null,
-                              ),
-                              alignment: Alignment.center,
-                              child:differenceList==null?Text(
-                                zamanlar[index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: _currentIndex == differenceList![index]
-                                      ? Colors.white
-                                      : null,
-                                ),
-                              ) : Text(
-                                differenceList![index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: _currentIndex == index
-                                      ? Colors.white
-                                      : null,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: buttonNumber ?? 8,
-                      ),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4, childAspectRatio: 1.5),
+                            childCount: buttonNumber ?? 8,
+                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            childAspectRatio: 1.5,
+                          ),
+                        );
+                      },
                     ),
               SliverToBoxAdapter(
                 child: Container(

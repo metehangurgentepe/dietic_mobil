@@ -132,32 +132,29 @@ class _MealsListViewState extends State<MealsListView>
                               curve: Interval((1 / count) * index, 1.0,
                                   curve: Curves.fastOutSlowIn)));
                   animationController?.forward();
-                  if(energy.isEmpty){
+                  if (energy.isEmpty) {
                     return MealsView(
-                    dietPlan: dietPlan[index],
-                    imagePath: imagePath[index],
-                    titleTxt: titleTxt[index],
-                    startColor: startColor[index],
-                    endColor: endColor[index],
-                    kacl: 0,
-                    animation: animation,
-                    animationController: animationController!,
-                  );
-
-                  }else{
+                      dietPlan: dietPlan[index],
+                      imagePath: imagePath[index],
+                      titleTxt: titleTxt[index],
+                      startColor: startColor[index],
+                      endColor: endColor[index],
+                      kacl: 0,
+                      animation: animation,
+                      animationController: animationController!,
+                    );
+                  } else {
                     return MealsView(
-                    dietPlan: dietPlan[index],
-                    imagePath: imagePath[index],
-                    titleTxt: titleTxt[index],
-                    startColor: startColor[index],
-                    endColor: endColor[index],
-                    kacl: energy[index],
-                    animation: animation,
-                    animationController: animationController!,
-                  );
+                      dietPlan: dietPlan[index],
+                      imagePath: imagePath[index],
+                      titleTxt: titleTxt[index],
+                      startColor: startColor[index],
+                      endColor: endColor[index],
+                      kacl: energy[index],
+                      animation: animation,
+                      animationController: animationController!,
+                    );
                   }
-
-            
                 },
               ),
             ),
@@ -261,44 +258,56 @@ class MealsView extends StatelessWidget {
                                 color: FitnessAppTheme.white,
                               ),
                             ),
-                            Expanded(
+                            dietPlan.isNotEmpty ? Expanded(
                               child: Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 8, bottom: 8),
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: dietPlan.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      if (dietPlan[index].foodName != null) {
-                                        return Text(
-                                          'yemek' ??
-                                              ' ',
-                                          style: TextStyle(
-                                            fontFamily:
-                                                FitnessAppTheme.fontName,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 10,
-                                            letterSpacing: 0.2,
-                                            color: FitnessAppTheme.white,
-                                          ),
-                                        );
-                                      } else {
-                                        Text(
-                                          'yemek',
-                                          style: TextStyle(
-                                            fontFamily:
-                                                FitnessAppTheme.fontName,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 10,
-                                            letterSpacing: 0.2,
-                                            color: FitnessAppTheme.white,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  )),
-                            ),
+                                padding:
+                                    const EdgeInsets.only(top: 8, bottom: 8),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    
+                                    // Display the first element
+                                    Text(
+                                      '${dietPlan[0].foodName.toString()}\n',
+                                      style: TextStyle(
+                                        fontFamily: FitnessAppTheme.fontName,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 6.3,
+                                        letterSpacing: 0.2,
+                                        color: FitnessAppTheme.white,
+                                      ),
+                                    ),
+                                    // Check if the second-last element exists and display it
+                                    if (dietPlan.length >= 2 &&
+                                        dietPlan[dietPlan.length - 2] != null)
+                                      Text(
+                                        '${dietPlan[dietPlan.length - 2].foodName.toString()}\n',
+                                        style: TextStyle(
+                                          fontFamily: FitnessAppTheme.fontName,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 6.3,
+                                          letterSpacing: 0.2,
+                                          color: FitnessAppTheme.white,
+                                        ),
+                                      ),
+                                    // Check if the last element exists and display it
+                                    if (dietPlan.length >= 3 &&
+                                        dietPlan[dietPlan.length - 3] != null)
+                                      Text(
+                                        '${dietPlan[dietPlan.length - 3].foodName.toString()}\n',
+                                        style: TextStyle(
+                                          fontFamily: FitnessAppTheme.fontName,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 6.3,
+                                          letterSpacing: 0.2,
+                                          color: FitnessAppTheme.white,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ):Text(' '),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -309,7 +318,7 @@ class MealsView extends StatelessWidget {
                                   style: TextStyle(
                                     fontFamily: FitnessAppTheme.fontName,
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 24,
+                                    fontSize: 17,
                                     letterSpacing: 0.2,
                                     color: FitnessAppTheme.white,
                                   ),
@@ -322,7 +331,7 @@ class MealsView extends StatelessWidget {
                                     style: TextStyle(
                                       fontFamily: FitnessAppTheme.fontName,
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 10,
+                                      fontSize: 8,
                                       letterSpacing: 0.2,
                                       color: FitnessAppTheme.white,
                                     ),

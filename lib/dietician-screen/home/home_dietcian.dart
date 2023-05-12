@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
 import 'package:dietic_mobil/model/get_appointment.dart';
 import 'package:dietic_mobil/service/appointment/appointment_service.dart';
@@ -14,6 +16,7 @@ import '../../screen/appointment/comps/config.dart';
 import 'comps/appointment_card.dart';
 import 'comps/chart_painter.dart';
 import 'comps/doctor_card.dart';
+import 'package:intl/intl.dart';
 
 class HomeDietician extends StatefulWidget {
   const HomeDietician({Key? key}) : super(key: key);
@@ -27,8 +30,11 @@ class _HomeDieticianPageState extends State<HomeDietician> {
   final service = AppointmentService();
   List<GetAppointmentModel> appointments = [];
   GetAppointmentModel? nextAppointment;
-  List<String>? appointmentTimes;
+  List<String> appointmentTimes = [];
   final userService = UpdateProfilePic();
+  Map hastalar = {};
+  String? patientName;
+  String? randevuSaat;
 
   String? name;
   @override
@@ -38,6 +44,29 @@ class _HomeDieticianPageState extends State<HomeDietician> {
         DateTime now = DateTime.now();
         appointments = value;
       });
+
+      for (int i = 0; i < appointments.length; i++) {
+        appointmentTimes.add(appointments[i].appointmentTime!.substring(0, 5));
+        hastalar[
+                '${appointments[i].patientName} ${appointments[i].patientSurname}'] =
+            appointments[i].appointmentTime!.substring(0, 5);
+      }
+      print(hastalar);
+
+      String getNextAppointment(List<String> appointments) {
+        for (String appointment in appointments) {
+          final appointmentTime = DateTime.parse('2023-01-01 $appointment');
+
+          if (appointmentTime.isAfter(DateTime.now())) {
+            return appointment;
+          }
+        }
+
+        return 'There is no appointment'; // No upcoming appointments
+      }
+
+      print('next appointment');
+      print(getNextAppointment(appointmentTimes));
 
       // for (int i = 0; i < appointments.length; i++) {
       //   appointmentTimes!.add(appointments[i].appointmentTime!);
@@ -75,6 +104,7 @@ class _HomeDieticianPageState extends State<HomeDietician> {
     });
     super.initState();
   }
+
   Future<String?> getName() async {
     String? dietitanName = await storage.read(key: 'dietitian-name');
     return dietitanName;
@@ -127,11 +157,15 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                         FutureBuilder(
                             future: userService.getProfilePic(),
                             builder: (context, snapshot) {
+                           
+
                               return snapshot.data!.picture!.isNotEmpty
                                   ? CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: NetworkImage(snapshot.data!.picture!),
-                                  ) : const Icon(Icons.person);
+                                      radius: 50,
+                                      backgroundImage:
+                                          NetworkImage(snapshot.data!.picture!),
+                                    )
+                                  : const Icon(Icons.person);
                             })
                       ],
                     ),
@@ -150,7 +184,7 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                 ),
                 Config.spaceMedium,
                 const Text(
-                  'Appointment Today',
+                  ' Next Appointment ',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -162,13 +196,32 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                         shrinkWrap: true,
                         itemCount: 1,
                         itemBuilder: (BuildContext context, int index) {
+                             void getNextAppointment(List<String> randevu) {
+                                for (String appointment in randevu) {
+                                  final now = DateTime.now();
+                                  final dateFormat = DateFormat('yyyy-MM-dd');
+                                  final appointmentTime = DateTime.parse(
+                                      '${dateFormat.format(now)} $appointment');
+
+                                  if (appointmentTime.isAfter(DateTime.now())) {
+                                    for (var entry in hastalar.entries) {
+                                      if (entry.value == appointment) {
+                                        patientName = entry.key;
+                                        randevuSaat = appointment;
+                                        return entry.key;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                              getNextAppointment(appointmentTimes);
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               _buildItem(
-                                  '${appointments.last.patientName!} ${appointments.last.patientSurname}',
-                                  '${appointments.last.appointmentTime!.substring(0, 5)} ',
+                                  '${patientName}',
+                                  '${randevuSaat} ',
                                   Color(0xff0074ff)),
                               _buildDivider(),
                               _buildItem(

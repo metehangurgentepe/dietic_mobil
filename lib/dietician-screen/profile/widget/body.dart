@@ -1,11 +1,30 @@
+import 'package:dietic_mobil/service/update_profile_pic/update_profile_pic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../../../model/user_model.dart';
 import 'profile_menu.dart';
 import 'profile_pic.dart';
 
-class BodyDietician extends StatelessWidget {
+class BodyDietician extends StatefulWidget {
+  @override
+  State<BodyDietician> createState() => _BodyDieticianState();
+}
+
+class _BodyDieticianState extends State<BodyDietician> {
   final storage = new FlutterSecureStorage();
+  final service = UpdateProfilePic();
+  UserModel? user;
+  @override
+  void initState() {
+    service.getProfilePic().then((value){
+      setState(() {
+      user=value;  
+      });
+      
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +34,13 @@ class BodyDietician extends StatelessWidget {
         children: [
           SizedBox(height: 30),
           ProfilePic(),
-          SizedBox(height: 50),
+          SizedBox(height: 20),
+          Column(children: [
+            Text.rich(TextSpan(text: '${user!.name} ${user!.surname} ',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold))),
+            Text.rich(TextSpan(text: '${user!.email} ',style: TextStyle(fontSize: 15)))
+
+          ],),
+          SizedBox(height: 30),
           ProfileMenu(
             text: "My Account",
             icon: "assets/icons/User Icon.svg",

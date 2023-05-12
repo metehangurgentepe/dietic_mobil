@@ -47,69 +47,72 @@ class _NavDieticianScreenState extends State <NavDieticianScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[_currentIndex],
-      bottomNavigationBar: DotNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: changePage,
-        dotIndicatorColor: _currentIndex == 2 ? Colors.transparent : AppColors.colorPrimary,
-        borderRadius: 0,
-        backgroundColor: Colors.white,
-        enablePaddingAnimation: false,
-        marginR: EdgeInsets.zero,
-        paddingR: EdgeInsets.zero,
-        items: [
-          DotNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.house,
-              size: 20. sp,
-            ),
-            selectedColor: AppColors.colorAccent,
-            unselectedColor: AppColors.colorTint400
-          ),
-          DotNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.search,
-              size: 20. sp,
-            ),
-            selectedColor: AppColors.colorAccent,
-            unselectedColor: AppColors.colorTint400
-          ),
-          DotNavigationBarItem(
-            icon: Container(
-              height: 48. w,
-              width: 48. w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.colorAccent,
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
+        body: pages[_currentIndex],
+        bottomNavigationBar: DotNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: changePage,
+          dotIndicatorColor: _currentIndex == 2 ? Colors.transparent : AppColors.colorPrimary,
+          borderRadius: 0,
+          backgroundColor: Colors.white,
+          enablePaddingAnimation: false,
+          marginR: EdgeInsets.zero,
+          paddingR: EdgeInsets.zero,
+          items: [
+            DotNavigationBarItem(
+              icon: FaIcon(
+                FontAwesomeIcons.house,
+                size: 20. sp,
               ),
-              child: Center(
-                child: FaIcon(
-                  FontAwesomeIcons.rocketchat,
-                  size: 20. sp,
+              selectedColor: AppColors.colorAccent,
+              unselectedColor: AppColors.colorTint400
+            ),
+            DotNavigationBarItem(
+              icon: FaIcon(
+                FontAwesomeIcons.search,
+                size: 20. sp,
+              ),
+              selectedColor: AppColors.colorAccent,
+              unselectedColor: AppColors.colorTint400
+            ),
+            DotNavigationBarItem(
+              icon: Container(
+                height: 48. w,
+                width: 48. w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.colorAccent,
+                ),
+                child: Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.rocketchat,
+                    size: 20. sp,
+                  ),
                 ),
               ),
+              selectedColor: Colors.white,
+              unselectedColor: Colors.white,
             ),
-            selectedColor: Colors.white,
-            unselectedColor: Colors.white,
-          ),
-          DotNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.noteSticky,
-              size: 20. sp,
+            DotNavigationBarItem(
+              icon: FaIcon(
+                FontAwesomeIcons.noteSticky,
+                size: 20. sp,
+              ),
+              selectedColor: AppColors.colorAccent,
+              unselectedColor: AppColors.colorTint400
             ),
-            selectedColor: AppColors.colorAccent,
-            unselectedColor: AppColors.colorTint400
-          ),
-          DotNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.user,
-              size: 20. sp,
+            DotNavigationBarItem(
+              icon: FaIcon(
+                FontAwesomeIcons.user,
+                size: 20. sp,
+              ),
+              selectedColor: AppColors.colorAccent,
+              unselectedColor: AppColors.colorTint400
             ),
-            selectedColor: AppColors.colorAccent,
-            unselectedColor: AppColors.colorTint400
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../config/theme/fitness_app_theme.dart';
 import '../exercise/new_exercises.dart';
@@ -16,13 +15,13 @@ class FitnessAppHomeScreen extends StatefulWidget {
         builder: (_) => FitnessAppHomeScreen(),
         settings: const RouteSettings(name: routeName));
   }
+
   @override
   _FitnessAppHomeScreenState createState() => _FitnessAppHomeScreenState();
 }
 
 class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     with TickerProviderStateMixin {
-
   AnimationController? animationController;
 
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
@@ -30,6 +29,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   Widget tabBody = Container(
     color: FitnessAppTheme.background,
   );
+  
 
   @override
   void initState() {
@@ -52,24 +52,29 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: FitnessAppTheme.background,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: FutureBuilder<bool>(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox();
-            } else {
-              return Stack(
-                children: <Widget>[
-                  tabBody,
-                  bottomBar(),
-                ],
-              );
-            }
-          },
+    return WillPopScope(
+      onWillPop: () {
+        return Future.value(false);
+      },
+      child: Container(
+        color: FitnessAppTheme.background,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: FutureBuilder<bool>(
+            future: getData(),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (!snapshot.hasData) {
+                return const SizedBox();
+              } else {
+                return Stack(
+                  children: <Widget>[
+                    tabBody,
+                    bottomBar(),
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -106,30 +111,25 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                   return;
                 }
                 setState(() {
-                  tabBody =
-                      SearchScreen();
+                  tabBody = SearchScreen();
                 });
               });
-            }
-            else if (index == 2) {
+            } else if (index == 2) {
               animationController?.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;
                 }
                 setState(() {
-                  tabBody =
-                      NewExercises();
+                  tabBody = NewExercises();
                 });
               });
-            }
-            else if (index == 3) {
+            } else if (index == 3) {
               animationController?.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;
                 }
                 setState(() {
-                  tabBody =
-                      ProfilesScreen();
+                  tabBody = ProfilesScreen();
                 });
               });
             }

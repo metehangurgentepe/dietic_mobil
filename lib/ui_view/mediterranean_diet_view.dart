@@ -423,7 +423,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                     child: Row(
                                       children: <Widget>[
                                         Container(
-                                          width: ((carbs / sumCarbs) * 70),
+                                          width: carbs==0 ? 0.01 : ((carbs / sumCarbs) * 70),
                                           height: 4,
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(colors: [
@@ -490,7 +490,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                         child: Row(
                                           children: <Widget>[
                                             Container(
-                                              width: ((protein/sumProtein)*70) ?? 0,
+                                              width:protein==0 ? (0.01) : ((protein/sumProtein)*70) ?? 0,
                                               height: 4,
                                               decoration: BoxDecoration(
                                                 gradient:
@@ -560,7 +560,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                         child: Row(
                                           children: <Widget>[
                                             Container(
-                                              width: ((fat/sumFat)*70),
+                                              width:fat==0 ? (0.01) : ((fat/sumFat)*70),
                                               height: 4,
                                               decoration: BoxDecoration(
                                                 gradient:

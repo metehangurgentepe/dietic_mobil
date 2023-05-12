@@ -42,10 +42,19 @@ class _AppointmentState extends State<Appointment> {
   List<String> sumTime = [];
   List<String> sum = [];
   List<dynamic> allTimes = [];
-  List<String> zamanlar=['9:00:00','10:00:00','11:00:00','12:00:00','13:00:00','14:00:00','15:00:00','16:00:00'];
-List<String>? differenceList;
+  List<String> zamanlar = [
+    '9:00:00',
+    '10:00:00',
+    '11:00:00',
+    '12:00:00',
+    '13:00:00',
+    '14:00:00',
+    '15:00:00',
+    '16:00:00'
+  ];
+  List<String>? differenceList;
   final service = AppointmentService();
-  
+
   int? buttonNumber;
   @override
   void initState() {
@@ -63,6 +72,14 @@ List<String>? differenceList;
 
     // });
     super.initState();
+  }
+
+  ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
+
+  @override
+  void dispose() {
+    _currentIndexNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -117,57 +134,70 @@ List<String>? differenceList;
                         ),
                       ),
                     )
-                  : SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return InkWell(
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              setState(() {
-                                 _currentIndex = differenceList![index];
-                                _timeSelected = true;
-                                print(index);
-                              });
+                  : ValueListenableBuilder<int>(
+                      valueListenable: _currentIndexNotifier,
+                      builder: (context, value, child) {
+                        return SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return InkWell(
+                                splashColor: Colors.transparent,
+                                onTap: () {
+                                  setState(() {
+                                    print('index burada');
+                                    print(index);
+                                    _currentIndexNotifier.value = index;
+                                    _currentIndex = differenceList![index];
+                                    _timeSelected = true;
+                                    // Other code logic
+                                    print(index);
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: value == index
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: value == index
+                                        ? AppColors.colorAccent
+                                        : null,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: differenceList == null
+                                      ? Text(
+                                          zamanlar[index],
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: value == index
+                                                ? Colors.white
+                                                : null,
+                                          ),
+                                        )
+                                      : Text(
+                                          differenceList![index],
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: value == index
+                                                ? Colors.white
+                                                : null,
+                                          ),
+                                        ),
+                                ),
+                              );
                             },
-                            child: Container(
-                              margin: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: _currentIndex == differenceList![index]
-                                      ? Colors.white
-                                      : Colors.black,
-                                ),
-                                borderRadius: BorderRadius.circular(15),
-                                color: _currentIndex == differenceList![index]
-                                    ? AppColors.colorAccent
-                                    : null,
-                              ),
-                              alignment: Alignment.center,
-                              child:differenceList==null?Text(
-                                zamanlar[index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: _currentIndex == differenceList![index]
-                                      ? Colors.white
-                                      : null,
-                                ),
-                              ) : Text(
-                                differenceList![index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: _currentIndex == index
-                                      ? Colors.white
-                                      : null,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        childCount: buttonNumber ?? 8,
-                      ),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4, childAspectRatio: 1.5),
+                            childCount: buttonNumber ?? 8,
+                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            childAspectRatio: 1.5,
+                          ),
+                        );
+                      },
                     ),
               SliverToBoxAdapter(
                 child: Container(
@@ -180,12 +210,10 @@ List<String>? differenceList;
                       //convert date/day/time into string first
                       final getDate = DateConverted.getDate(_currentDay);
                       final getDay = DateConverted.getDay(_currentDay.weekday);
-                      print('current index'+_currentIndex!);
+                      // print('current index' + _currentIndex!);
                       //final getTime = DateConverted.getTime(int.parse(_currentIndex!));
-                      
+
                       //String time= '${getTime.substring(0,5)}:00';
-                      
-                      
 
                       //DateTime dateTime = DateFormat('hh:mm a').parse(getTime);
                       DateTime date = DateTime.parse(_currentDay.toString());
@@ -238,15 +266,16 @@ List<String>? differenceList;
           //sıkıntı var
           service.getAppointmentsByDate(dateWithoutTime).then((value) {
             allTimes.clear();
-              for (int i = 0; i < value.length; i++) {
-                allTimes.add(value[i].appointmentTime);
-                //print(allTimes[i]);
-              }  
-              allTimes.length=value.length;
+            for (int i = 0; i < value.length; i++) {
+              allTimes.add(value[i].appointmentTime);
+              //print(allTimes[i]);
+            }
+            allTimes.length = value.length;
           });
-          buttonNumber=8-allTimes.length;
-         differenceList = zamanlar.where((element) => !allTimes.contains(element)).toList();
-          
+          buttonNumber = 8 - allTimes.length;
+          differenceList =
+              zamanlar.where((element) => !allTimes.contains(element)).toList();
+
           //check if weekend is selected
           if (selectedDay.weekday == 6 || selectedDay.weekday == 7) {
             _isWeekend = true;

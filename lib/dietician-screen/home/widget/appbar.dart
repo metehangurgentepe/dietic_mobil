@@ -105,23 +105,23 @@ class _HomeScreenAppBarState extends State<HomeScreenAppBar> {
               )
             ]
           ),
-          Container(
-            height: 45. w,
-            width: 45. w,
-            decoration: BoxDecoration(
-              color: AppColors.colorTint200,
-              borderRadius: BorderRadius.circular(15)
-            ),
-            child: TextButton(
-              onPressed:_showDatePicker,
-              child: SvgPicture.asset(
-                'assets/icons/calendar.svg',
-                color: AppColors.colorAccent,
-                width: 25. w,
-                height: 25. w
-              ),
-            )
-          ),
+          // Container(
+          //   height: 45. w,
+          //   width: 45. w,
+          //   decoration: BoxDecoration(
+          //     color: AppColors.colorTint200,
+          //     borderRadius: BorderRadius.circular(15)
+          //   ),
+          //   child: TextButton(
+          //     onPressed:_showDatePicker,
+          //     child: SvgPicture.asset(
+          //       'assets/icons/calendar.svg',
+          //       color: AppColors.colorAccent,
+          //       width: 25. w,
+          //       height: 25. w
+          //     ),
+          //   )
+          // ),
         ],
       ),
     );

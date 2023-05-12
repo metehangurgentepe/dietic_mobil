@@ -8,27 +8,25 @@ import '../../../model/diet_plan_model.dart';
 import '../../../service/diet_plan/diet_plan_service.dart';
 
 class SnackMealConsumed extends StatefulWidget {
-  const SnackMealConsumed({
-    Key ? key
-  }): super(key: key);
+  const SnackMealConsumed({Key? key}) : super(key: key);
 
   @override
-  State < SnackMealConsumed > createState() => _SnackMealConsumedState();
+  State<SnackMealConsumed> createState() => _SnackMealConsumedState();
 }
 
-class _SnackMealConsumedState extends State < SnackMealConsumed > {
-  List < FoodConsumed > consumedFoods = [];
+class _SnackMealConsumedState extends State<SnackMealConsumed> {
+  List<FoodConsumed> consumedFoods = [];
   DietPlanService service = DietPlanService();
   List<DietPlanModel> snackFoods = [];
   List<int?> kcal = [];
   List<bool> isSelected = [];
   List<DietPlanModel> selectedFoods = [];
-  double sumEnergy=0;
+  double sumEnergy = 0;
 
-   @override
+  @override
   void initState() {
-    DateTime date =DateTime.now();
-    String time= date.toString().substring(0,10);
+    DateTime date = DateTime.now();
+    String time = date.toString().substring(0, 10);
     service.getSnackDietPlan(time).then((value) {
       snackFoods = value;
       isSelected = List<bool>.generate(snackFoods.length, (index) => false);
@@ -41,7 +39,6 @@ class _SnackMealConsumedState extends State < SnackMealConsumed > {
             isSelected[i] = true;
           }
         }
-        
       });
     });
     super.initState();
@@ -54,34 +51,36 @@ class _SnackMealConsumedState extends State < SnackMealConsumed > {
         maxHeight: double.infinity,
       ),
       child: Container(
-        margin: EdgeInsets.only(top: 30. w, bottom: 30. w),
-        padding: EdgeInsets.only(left: 10. w),
+        margin: EdgeInsets.only(top: 30.w, bottom: 30.w),
+        padding: EdgeInsets.only(left: 10.w),
         child: Column(
           children: [
             SizedBox(
-              height: 40. w,
+              height: 40.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       SizedBox(
-                        height: 25. w,
-                        width: 25. w,
+                        height: 25.w,
+                        width: 25.w,
                         child: CircularProgressIndicator(
-                          strokeWidth: 4. w,
+                          strokeWidth: 4.w,
                           value: 0.7,
-                          backgroundColor: AppColors.colorAccent.withOpacity(0.2),
-                          valueColor: AlwaysStoppedAnimation < Color > (AppColors.colorWarning),
+                          backgroundColor:
+                              AppColors.colorAccent.withOpacity(0.2),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.colorWarning),
                         ),
                       ),
-                      SizedBox(width: 20. w),
+                      SizedBox(width: 20.w),
                       Text(
                         'Snack',
                         style: TextStyle(
                           color: AppColors.colorTint700,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16. sp,
+                          fontSize: 16.sp,
                         ),
                       ),
                     ],
@@ -89,20 +88,20 @@ class _SnackMealConsumedState extends State < SnackMealConsumed > {
                   Row(
                     children: [
                       Text(
-                        sumEnergy.toString(),
+                        sumEnergy.toInt().toString(),
                         style: TextStyle(
                           color: AppColors.colorTint500,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16. sp,
+                          fontSize: 16.sp,
                         ),
                       ),
-                      SizedBox(width: 1. w),
+                      SizedBox(width: 1.w),
                       Text(
                         'kcal',
                         style: TextStyle(
                           color: AppColors.colorTint500,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12. sp,
+                          fontSize: 12.sp,
                         ),
                       ),
                       IconButton(
@@ -118,72 +117,96 @@ class _SnackMealConsumedState extends State < SnackMealConsumed > {
                 ],
               ),
             ),
-            SizedBox(height: 20. w),
+            SizedBox(height: 20.w),
             Container(
-              child: ListView.builder(
-                itemCount: snackFoods.length,
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 70. w,
-                    margin: EdgeInsets.zero,
-                    child: IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                                        value: isSelected[index],
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _updateSelectedItems(value!, index);
-                                          });
-                                        },
+                child: snackFoods.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: snackFoods.length,
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            height: 70.w,
+                            margin: EdgeInsets.zero,
+                            child: IntrinsicHeight(
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                  Checkbox(
+                                    value: isSelected[index],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _updateSelectedItems(value!, index);
+                                      });
+                                    },
+                                  ),
+                                  VerticalDivider(
+                                    color: AppColors.colorTint300,
+                                    thickness: 2,
+                                  ),
+                                  SizedBox(width: 15.w),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${snackFoods[index].foodName} ',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            'x(${snackFoods[index].portion})',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12),
+                                          )
+                                        ],
                                       ),
-                          VerticalDivider(
-                            color: AppColors.colorTint300,
-                            thickness: 2,
-                          ),
-                          SizedBox(width: 15. w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                snackFoods[index].foodName!,
-                                style: TextStyle(
-                                  color: AppColors.colorTint700,
-                                  fontSize: 15. sp,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                              SizedBox(height: 5. w),
-                              Text(
-                                snackFoods[index].energy.toString(),
-                                style: TextStyle(
-                                  color: AppColors.colorTint500,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12. sp,
-                                ),
-                              ),
-                            ],
-                          )
-                        ]
+                                      Visibility(
+                                        visible: snackFoods[index]
+                                            .details!
+                                            .trim()
+                                            .isNotEmpty,
+                                        child: Text(
+                                          'Description: ${snackFoods[index].details!}',
+                                          style: TextStyle(
+                                            color: AppColors.colorTint600,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12.sp,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 5.w),
+                                      Text(
+                                        snackFoods[index].energy.toString(),
+                                        style: TextStyle(
+                                          color: AppColors.colorTint500,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ])),
+                          );
+                        },
                       )
-                    ),
-                  );
-                },
-              ),
-            ),
+                    : Text('There is no snack today')),
           ],
         ),
       ),
     );
   }
 
-void _updateSelectedItems(bool value, int index) {
+  void _updateSelectedItems(bool value, int index) {
     setState(() {
       isSelected[index] = value;
       selectedFoods.add(snackFoods[index]);

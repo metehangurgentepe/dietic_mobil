@@ -1,24 +1,68 @@
+import 'package:dietic_mobil/service/diet_plan/diet_plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/screen/screen.dart';
+import 'package:grock/grock.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class DailySummary extends StatelessWidget {
-  const DailySummary({
-    Key ? key
-  }): super(key: key);
+import '../../../model/diet_plan_model.dart';
+
+class DailySummary extends StatefulWidget {
+  const DailySummary({Key? key}) : super(key: key);
+
+  @override
+  State<DailySummary> createState() => _DailySummaryState();
+}
+
+class _DailySummaryState extends State<DailySummary> {
+  final service = DietPlanService();
+  List<DietPlanModel> dietPlan = [];
+  double carbonhydrate = 0;
+  double protein = 0;
+  double energy = 0;
+  double fats = 0;
+
+  double eatenEnergy = 0;
+  double eatenCarbs = 0;
+  double eatenFats = 0;
+  double eatenProteins = 0;
+
+  @override
+  void initState() {
+    service.getFirstDietPlan().then((value) {
+      setState(() {
+        dietPlan = value;
+        print('buralar');
+        print(dietPlan);
+      });
+      for (int i = 0; i < dietPlan.length; i++) {
+        carbonhydrate += dietPlan[i].carb!;
+        protein += dietPlan[i].protein!;
+        energy += dietPlan[i].energy!;
+        fats += dietPlan[i].fat!;
+
+        if (dietPlan[i].eaten == 'CHECKED') {
+          eatenCarbs += dietPlan[i].carb!;
+          eatenProteins += dietPlan[i].protein!;
+          eatenEnergy += dietPlan[i].energy!;
+          eatenFats += dietPlan[i].fat!;
+        }
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        Navigator.pushNamed(context, DailySummaryDetailScreen.routeName);
+      onTap: () {
+        // Navigator.pushNamed(context, DailySummaryDetailScreen.routeName);
       },
       child: AspectRatio(
         aspectRatio: 1.6,
         child: Container(
-          padding: EdgeInsets.all(18. w),
+          padding: EdgeInsets.all(18.w),
           decoration: BoxDecoration(
             color: AppColors.colorAccent,
             borderRadius: BorderRadius.circular(30),
@@ -26,11 +70,7 @@ class DailySummary extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _circleProgress(),
-              _macronutrients()
-
-            ],
+            children: [_circleProgress(), _macronutrients()],
           ),
         ),
       ),
@@ -39,18 +79,18 @@ class DailySummary extends StatelessWidget {
 
   Widget _circleProgress() {
     return SizedBox(
-      width: 160. w,
-      height: 160. w,
+      width: 160.w,
+      height: 160.w,
       child: Stack(
         children: [
           SizedBox(
-            width: 160. w,
-            height: 160. w,
+            width: 160.w,
+            height: 160.w,
             child: CircularProgressIndicator(
-              strokeWidth: 8. w,
+              strokeWidth: 8.w,
               value: 0.7,
               backgroundColor: AppColors.colorTint100.withOpacity(0.2),
-              valueColor: AlwaysStoppedAnimation < Color > (Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           ),
           Align(
@@ -58,10 +98,11 @@ class DailySummary extends StatelessWidget {
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              margin: EdgeInsets.all(13. w),
+              margin: EdgeInsets.all(13.w),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.colorTint100.withOpacity(0.2), width: 8. w),
+                border: Border.all(
+                    color: AppColors.colorTint100.withOpacity(0.2), width: 8.w),
               ),
               child: Container(
                 decoration: BoxDecoration(
@@ -69,7 +110,7 @@ class DailySummary extends StatelessWidget {
                   color: AppColors.colorTint100.withOpacity(0.1),
                 ),
                 child: Container(
-                  margin: EdgeInsets.all(22. w),
+                  margin: EdgeInsets.all(22.w),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -77,22 +118,27 @@ class DailySummary extends StatelessWidget {
                         'Remaining',
                         style: TextStyle(
                           color: AppColors.colorTint300,
-                          fontSize: 10. sp,
+                          fontSize: 10.sp,
                         ),
                       ),
-                      Text(
-                        '1,112',
+                     fats==0 ? Text(
+                        '0',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18. sp,
-                          fontWeight: FontWeight.bold
-                        ),
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold),
+                      ) :Text(
+                        '${(fats - eatenFats).toLimitedStringWithComma(1)}',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold),
                       ),
                       Text(
                         'kcal',
                         style: TextStyle(
                           color: AppColors.colorTint300,
-                          fontSize: 12. sp,
+                          fontSize: 12.sp,
                         ),
                       ),
                     ],
@@ -107,24 +153,27 @@ class DailySummary extends StatelessWidget {
   }
 
   Widget _macronutrients() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _macronutrientsTile(title: 'Carbs', percentValue: 0.4, amountInGram: '14/323g'),
-        _macronutrientsTile(title: 'Proteins', percentValue: 0.8, amountInGram: '14/129g'),
-        _macronutrientsTile(title: 'Fats', percentValue: 0.2, amountInGram: '14/85g')
-      ]
-    );
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      _macronutrientsTile(
+          title: 'Carbs',
+          percentValue: carbonhydrate == 0 ? eatenCarbs / carbonhydrate : 0.1,
+          amountInGram:  carbonhydrate == 0 ? '${eatenCarbs.toInt()}/${carbonhydrate.toInt()}g': '0'),
+      _macronutrientsTile(
+          title: 'Proteins',
+          percentValue: protein == 0 ? eatenProteins / protein : 0.1,
+          amountInGram: protein==0 ? '${eatenProteins.toInt()}/${protein.toInt()}g' :'0'),
+      _macronutrientsTile(
+          title: 'Fats',
+          percentValue: fats == 0 ? eatenFats / fats : 0.1,
+          amountInGram: eatenFats==0 ? '${eatenFats.toInt()}/${fats.toInt()}g':'0')
+    ]);
   }
 
-  Widget _macronutrientsTile({
-    String ? title,
-    double ? percentValue,
-    String ? amountInGram
-  }) {
+  Widget _macronutrientsTile(
+      {String? title, double? percentValue, String? amountInGram}) {
     return SizedBox(
-      height: 50. w,
-      width: 120. w,
+      height: 50.w,
+      width: 120.w,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,15 +182,15 @@ class DailySummary extends StatelessWidget {
             title!,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 14. sp,
+              fontSize: 14.sp,
             ),
           ),
           LinearPercentIndicator(
-            width: 120. w,
+            width: 120.w,
             animation: true,
             lineHeight: 6,
             animationDuration: 2500,
-            percent: percentValue!,
+            percent: percentValue!.isNaN ? 0.01 : percentValue,
             barRadius: Radius.circular(3),
             progressColor: Colors.white,
             padding: EdgeInsets.zero,
@@ -151,7 +200,7 @@ class DailySummary extends StatelessWidget {
             amountInGram!,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 12. sp,
+              fontSize: 12.sp,
             ),
           ),
         ],
