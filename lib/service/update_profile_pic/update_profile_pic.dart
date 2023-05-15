@@ -32,7 +32,7 @@ class UpdateProfilePic{
 
 
   
-    Future<UserModel> getProfilePic() async {
+    Future<UserModel?> getProfilePic() async {
 
     Dio dio = Dio();
     String? token = await storage.read(key: 'token');
@@ -43,18 +43,15 @@ class UpdateProfilePic{
     String url = '${baseUrl}getPicture';
     try {
       var response = await dio.get(url);
-      print('update profile pic');
-      print(response.statusCode);
-      String pictureGetUrl =response.data['picture'];
-      print('pictıre');
-      print(pictureGetUrl);
-      print(response.data);
+      
       UserModel user=UserModel.fromJson(response.data);
+      print(user.name);
+      print('userrrr');
       return user;
       
       
     } catch (e) {
-      throw Exception('${e} patient detail alınamadı');
+      return throw Exception(e);
     }
   }
 

@@ -3,16 +3,22 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dietic_mobil/model/health_model.dart';
 import 'package:dietic_mobil/service/health/health_service.dart';
+import 'package:dietic_mobil/service/weight/weight_service.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:grock/grock.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:flutter/services.dart';
 import 'package:health/health.dart';
 import '../../config/theme/theme.dart';
 import '../../dietician-screen/home/widget/appbar.dart';
+import '../../model/weight_model.dart';
 
 class NewExercises extends ConsumerStatefulWidget {
   const NewExercises({Key? key}) : super(key: key);
@@ -45,6 +51,15 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
   AppState _state = AppState.DATA_NOT_FETCHED;
   int _nofSteps = 0;
 
+  List<WeightModel> weightsData = [];
+  List<double> weights = [];
+  List<String> date = [];
+  ValueNotifier<List<double>> weightsValue = ValueNotifier<List<double>>([]);
+
+  final service = WeightService();
+  List<WeightsData> chartData = [];
+  List<FlSpot> weightFl = [];
+
   var waterData;
   static final types = [
     HealthDataType.WEIGHT,
@@ -56,6 +71,11 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
     // Uncomment these lines on iOS - only available on iOS
     // HealthDataType.AUDIOGRAM
+  ];
+
+  final List<Color> gradientColors = [
+    const Color(0xff23b6e6),
+    const Color(0xff23b6e6),
   ];
 
   @override
@@ -122,6 +142,28 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     });
     healthService.fetchEnergyData();
     healthService.fetchTodayStepData();
+
+    service.getWeights().then((value) {
+      setState(() {
+        weightsData = value;
+
+        for (int i = 0; i < weightsData.length; i++) {
+          weights.add(weightsData[i].weight!);
+          date.add(weightsData[i].date!);
+          weightsData[i].date!.substring(4, 9);
+          weightFl.add(FlSpot(i.toDouble(), weightsData[i].weight!));
+          print(weightsData[i].date!.substring(5, 9).replaceAll('-', '.'));
+          chartData.add(WeightsData(
+              weightsData[i].date!.substring(5, 9).replaceAll('-', '.'),
+              weightsData[i].weight!));
+          print(chartData[i].weight);
+        }
+        print('charttt');
+        print(chartData);
+        weightsValue = ValueNotifier<List<double>>(weights);
+        print(weights);
+      });
+    });
   }
 
   final storage = new FlutterSecureStorage();
@@ -220,56 +262,57 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                     builder: (context, snapshot) {
                                       print('snap');
                                       print(snapshot.data.toString());
-                                      if(snapshot.hasData==true){
+                                      if (snapshot.hasData == true) {
                                         return Text('No Steps Data');
-                                      }
-                                      else{
+                                      } else {
                                         double _percent = double.parse(
-                                              snapshot.data != null
-                                                  ? snapshot.data!
-                                                  : '0') /
-                                          15000;
-                                      String percentNumber =
-                                          (_percent * 100).toStringAsFixed(2);
-                                      if (_percent > 1) {
-                                        _percent = 0.99;
-                                      } else if (_percent == null) {
-                                        _percent = 0.1;
+                                                snapshot.data != null
+                                                    ? snapshot.data!
+                                                    : '0') /
+                                            15000;
+                                        String percentNumber =
+                                            (_percent * 100).toStringAsFixed(2);
+                                        if (_percent > 1) {
+                                          _percent = 0.99;
+                                        } else if (_percent == null) {
+                                          _percent = 0.1;
+                                        }
+                                        return Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Icon(Icons.directions_walk,
+                                                    size: 30,
+                                                    color: Colors.pinkAccent),
+                                                if (snapshot.data != '')
+                                                  Text('0')
+                                                else
+                                                  Text(snapshot.data)
+                                              ],
+                                            ),
+                                            Text('Steps',
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18)),
+                                            Text("%${percentNumber}" ?? ' '),
+                                            LinearPercentIndicator(
+                                              barRadius: Radius.circular(20),
+                                              width: 130,
+                                              animation: true,
+                                              animationDuration: 10000,
+                                              lineHeight: 10,
+                                              percent: _percent ?? 0.0,
+                                              progressColor: Colors.pinkAccent,
+                                              backgroundColor:
+                                                  Color(0xffE0A0B2),
+                                            ),
+                                          ],
+                                        );
                                       }
-                                      return Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Icon(Icons.directions_walk,
-                                                  size: 30,
-                                                  color: Colors.pinkAccent),
-                                              if (snapshot.data!=null) Text('0') else Text(snapshot.data)
-                                            ],
-                                          ),
-                                          Text('Steps',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18)),
-                                          Text("%${percentNumber}" ?? ' '),
-                                          LinearPercentIndicator(
-                                            barRadius: Radius.circular(20),
-                                            width: 130,
-                                            animation: true,
-                                            animationDuration: 10000,
-                                            lineHeight: 10,
-                                            percent: _percent ?? 0.0,
-                                            progressColor: Colors.pinkAccent,
-                                            backgroundColor: Color(0xffE0A0B2),
-                                          ),
-                                        ],
-                                      );
-
-                                      }
-                                      
                                     }),
                               ),
                             ),
@@ -292,147 +335,39 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                       viewportFraction: 0.8,
                     ),
                     items: [
-                      FutureBuilder(
-                          future: healthService.fetchWeekStepData(),
-                          builder: (context, snapshot) {
-                            /* var result=snapshot.data!.value!.numericValue;
-                        print(result);*/
-                            //  var steps=double.parse(snapshot.data.value.numericValue) ?? 0;
-                            print('asdasdasdasdasd');
-                            return Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[600],
-                                    borderRadius: BorderRadius.circular(24)),
-                                padding: const EdgeInsets.all(20.0),
-                                alignment: Alignment.center,
-                                width: 250.0,
-                                height: 250.0,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text(
-                                      'Steps',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Container(
-                                      height: 220,
-                                      child: SfSparkLineChart(
-                                          labelStyle:
-                                              TextStyle(color: Colors.white),
-                                          // enable the trackball
-                                          trackball: SparkChartTrackball(
-                                            activationMode:
-                                                SparkChartActivationMode.tap,
-                                          ),
-                                          // enable marker
-                                          marker: SparkChartMarker(
-                                            displayMode:
-                                                SparkChartMarkerDisplayMode.all,
-                                          ),
-                                          // enable data label
-                                          labelDisplayMode:
-                                              SparkChartLabelDisplayMode.all,
-                                          // use different data for each chart
-                                          data: <double>[0, 23, 4, 5, 69]),
-                                    ),
-                                  ],
-                                ));
-                          }),
-                      Container(
-                          decoration: BoxDecoration(
-                              color: AppColors.colorBackColor,
-                              borderRadius: BorderRadius.circular(24)),
-                          padding: const EdgeInsets.all(20.0),
-                          alignment: Alignment.center,
-                          width: 250.0,
-                          height: 250.0,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                'Weight',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                      Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              'Weights',
+                              style: TextStyle(
+                                color: AppColors.colorAccentDark,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)),
-                                height: 220,
-                                child: SfSparkLineChart(
-                                    labelStyle: TextStyle(color: Colors.black),
-                                    // enable the trackball
-                                    trackball: SparkChartTrackball(
-                                      activationMode:
-                                          SparkChartActivationMode.tap,
-                                    ),
-                                    // enable marker
-                                    marker: SparkChartMarker(
-                                      displayMode:
-                                          SparkChartMarkerDisplayMode.all,
-                                    ),
-                                    // enable data label
-                                    labelDisplayMode:
-                                        SparkChartLabelDisplayMode.all,
-                                    // use different data for each chart
-                                    data: <double>[
-                                      92,
-                                      89,
-                                      85,
-                                      84,
-                                      83,
-                                      82,
-                                    ]),
+                            ),
+                          ),
+                          SizedBox(height: 300, child: LineChart(weightData())),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              'Steps',
+                              style: TextStyle(
+                                color: AppColors.colorAccentDark,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
                               ),
-                            ],
-                          )),
+                            ),
+                          ),
+                          SizedBox(height: 300, child: LineChart(stepData())),
+                        ],
+                      ),
                     ]),
-                    ListHealthData(),
-                /*SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    itemCount: healthDataPoints.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      HealthDataPoint dataPoint = healthDataPoints[index];
-                      return ListTile(
-                        title: Text('Step Count: ${dataPoint.value}'),
-                        subtitle: Text('Date: ${dataPoint.dateFrom}'),
-                      );
-                    },
-                  ),
-                )  */
-                ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _healthDataList.length,
-                    itemBuilder: (_, index) {
-                      HealthDataPoint p = _healthDataList[index];
-                      if (p.value is AudiogramHealthValue) {
-                        return ListTile(
-                          title: Text("${p.typeString}: ${p.value}"),
-                          trailing: Text('${p.unitString}'),
-                          subtitle: Text('${p.dateFrom} - ${p.dateTo}'),
-                        );
-                      }
-                      if (p.value is WorkoutHealthValue) {
-                        return ListTile(
-                          title: Text(
-                              "${p.typeString}: ${(p.value as WorkoutHealthValue).totalEnergyBurned} ${(p.value as WorkoutHealthValue).totalEnergyBurnedUnit?.name}"),
-                          trailing: Text(
-                              '${(p.value as WorkoutHealthValue).workoutActivityType.name}'),
-                          subtitle: Text('${p.dateFrom} - ${p.dateTo}'),
-                        );
-                      }
-                      return ListTile(
-                        title: Text("${p.typeString}: ${p.value}"),
-                        trailing: Text('${p.unitString}'),
-                        subtitle: Text('${p.dateFrom} - ${p.dateTo}'),
-                      );
-                    }),
                 SizedBox(height: 100),
               ]),
         ),
@@ -505,33 +440,228 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       ),
     );
   }
-  Widget ListHealthData(){
-    return ListView.builder(
-      shrinkWrap: true,
-        itemCount: _healthDataList.length,
-        itemBuilder: (context, index) {
-          HealthDataPoint p = _healthDataList[index];
-          if (p.value is AudiogramHealthValue) {
-            return ListTile(
-              title: Text("${p.typeString}: ${p.value}"),
-              trailing: Text('${p.unitString}'),
-              subtitle: Text('${p.dateFrom} - ${p.dateTo}'),
-            );
-          }
-          if (p.value is WorkoutHealthValue) {
-            return ListTile(
-              title: Text(
-                  "${p.typeString}: ${(p.value as WorkoutHealthValue).totalEnergyBurned} ${(p.value as WorkoutHealthValue).totalEnergyBurnedUnit?.name}"),
-              trailing: Text(
-                  '${(p.value as WorkoutHealthValue).workoutActivityType.name}'),
-              subtitle: Text('${p.dateFrom} - ${p.dateTo}'),
-            );
-          }
-          return ListTile(
-            title: Text("${p.typeString}: ${p.value}"),
-            trailing: Text('${p.unitString}'),
-            subtitle: Text('${p.dateFrom} - ${p.dateTo}'),
-          );
-        });
+
+  
+
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    List<String> times = [];
+    final now = DateTime.now();
+    String day = '${(now.month).toString()}-${(now.day + 7).toString()}';
+    for (int i = 0; i < date.length; i++) {
+      times.add(date[i]);
+    }
+
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 7,
+    );
+    Widget text=Text(day);
+    if (date.length == 0) {
+      switch (value.toInt()) {
+        default:
+          text = Text('${(now.month).toString()}-${(now.day + 7).toString()}',
+              style: style);
+          break;
+      }
+    } else if (date.isNotEmpty) {
+      int i = 0;
+      
+      for(int i =0;i<date.length;i++){
+        text=Text(date[i].substring(5, 10), style: style);
+    }
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: text,
+    );
   }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 11,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 50:
+        text = '50KG';
+        break;
+      case 70:
+        text = '70KG';
+        break;
+      case 90:
+        text = '90KG';
+        break;
+      case 100:
+        text = '100KG';
+        break;
+
+      default:
+        return Container();
+    }
+
+    return Text(text, style: style, textAlign: TextAlign.left);
+  }
+
+  LineChartData weightData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 1,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: gradientColors[1],
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: gradientColors[1],
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            interval: 1,
+            getTitlesWidget: bottomTitleWidgets,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 42,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      minX: 0,
+      maxX: date.length.toDouble(),
+      minY: 40,
+      maxY: 130,
+      lineBarsData: [
+        LineChartBarData(
+          spots: weightFl,
+          isCurved: true,
+          gradient: LinearGradient(
+            colors: gradientColors,
+          ),
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: gradientColors
+                  .map((color) => color.withOpacity(0.3))
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  LineChartData stepData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 1,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: gradientColors[1],
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: gradientColors[1],
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            interval: 1,
+            getTitlesWidget: bottomTitleWidgets,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 42,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      minX: 0,
+      maxX: date.length.toDouble(),
+      minY: 40,
+      maxY: 130,
+      lineBarsData: [
+        LineChartBarData(
+          spots: weightFl,
+          isCurved: true,
+          gradient: LinearGradient(
+            colors: gradientColors,
+          ),
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: gradientColors
+                  .map((color) => color.withOpacity(0.3))
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class WeightsData {
+  WeightsData(this.date, this.weight);
+  final String date;
+  final double weight;
 }

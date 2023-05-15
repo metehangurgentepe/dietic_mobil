@@ -9,6 +9,7 @@ class PatientModel {
   double? weight;
   double? bodyFat;
   String? about;
+  String? picture;
 
   PatientModel(
       {this.patientId,
@@ -20,7 +21,8 @@ class PatientModel {
       this.height,
       this.weight,
       this.bodyFat,
-      this.about});
+      this.about,
+      this.picture});
 
   PatientModel.fromJson(Map<String, dynamic> json) {
     patientId = json['patient_id'];
@@ -33,6 +35,7 @@ class PatientModel {
     weight = json['weight'];
     bodyFat = json['bodyFat'];
     about = json['about'];
+    picture = json['picture'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +50,7 @@ class PatientModel {
     data['weight'] = this.weight;
     data['bodyFat'] = this.bodyFat;
     data['about'] = this.about;
+    data['picture'] = this.picture;
     return data;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dietic_mobil/service/update_profile_pic/update_profile_pic.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +20,27 @@ class _BodyState extends State<Body> {
   final storage = new FlutterSecureStorage();
   final service = UpdateProfilePic();
   UserModel? user;
+  String userName='';
+  String surname='';
+  String email='';
+  String picture='';
+  
 
   @override
   void initState() {
     service.getProfilePic().then((value) {
       setState(() {
         user = value;
+        userName=user!.name!;
+        surname=user!.surname!;
+        email=user!.email!;
+        picture=user!.picture!;
+        print(userName);
+        print(surname);
+        print(email);
+        print(picture);
+        print(user!.name);
+
       });
     });
     super.initState();
@@ -36,16 +53,16 @@ class _BodyState extends State<Body> {
       child: Column(
         children: [
           SizedBox(height: 30),
-          ProfilePic(),
+          ProfilePic(profilePic:picture),
           SizedBox(height: 50),
           //UserInformation(),
           Column(
             children: [
               Text.rich(TextSpan(
-                  text: '${user!.name} ${user!.surname} ',
+                  text: '${userName} ${surname} ',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold))),
               Text.rich(TextSpan(
-                  text: '${user!.email} ', style: TextStyle(fontSize: 15)))
+                  text: '${email} ', style: TextStyle(fontSize: 15)))
             ],
           ),
           ProfileMenu(

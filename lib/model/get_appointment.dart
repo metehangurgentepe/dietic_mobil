@@ -10,6 +10,7 @@ class GetAppointmentModel {
   String? appointmentDate;
   String? appointmentTime;
   String? createdAt;
+  String? picture;
 
   GetAppointmentModel(
       {this.appointmentId,
@@ -22,7 +23,9 @@ class GetAppointmentModel {
       this.patientSurname,
       this.appointmentDate,
       this.appointmentTime,
-      this.createdAt});
+      this.createdAt,
+      this.picture,
+      });
 
   GetAppointmentModel.fromJson(Map<String, dynamic> json) {
     appointmentId = json['appointment_id'];
@@ -36,6 +39,7 @@ class GetAppointmentModel {
     appointmentDate = json['appointmentDate'];
     appointmentTime = json['appointmentTime'];
     createdAt = json['createdAt'];
+    picture = json['picture'];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +55,7 @@ class GetAppointmentModel {
     data['appointmentDate'] = this.appointmentDate;
     data['appointmentTime'] = this.appointmentTime;
     data['createdAt'] = this.createdAt;
+    data['picture'] = this.picture;
     return data;
   }
 }

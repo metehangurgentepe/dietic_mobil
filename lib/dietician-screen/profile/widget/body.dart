@@ -17,14 +17,17 @@ class _BodyDieticianState extends State<BodyDietician> {
   UserModel? user;
   String name = '';
   String email = '';
+  String picture= '';
   @override
   void initState() {
     service.getProfilePic().then((value) {
       setState(() {
         user = value;
-      });
-      name = '${user!.name} ${user!.surname}';
+        name = '${user!.name} ${user!.surname}';
       email='${user!.email}';
+      picture=user!.picture!;
+      });
+      
     });
     super.initState();
   }
@@ -36,7 +39,7 @@ class _BodyDieticianState extends State<BodyDietician> {
       child: Column(
         children: [
           SizedBox(height: 30),
-          ProfilePic(),
+          ProfilePic(profilePic:picture),
           SizedBox(height: 20),
           Column(
             children: [

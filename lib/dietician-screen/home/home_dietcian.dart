@@ -36,12 +36,12 @@ class _HomeDieticianPageState extends State<HomeDietician> {
   Map hastalar = {};
   String? patientName;
   String? randevuSaat;
-  String profilePic='';
+  String profilePic = '';
   UserModel? user;
 
   String? name;
-  
-  String string='No appointment';
+
+  String string = 'No appointment';
   @override
   initState() {
     service.getAppointmentsToday().then((value) {
@@ -73,15 +73,12 @@ class _HomeDieticianPageState extends State<HomeDietician> {
       print('next appointment');
       print(getNextAppointment(appointmentTimes));
 
-
-      userService.getProfilePic().then((value){
+      userService.getProfilePic().then((value) {
         setState(() {
-          user=value;
+          user = value;
         });
-        profilePic=user!.picture!;
+        profilePic = user!.picture!;
       });
-
-
     });
     super.initState();
   }
@@ -135,13 +132,12 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                                 ),
                               );
                             }),
-                         profilePic.isNotEmpty
-                                  ? CircleAvatar(
-                                      radius: 50,
-                                      backgroundImage:
-                                          NetworkImage(profilePic),
-                                    )
-                                  : const Icon(Icons.person)
+                        profilePic.isNotEmpty
+                            ? CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(profilePic),
+                              )
+                            : const Icon(Icons.person)
                       ],
                     ),
                     FutureBuilder(
@@ -172,10 +168,9 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                         itemCount: 1,
                         itemBuilder: (BuildContext context, int index) {
                           void getNextAppointment(List<String> randevu) {
-                            
                             List<String> listWithoutDuplicates =
                                 randevu.toSet().toList();
-                            
+
                             for (String appointment in listWithoutDuplicates) {
                               final now = DateTime.now();
                               final dateFormat = DateFormat('yyyy-MM-dd');
@@ -199,10 +194,10 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              patientName!=null ?
-                              _buildItem('${patientName}', '${randevuSaat} ',
-                                  Color(0xff0074ff)): _buildItem(string, ' ',
-                                  Color(0xff0074ff)),
+                              patientName != null
+                                  ? _buildItem('${patientName}',
+                                      '${randevuSaat} ', Color(0xff0074ff))
+                                  : _buildItem(string, ' ', Color(0xff0074ff)),
                               _buildDivider(),
                               _buildItem(
                                   "${appointments[index].status!}",
@@ -211,9 +206,20 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                             ],
                           );
                         })
-                    : LoadingAnimationWidget.inkDrop(
-                        color: Colors.white,
-                        size: 100,
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          patientName != null
+                              ? _buildItem('${patientName}', '${randevuSaat} ',
+                                  Color(0xff0074ff))
+                              : _buildItem(string, ' ', Color(0xff0074ff)),
+                          _buildDivider(),
+                          _buildItem(
+                              "There is no appointments",
+                              "${appointments.length} Patients",
+                              Color(0xffff1759)),
+                        ],
                       ),
                 Config.spaceSmall,
                 Row(
@@ -294,7 +300,12 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                                           style: TextStyle(
                                               fontSize: 25,
                                               fontWeight: FontWeight.bold)),
-                                      leading: Icon(Icons.person, size: 70),
+                                      leading: appointments[index].picture == ''
+                                          ? Image.asset('assets/images/user.png')
+                                          : ClipOval(
+                                            child: Image.network(
+                                                '${appointments[index].picture}'),
+                                          ),
                                     ),
                                   ),
                                 ],

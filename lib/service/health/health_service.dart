@@ -35,19 +35,11 @@ class HealthService{
           stepsList=data;
           });
           
-        //jsonDecode(jsonData) as List<dynamic>
-        print("*****************");
-        
-        print(steps);
 
         return stepsList!;
       } catch (error) {
         return throw Exception('$error');
       }
-
-     
-
-
     } else {
       return throw Exception();
     }
@@ -122,7 +114,6 @@ class HealthService{
       } catch (error) {
         return throw("Caught exception in getTotalStepsInInterval: $error");
       }
-      print('Total number of water: $water');
 
 
     } else {
