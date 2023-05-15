@@ -45,7 +45,7 @@ class HealthService{
     }
   }
   
-  Future fetchTodayStepData() async {
+  Future<int> fetchTodayStepData() async {
     int? todaySteps;
 
     // get steps for today (i.e., since midnight)
@@ -60,16 +60,12 @@ class HealthService{
         todaySteps = await health.getTotalStepsInInterval(midnight, now);
         print('today steps');
         print(todaySteps);
-        return todaySteps.toString();
+        return todaySteps!;
       } catch (error) {
-        print("Caught exception in getTotalStepsInInterval: $error");
+        return throw Exception("Caught exception in getTotalStepsInInterval: $error");
       }
-
-      print('Total number of steps: $todaySteps');
-
-
     } else {
-      print("Authorization not granted - error in authorization");
+      return throw Exception("Authorization not granted - error in authorization");
     }
   }
   Future fetchEnergyData() async {

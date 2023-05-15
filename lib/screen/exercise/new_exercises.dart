@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dietic_mobil/model/health_model.dart';
+import 'package:dietic_mobil/model/steps_model.dart';
 import 'package:dietic_mobil/service/health/health_service.dart';
 import 'package:dietic_mobil/service/weight/weight_service.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -19,6 +20,7 @@ import 'package:health/health.dart';
 import '../../config/theme/theme.dart';
 import '../../dietician-screen/home/widget/appbar.dart';
 import '../../model/weight_model.dart';
+import '../../service/steps/steps_service.dart';
 
 class NewExercises extends ConsumerStatefulWidget {
   const NewExercises({Key? key}) : super(key: key);
@@ -54,11 +56,13 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
   List<WeightModel> weightsData = [];
   List<double> weights = [];
   List<String> date = [];
+  List<String> stepsDate = [];
   ValueNotifier<List<double>> weightsValue = ValueNotifier<List<double>>([]);
 
   final service = WeightService();
-  List<WeightsData> chartData = [];
+  final stepService = StepService();
   List<FlSpot> weightFl = [];
+  List<FlSpot> stepsFl = [];
 
   var waterData;
   static final types = [
@@ -77,6 +81,8 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     const Color(0xff23b6e6),
     const Color(0xff23b6e6),
   ];
+
+  List<StepsModel> steps = [];
 
   @override
   void initState() {
@@ -129,6 +135,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
         throw Exception('company data null came');
       }
     });
+
     healthService.fetchWaterData().then((value) {
       if (value != null) {
         setState(() {
@@ -140,29 +147,37 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
         throw Exception('company data null came');
       }
     });
+
     healthService.fetchEnergyData();
     healthService.fetchTodayStepData();
 
     service.getWeights().then((value) {
       setState(() {
         weightsData = value;
-
         for (int i = 0; i < weightsData.length; i++) {
           weights.add(weightsData[i].weight!);
           date.add(weightsData[i].date!);
           weightsData[i].date!.substring(4, 9);
           weightFl.add(FlSpot(i.toDouble(), weightsData[i].weight!));
           print(weightsData[i].date!.substring(5, 9).replaceAll('-', '.'));
-          chartData.add(WeightsData(
-              weightsData[i].date!.substring(5, 9).replaceAll('-', '.'),
-              weightsData[i].weight!));
-          print(chartData[i].weight);
         }
         print('charttt');
-        print(chartData);
         weightsValue = ValueNotifier<List<double>>(weights);
         print(weights);
+        print('zaman');
+        print(date);
       });
+    });
+
+    stepService.getAllSteps().then((value) {
+      steps = value;
+      for (int i = 0; i < steps.length; i++) {
+        stepsFl.add(FlSpot(i.toDouble(), steps[i].steps!.toDouble()));
+        stepsDate.add(steps[i].date!);
+      }
+      print('flutter chart');
+      print(stepsFl);
+      print(stepsDate);
     });
   }
 
@@ -262,57 +277,57 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                     builder: (context, snapshot) {
                                       print('snap');
                                       print(snapshot.data.toString());
-                                      if (snapshot.hasData == true) {
-                                        return Text('No Steps Data');
-                                      } else {
-                                        double _percent = double.parse(
-                                                snapshot.data != null
-                                                    ? snapshot.data!
-                                                    : '0') /
-                                            15000;
-                                        String percentNumber =
-                                            (_percent * 100).toStringAsFixed(2);
-                                        if (_percent > 1) {
-                                          _percent = 0.99;
-                                        } else if (_percent == null) {
-                                          _percent = 0.1;
-                                        }
-                                        return Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Icon(Icons.directions_walk,
-                                                    size: 30,
-                                                    color: Colors.pinkAccent),
-                                                if (snapshot.data != '')
-                                                  Text('0')
-                                                else
-                                                  Text(snapshot.data)
-                                              ],
-                                            ),
-                                            Text('Steps',
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 18)),
-                                            Text("%${percentNumber}" ?? ' '),
-                                            LinearPercentIndicator(
-                                              barRadius: Radius.circular(20),
-                                              width: 130,
-                                              animation: true,
-                                              animationDuration: 10000,
-                                              lineHeight: 10,
-                                              percent: _percent ?? 0.0,
-                                              progressColor: Colors.pinkAccent,
-                                              backgroundColor:
-                                                  Color(0xffE0A0B2),
-                                            ),
-                                          ],
-                                        );
+                                      if (snapshot.data == null) {
+                                        return Text('No steps data today');
                                       }
+                                      stepService.saveSteps(snapshot.data!);
+                                      double _percent = snapshot.data! / 15000;
+                                      String percentNumber =
+                                          (_percent * 100).toStringAsFixed(2);
+                                      if (_percent > 1) {
+                                        _percent = 0.99;
+                                      } else {
+                                        print('adım');
+                                        print(snapshot.data);
+                                        _percent ??= 0.1;
+                                      }
+                                      return Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Icon(Icons.directions_walk,
+                                                  size: 30,
+                                                  color: Colors.pinkAccent),
+                                              Text(
+                                                '${snapshot.data}',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                          Text('Steps',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18)),
+                                          Text("%${percentNumber}" ?? ' '),
+                                          LinearPercentIndicator(
+                                            barRadius: Radius.circular(20),
+                                            width: 130,
+                                            animation: true,
+                                            animationDuration: 10000,
+                                            lineHeight: 10,
+                                            percent: _percent ?? 0.0,
+                                            progressColor: Colors.pinkAccent,
+                                            backgroundColor: Color(0xffE0A0B2),
+                                          ),
+                                        ],
+                                      );
                                     }),
                               ),
                             ),
@@ -323,8 +338,6 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                   ),
                 ),
                 SizedBox(height: 25),
-                ///////////////////////////////////////////////////////////
-                //Carousel
                 CarouselSlider(
                     options: CarouselOptions(
                       height: 400.0,
@@ -441,8 +454,6 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     );
   }
 
-  
-
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     List<String> times = [];
     final now = DateTime.now();
@@ -455,7 +466,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       fontWeight: FontWeight.bold,
       fontSize: 7,
     );
-    Widget text=Text(day);
+    Widget text = Text(day);
     if (date.length == 0) {
       switch (value.toInt()) {
         default:
@@ -464,11 +475,37 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
           break;
       }
     } else if (date.isNotEmpty) {
-      int i = 0;
-      
-      for(int i =0;i<date.length;i++){
-        text=Text(date[i].substring(5, 10), style: style);
+      for (int i = 0; i < date.length; i++) {
+        text = Text(date[i].substring(5, 10), style: style);
+      }
     }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: text,
+    );
+  }
+
+  Widget bottomTitleStepWidgets(double value, TitleMeta meta) {
+    final now = DateTime.now();
+    String day = '${(now.month).toString()}-${(now.day + 7).toString()}';
+
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 7,
+    );
+    Widget text = Text(day);
+    if (stepsDate.length == 0) {
+      switch (value.toInt()) {
+        default:
+          text = Text('${(now.month).toString()}-${(now.day + 7).toString()}',
+              style: style);
+          break;
+      }
+    } else if (stepsDate.isNotEmpty) {
+      for (int i = 0; i < stepsDate.length; i++) {
+        text = Text(stepsDate[i].substring(5, 10), style: style);
+      }
+      print(text);
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,
@@ -494,6 +531,42 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
         break;
       case 100:
         text = '100KG';
+        break;
+
+      default:
+        return Container();
+    }
+
+    return Text(text, style: style, textAlign: TextAlign.left);
+  }
+
+  Widget leftTitleStepWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 11,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '0';
+        break;
+      case 3000:
+        text = '3000';
+        break;
+      case 5000:
+        text = '5000';
+        break;
+      case 7000:
+        text = '7000';
+        break;
+      case 10000:
+        text = '10000';
+        break;
+      case 14000:
+        text = '14000';
+        break;
+      case 18000:
+        text = '18000';
         break;
 
       default:
@@ -585,19 +658,19 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     return LineChartData(
       gridData: FlGridData(
         show: true,
-        drawVerticalLine: true,
+        drawVerticalLine: false,
         horizontalInterval: 1,
         verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: gradientColors[1],
-            strokeWidth: 1,
+            strokeWidth: 0.001,
           );
         },
         getDrawingVerticalLine: (value) {
           return FlLine(
             color: gradientColors[1],
-            strokeWidth: 1,
+            strokeWidth: 0.001,
           );
         },
       ),
@@ -614,29 +687,29 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
             showTitles: true,
             reservedSize: 30,
             interval: 1,
-            getTitlesWidget: bottomTitleWidgets,
+            getTitlesWidget: bottomTitleStepWidgets,
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             interval: 1,
-            getTitlesWidget: leftTitleWidgets,
+            getTitlesWidget: leftTitleStepWidgets,
             reservedSize: 42,
           ),
         ),
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: const Color(0xff37434d)),
+        border: Border.all(color: Color.fromARGB(255, 180, 194, 205)),
       ),
       minX: 0,
       maxX: date.length.toDouble(),
-      minY: 40,
-      maxY: 130,
+      minY: 0,
+      maxY: 19000,
       lineBarsData: [
         LineChartBarData(
-          spots: weightFl,
+          spots: stepsFl,
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -658,10 +731,4 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       ],
     );
   }
-}
-
-class WeightsData {
-  WeightsData(this.date, this.weight);
-  final String date;
-  final double weight;
 }
