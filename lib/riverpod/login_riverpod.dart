@@ -24,20 +24,26 @@ class LoginRiverpod extends ChangeNotifier {
     service
         .loginCall(email: email.text, password: password.text)
         .then((value) async {
-          //firebase login
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email.text,
-        password: password.text,
-      );
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text,
+          password: password.text,
+        );
+      } catch (e) {
+         Grock.snackBar(
+            title: "Hata",
+            description:
+                "Girilmiş olan kullanıcı verileri sistemdekiler ile eşleşmemektedir");
+      }
+
+      //firebase login
+
       if (value != null) {
         await storage.write(key: 'token', value: value.accessToken);
         await storage.write(key: 'email', value: email.text);
         await storage.write(key: 'password', value: password.text);
         await storage.write(key: 'roleName', value: value.roleName);
-        
-        
-        
-        
+
         if (value.roleName == 'ROLE_PATIENT') {
           await storage.write(
               key: 'dietitianId', value: value.dietitianId.toString());
@@ -55,11 +61,14 @@ class LoginRiverpod extends ChangeNotifier {
           //     .signInWithEmailAndPassword(email: email!, password: password!);
           Grock.to(FitnessAppHomeScreen());
         }
-        
+
         if (value.roleName == 'ROLE_DIETITIAN') {
-          await storage.write(key: 'dietitian-name', value: '${value.name} ${value.surname}');
+          await storage.write(
+              key: 'dietitian-name', value: '${value.name} ${value.surname}');
           await storage.write(key: 'dietitianId', value: value.id.toString());
-          Grock.to(NavDieticianScreen(),);
+          Grock.to(
+            NavDieticianScreen(),
+          );
         }
       } else if (value == null) {
         Grock.snackBar(

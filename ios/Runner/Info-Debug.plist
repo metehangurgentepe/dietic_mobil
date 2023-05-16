@@ -36,8 +36,14 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
     <string>App needs access to photo lib for profile images</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to camera when used</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to microphone when used</string>
     <key>NSCameraUsageDescription</key>
     <string>To capture profile photo please grant camera access</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Access to camera is required for taking pictures</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Allow access to microphone for recording audio</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>

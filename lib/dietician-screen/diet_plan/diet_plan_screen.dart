@@ -89,7 +89,7 @@ class _DietPlanScreenState extends State<DietPlanScreen> {
                             radius: 10,
                             shadow:
                                 BoxShadow(color: FitnessAppTheme.background),
-                            avatar: user.picture=='' ? Icon(Icons.person) : Image.network('${user.picture}',height: 20,),
+                            avatar: (user.picture==null||user.picture=='') ? Icon(Icons.person) : Image.network('${user.picture}',height: 20,),
                             titleText: '${user.name!} ${user.surname!}',
                             subTitleText: user.email,
                             onTap: () {

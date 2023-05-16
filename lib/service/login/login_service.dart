@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import '../../model/login_model.dart';
 
 class LoginService {
-  final String baseUrl = "http://localhost:8080/api/auth/login";
+  final String baseUrl = "http://192.168.1.103:8080/api/auth/login";
   final dio = Dio();
   Future<LoginModel?> loginCall(
       {required String email, required String password}) async {

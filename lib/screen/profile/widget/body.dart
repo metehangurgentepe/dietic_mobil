@@ -20,27 +20,22 @@ class _BodyState extends State<Body> {
   final storage = new FlutterSecureStorage();
   final service = UpdateProfilePic();
   UserModel? user;
-  String userName='';
-  String surname='';
-  String email='';
-  String picture='';
-  
+  String userName = '';
+  String surname = '';
+  String email = '';
+  String picture = '';
 
   @override
   void initState() {
     service.getProfilePic().then((value) {
       setState(() {
-        user = value;
-        userName=user!.name!;
-        surname=user!.surname!;
-        email=user!.email!;
-        picture=user!.picture!;
-        print(userName);
-        print(surname);
-        print(email);
-        print(picture);
-        print(user!.name);
-
+        try {
+          user = value;
+          userName = user!.name!;
+          surname = user!.surname!;
+          email = user!.email!;
+          picture = user!.picture!;
+        } catch (e) {}
       });
     });
     super.initState();
@@ -53,7 +48,7 @@ class _BodyState extends State<Body> {
       child: Column(
         children: [
           SizedBox(height: 30),
-          ProfilePic(profilePic:picture),
+          ProfilePic(profilePic: picture),
           SizedBox(height: 50),
           //UserInformation(),
           Column(
@@ -61,14 +56,16 @@ class _BodyState extends State<Body> {
               Text.rich(TextSpan(
                   text: '${userName} ${surname} ',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold))),
-              Text.rich(TextSpan(
-                  text: '${email} ', style: TextStyle(fontSize: 15)))
+              Text.rich(
+                  TextSpan(text: '${email} ', style: TextStyle(fontSize: 15)))
             ],
           ),
           ProfileMenu(
             text: "My Account",
             icon: "assets/icons/User Icon.svg",
-            press: () => {Navigator.pushNamed(context, '/update_profile',arguments: user)},
+            press: () => {
+              Navigator.pushNamed(context, '/update_profile', arguments: user)
+            },
           ),
           ProfileMenu(
             text: "Appointment",

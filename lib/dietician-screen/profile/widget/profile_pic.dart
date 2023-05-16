@@ -81,7 +81,7 @@ class _ProfilePicState extends State<ProfilePic> {
               fit: StackFit.expand,
               clipBehavior: Clip.none,
               children: [
-                Container(child: Image.network(widget.profilePic)),
+                widget.profilePic=='' ? Image.asset("assets/images/user.png") : Container(child: Image.network(widget.profilePic)),
                 Positioned(
                   right: -16,
                   bottom: 0,

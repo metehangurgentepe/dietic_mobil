@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:dietic_mobil/message/comps/animated-dialog.dart';
 import 'package:dietic_mobil/message/comps/styles.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:grock/grock.dart';
+import 'package:camera/camera.dart';
 
 import '../../config/theme/theme.dart';
+import '../../dietician-screen/message/comps/take_photo.dart';
 
 class ChatWidgets {
   static Widget card({title, time, subtitle, onTap}) {
@@ -102,32 +105,31 @@ class ChatWidgets {
             ),
           _isUrl
               ? Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.grey[700],
-              borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(10),
-                right: Radius.circular(10),
-              ),
-            ),
-
-
-
-                  child:Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                      children:[
-                    Image.network(
-                    message,
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    color: Colors.grey[700],
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(10),
+                      right: Radius.circular(10),
+                    ),
                   ),
-                        Padding(padding: EdgeInsets.all(5),child:(
-                            Text('$time',style: TextStyle(color: Colors.white,))))
-
-
-    ]))
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          message,
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(5),
+                            child: (Text('$time',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ))))
+                      ]))
               : ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 250),
                   child: Container(
@@ -158,21 +160,56 @@ class ChatWidgets {
   }
 
   static messageField({required onSubmit}) {
-    final storage = FlutterSecureStorage();
     final con = TextEditingController();
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(
-        decoration: Styles.messageTextFieldStyle(onSubmit: () async {
-          String? value = await storage.read(key: 'imageUrl');
-          var imageUrl = TextEditingController();
-          imageUrl.text = value!;
-          if (value.isNotEmpty) {
-            onSubmit(imageUrl);
-          } else {
-            onSubmit(con);
-          }
-        }),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'Enter Message',
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          prefixIcon: IconButton(
+              onPressed: () async {
+                final cameras = await availableCameras();
+                if (cameras.isEmpty) {
+                  // Handle the case where no camera is available.
+                  print('hata');
+                  return;
+                }
+                final firstCamera = cameras.first;
+                Grock.to(TakePictureDytScreen(camera: firstCamera));
+              },
+              icon: const Icon(Icons.camera_alt)),
+          suffixIcon: IconButton(
+              onPressed: () {
+                onSubmit(con);
+              },
+              icon: const Icon(Icons.send)),
+
+          // suffixIcon: Row(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: [
+          //     // IconButton(onPressed: () async {
+          //     //   final cameras = await availableCameras();
+          //     //   final firstCamera = cameras.first;
+          //     //   Grock.to(TakePictureScreen(camera:firstCamera));},
+          //     //    icon: const Icon(Icons.camera_alt)),
+          //    // IconButton(onPressed: onSubmit, icon: const Icon(Icons.send))
+          //   ],
+          // ),
+        ),
+        // decoration: Styles.messageTextFieldStyle(onSubmit: () async {
+        //   String? value = await storage.read(key: 'imageUrl');
+        //   var imageUrl = TextEditingController();
+        //   imageUrl.text = value!;
+        //   if (value.isNotEmpty) {
+        //     onSubmit(imageUrl);
+        //   } else {
+        //     onSubmit(con);
+        //   }
+        // }),
+
         controller: con,
       ),
       decoration: Styles.messageFieldCardStyle(),

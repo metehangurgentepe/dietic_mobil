@@ -162,6 +162,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                             lastMessage,
                                             time: DateFormat('hh:mm a').format(data[i]['last_message_time'].toDate()),
                                             onTap: () {
+                                              print('kullan');
+                                              print(user);
                                               Navigator.of(context)
                                                   .push(
                                                 MaterialPageRoute(

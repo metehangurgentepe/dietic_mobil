@@ -29,8 +29,7 @@ class Styles {
         border: Border.all(color: Colors.indigo),
         borderRadius: BorderRadius.circular(10));
   }
-
-  static messageTextFieldStyle({required Function() onSubmit}) {
+   static messageTextFieldStyle({required Function() onSubmit}) {
     return InputDecoration(
       border: InputBorder.none,
       hintText: 'Enter Message',
