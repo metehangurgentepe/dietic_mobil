@@ -55,15 +55,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   double sumSnackEnergy = 0;
   double sumoutOfRecordEnergy = 0;
 
-  double carbonhydrate=0;
-  double protein = 0;
-  double energy = 0;
-  double fats = 0;
-
-  double eatenEnergy = 0;
-  double eatenCarbs = 0;
-  double eatenFats = 0;
-  double eatenProteins = 0;
+ 
 
   String? desiredTime;
 
@@ -900,17 +892,17 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   }
 
   Widget DailySummary(List<DietPlanModel> allFoods) {
-    
     List<DietPlanModel> allFoods = this.allFoods;
-    carbonhydrate = 0;
-    protein = 0;
-    energy = 0;
-    fats = 0;
+     double carbonhydrate=0;
+  double protein = 0;
+  double energy = 0;
+  double fats = 0;
 
-    eatenEnergy = 0;
-    eatenCarbs = 0;
-    eatenFats = 0;
-    eatenProteins = 0;
+  double eatenEnergy = 0;
+  double eatenCarbs = 0;
+  double eatenFats = 0;
+  double eatenProteins = 0;
+ 
     for (int i = 0; i < allFoods.length; i++) {
       carbonhydrate += allFoods[i].carb!;
       protein += allFoods[i].protein!;
@@ -924,6 +916,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
         eatenFats += allFoods[i].fat!;
       }
     }
+     allFoods.clear();
     return AspectRatio(
       aspectRatio: 1.6,
       child: Container(
@@ -935,13 +928,13 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_circleProgress(), _macronutrients(carbonhydrate)],
+          children: [_circleProgress(energy,eatenEnergy), _macronutrients(carbonhydrate,protein,fats,eatenCarbs,eatenProteins,eatenFats)],
         ),
       ),
     );
   }
 
-  Widget _circleProgress() {
+  Widget _circleProgress(double energy, double eatenEnergy) {
     return SizedBox(
       width: 160.w,
       height: 160.w,
@@ -1018,7 +1011,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
     );
   }
 
-  Widget _macronutrients(double carbonhydrate) {
+  Widget _macronutrients(double carbonhydrate, double protein, double fats, double eatenCarbs, double eatenProteins, double eatenFats) {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       _macronutrientsTile(
           title: 'Carbs',
