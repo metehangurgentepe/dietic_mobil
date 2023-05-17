@@ -98,20 +98,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           thickness: 1,
                           color: Colors.black,
                         ),
-                        CupertinoTextField.borderless(
-                          controller: ageController,
-                            cursorColor: FitnessAppTheme.nearlyDarkBlue,
-                          padding: EdgeInsets.only(
-                              left: 45, top: 10, right: 6, bottom: 10),
-                          prefix: Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Text('Age'),
-                          ),
-                          placeholder: 'Required',
-                        ),Divider(
-                          thickness: 1,
-                          color: Colors.black,
-                        ),
+                        
                         CupertinoTextField.borderless(
                           obscureText: !isPasswordVisible,
                           controller: passwordController,
@@ -152,7 +139,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           foregroundColor: Colors.red,
                           shape: const StadiumBorder(),
                           side: BorderSide.none),
-                      child: const Text('Delete'),
+                      child: const Text('Change'),
                     ),
                   ],
                 )

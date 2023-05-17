@@ -30,7 +30,7 @@ class _LunchMealConsumedState extends State<LunchMealConsumed> {
   void initState() {
     DateTime date = DateTime.now();
     String time = date.toString().substring(0, 10);
-    service.getLunchDietPlan(time).then((value) {
+    service.getLunchDietPlan().then((value) {
       setState(() {
         lunchFoods = value;
         isSelected = List<bool>.generate(lunchFoods.length, (index) => false);

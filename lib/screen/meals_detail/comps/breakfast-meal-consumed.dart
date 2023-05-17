@@ -27,9 +27,9 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
   double sumEnergy = 0;
   @override
   void initState() {
-    DateTime date = DateTime.now();
-    String time = date.toString().substring(0, 10);
-    service.getBreakfastDietPlan(time).then((value) {
+    // DateTime date = DateTime.now();
+    // String time = date.toString().substring(0, 10);
+    service.getBreakfastDietPlan().then((value) {
       breakfastFoods = value;
       isSelected = List<bool>.generate(breakfastFoods.length, (index) => false);
       setState(() {

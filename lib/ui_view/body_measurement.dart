@@ -27,13 +27,19 @@ class _BodyMeasurementViewState extends State<BodyMeasurementView> {
   @override
   void initState() {
     service.getPatientDetail().then((value) {
-      if (value != null) {
+      try{
+        if (value != null) {
         patient = value;
         weight = patient!.weight!;
         height = patient!.height!;
         bodyFat = patient!.bodyFat!;
       }
       double BMI = weight/(height*height);
+
+      }catch(e){
+
+      }
+      
     });
 
     super.initState();

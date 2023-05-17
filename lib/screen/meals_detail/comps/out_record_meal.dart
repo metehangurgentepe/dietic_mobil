@@ -27,7 +27,7 @@ class _OutOfRecordMealConsumedState extends State<OutOfRecordMealConsumed> {
   void initState() {
     DateTime date = DateTime.now();
     String time = date.toString().substring(0, 10);
-    service.getOutOfRecordDietPlan(time).then((value) {
+    service.getOutOfRecordDietPlan().then((value) {
       outOfRecordFoods = value;
       isSelected = List<bool>.generate(outOfRecordFoods.length, (index) => false);
       setState(() {

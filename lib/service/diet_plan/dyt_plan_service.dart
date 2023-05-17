@@ -47,25 +47,43 @@ class PlanService {
     }
     return throw Exception('giremedik');
   }
+  Future<List<dynamic>> getDietPlanSummary(String time) async {
+    String? patientId = await storage.read(key: 'patientId');
+    final String Url = 'http://10.0.2.2:8080/api/v1/dietPlans/patient/${patientId}';
+
+    final result = await http.post(
+      Uri.parse(Url),
+    );
+    try {
+      print(result.statusCode);
+      if (result.statusCode == 200) {
+        var jsonBody=DietPlanModel.fromJson(jsonDecode(result.body));
+        listResponse=jsonDecode(result.body);
+        for(int i=0;i<listResponse.length;i++){
+          myList.add(listResponse[i]);
+        }
+       
+        return myList;
+      }
+    }
+    catch (err){
+      return throw Exception(err.toString());
+    }
+    return throw Exception('giremedik');
+  }
 
 
 
 
 
   Future<List<DietPlanModel>> getFirstDietPlanForDyt(String time,int patientId) async {
-  
-
     String? token = await storage.read(key: 'token');
-
     String Url = 'http://localhost:8080/api/v1/dietPlans/patient/${patientId}';
-
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    print(Url);
-    print(time);
-
+    
     try {
       final result = await dio.post(Url, data: {"day": time});
       if (result.statusCode == 200) {

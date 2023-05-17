@@ -143,6 +143,10 @@ class _ShowPatientAppointmentState extends State<ShowPatientAppointment> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(28.0),
                                       child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.colorAccent
+                                        ),
+                                        
                                           onPressed: () {
                                             service.updateStatus(randevu[index]);
                                             Navigator.pop(context);

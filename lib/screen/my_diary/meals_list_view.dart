@@ -36,7 +36,7 @@ class _MealsListViewState extends State<MealsListView>
     DateTime date = DateTime.now();
     String time = date.toString().substring(0, 10);
 
-    service.getBreakfastDietPlan(time).then((value) {
+    service.getBreakfastDietPlan().then((value) {
       if (value != null) {
         setState(() {
           breakfastPlan = value;
@@ -45,7 +45,7 @@ class _MealsListViewState extends State<MealsListView>
         throw Exception('kahvaltı data null geldi');
       }
     });
-    service.getLunchDietPlan(time).then((value) {
+    service.getLunchDietPlan().then((value) {
       if (value != null) {
         setState(() {
           lunchPlan = value;
@@ -54,7 +54,7 @@ class _MealsListViewState extends State<MealsListView>
         throw Exception('lunch data null geldi');
       }
     });
-    service.getDinnerDietPlan(time).then((value) {
+    service.getDinnerDietPlan().then((value) {
       if (value != null) {
         setState(() {
           dinnerPlan = value;

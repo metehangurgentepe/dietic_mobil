@@ -11,8 +11,9 @@ import '../../../../model/diet_plan_model.dart';
 
 
 class DailySummaryDyt extends StatefulWidget {
-  const DailySummaryDyt({Key? key,required this.foods}) : super(key: key);
-  final List<DietPlanModel> foods;
+  DailySummaryDyt({Key? key, required  this.patientId, required this.time, }) : super(key: key);
+  final int patientId;
+  final String time;
 
 
   @override
@@ -35,13 +36,23 @@ class _DailySummaryDytState extends State<DailySummaryDyt> {
 
   @override
   void initState() {
-    dietPlan =widget.foods;
-    
+    print(widget.time);
+    DateTime today =DateTime.now();
+    String time ='2023-05-16';
+    dytService.getFirstDietPlanForDyt(widget.time, widget.patientId).then((value){
+      print('*************************');
+      print(widget.time);
+      dietPlan=value;
+      print(dietPlan);
+      print('diet planı buralarda');
+    });
       for (int i = 0; i < dietPlan.length; i++) {
         carbonhydrate += dietPlan[i].carb!;
         protein += dietPlan[i].protein!;
         energy += dietPlan[i].energy!;
         fats += dietPlan[i].fat!;
+        print(carbonhydrate);
+        print('***************************************************************************');
 
         if (dietPlan[i].eaten == 'CHECKED') {
           eatenCarbs += dietPlan[i].carb!;
@@ -208,4 +219,5 @@ class _DailySummaryDytState extends State<DailySummaryDyt> {
       ),
     );
   }
+
 }

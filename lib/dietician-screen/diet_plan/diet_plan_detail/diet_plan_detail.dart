@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:grock/grock.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../config/theme/theme.dart';
 import '../../../model/diet_plan_model.dart';
@@ -31,11 +33,9 @@ class DietPlanDetail extends StatefulWidget {
 class _DietPlanDetailState extends State<DietPlanDetail> {
   DateTime selectedDate = DateTime.now();
 
-
   final dytService = PlanService();
   DietPlanService service = DietPlanService();
-  
-  
+
   List<DietPlanModel> allFoods = [];
   List<DietPlanModel> breakfastFoods = [];
   List<DietPlanModel> lunchFoods = [];
@@ -48,13 +48,24 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   List<bool> isSelectedDinner = [];
   List<bool> isSelectedSnack = [];
   List<bool> isSelectedOutOfRecord = [];
-  
-  
+
   double sumBreakfastEnergy = 0;
   double sumLunchEnergy = 0;
   double sumDinnerEnergy = 0;
   double sumSnackEnergy = 0;
   double sumoutOfRecordEnergy = 0;
+
+  double carbonhydrate=0;
+  double protein = 0;
+  double energy = 0;
+  double fats = 0;
+
+  double eatenEnergy = 0;
+  double eatenCarbs = 0;
+  double eatenFats = 0;
+  double eatenProteins = 0;
+
+  String? desiredTime;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -84,8 +95,8 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   Widget build(BuildContext context) {
     String time = selectedDate.toString().substring(0, 10);
 
-
     ValueNotifier<String?> timeNotifier = ValueNotifier<String?>(time);
+    desiredTime = timeNotifier.value!;
 
     return Scaffold(
         appBar: AppBar(
@@ -113,14 +124,17 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                       .toString()
                       .substring(0, 10)
                       .replaceAll('-', '/')),
-                      ValueListenableBuilder<String?>(
+                  ValueListenableBuilder<String?>(
                       valueListenable: timeNotifier,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
-                            dytService.getFirstDietPlanForDyt(timeNotifier.value!, widget.patients.patientId!).then((value) {
-                              allFoods=value;
-                            });
-                        return  DailySummaryDyt(foods:allFoods);
+                        dytService
+                            .getFirstDietPlanForDyt(
+                                timeNotifier.value!, widget.patients.patientId!)
+                            .then((value) {
+                          allFoods = value;
+                        });
+                        return DailySummary(allFoods);
                       }),
                   ValueListenableBuilder<String?>(
                       valueListenable: timeNotifier,
@@ -130,7 +144,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                         service.BreakfastDietPlan(
                                 timeNotifier.value!, widget.patients.patientId!)
                             .then((value) {
-                            breakfastFoods = value;
+                          breakfastFoods = value;
                         });
                         return BreakfastMeal(breakfastFoods);
                       }),
@@ -170,7 +184,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                         });
                         return SnackMeal(snackFoods);
                       }),
-                      ValueListenableBuilder<String?>(
+                  ValueListenableBuilder<String?>(
                       valueListenable: timeNotifier,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
@@ -190,9 +204,18 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   }
 
   Widget BreakfastMeal(List<DietPlanModel> breakfastFoods) {
-    List<DietPlanModel> breakfastPlan = this.breakfastFoods;
     List<bool> isSelected =
-        List<bool>.generate(breakfastPlan.length, (index) => false);
+        List<bool>.generate(breakfastFoods.length, (index) => false);
+    for (int i = 0; i < breakfastFoods.length; i++) {
+          sumBreakfastEnergy += breakfastFoods[i].energy!;
+          if (breakfastFoods[i].eaten!.contains('UNCHECKED')) {
+            isSelected[i] = false;
+          } else {
+            isSelected[i] = true;
+          }
+        }
+    List<DietPlanModel> breakfastPlan = this.breakfastFoods;
+    
     print('plan burada');
     print(breakfastPlan);
     return ConstrainedBox(
@@ -322,8 +345,19 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   Widget LunchMeal(List<DietPlanModel> lunchFoods) {
     List<DietPlanModel> lunchPlan;
     lunchPlan = lunchFoods;
-    List<bool> isSelected =
+     List<bool> isSelected =
         List<bool>.generate(lunchPlan.length, (index) => false);
+    
+    for (int i = 0; i < lunchPlan.length; i++) {
+          sumLunchEnergy += lunchPlan[i].energy!;
+          if (lunchPlan[i].eaten!.contains('UNCHECKED')) {
+            isSelected[i] = false;
+          } else {
+            isSelected[i] = true;
+          }
+        }
+    
+   
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -449,6 +483,14 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
     dinnerPlan = DinnerFoods;
     List<bool> isSelected =
         List<bool>.generate(dinnerPlan.length, (index) => false);
+         for (int i = 0; i < dinnerPlan.length; i++) {
+          sumDinnerEnergy += dinnerPlan[i].energy!;
+          if (dinnerPlan[i].eaten!.contains('UNCHECKED')) {
+            isSelected[i] = false;
+          } else {
+            isSelected[i] = true;
+          }
+        }
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -584,6 +626,16 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
     snackPlan = snackFoods;
     List<bool> isSelected =
         List<bool>.generate(snackPlan.length, (index) => false);
+
+           for (int i = 0; i < snackPlan.length; i++) {
+          sumSnackEnergy += snackPlan[i].energy!;
+          if (snackPlan[i].eaten!.contains('UNCHECKED')) {
+            isSelected[i] = false;
+          } else {
+            isSelected[i] = true;
+          }
+        }
+        
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: double.infinity,
@@ -706,10 +758,21 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
       ),
     );
   }
-    Widget OutOfRecordMeal(List<DietPlanModel> outOfRecordFoods) {
+
+  Widget OutOfRecordMeal(List<DietPlanModel> outOfRecordFoods) {
+
     List<DietPlanModel> outOfRecordPlan = this.outOfRecordFoods;
     List<bool> isSelectedOutOfRecord =
         List<bool>.generate(outOfRecordPlan.length, (index) => false);
+           for (int i = 0; i < outOfRecordPlan.length; i++) {
+          sumoutOfRecordEnergy += outOfRecordPlan[i].energy!;
+          if (outOfRecordPlan[i].eaten!.contains('UNCHECKED')) {
+            isSelectedOutOfRecord[i] = false;
+          } else {
+            isSelectedOutOfRecord[i] = true;
+          }
+        }
+        
     print('plan burada');
     print(outOfRecordPlan);
     return ConstrainedBox(
@@ -829,9 +892,189 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                           );
                         },
                       )
-                    : Text('There is no breakfast for you :)')),
+                    : Text('You are perfect')),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget DailySummary(List<DietPlanModel> allFoods) {
+    
+    List<DietPlanModel> allFoods = this.allFoods;
+    carbonhydrate = 0;
+    protein = 0;
+    energy = 0;
+    fats = 0;
+
+    eatenEnergy = 0;
+    eatenCarbs = 0;
+    eatenFats = 0;
+    eatenProteins = 0;
+    for (int i = 0; i < allFoods.length; i++) {
+      carbonhydrate += allFoods[i].carb!;
+      protein += allFoods[i].protein!;
+      energy += allFoods[i].energy!;
+      fats += allFoods[i].fat!;
+
+      if (allFoods[i].eaten == 'CHECKED') {
+        eatenCarbs += allFoods[i].carb!;
+        eatenProteins += allFoods[i].protein!;
+        eatenEnergy += allFoods[i].energy!;
+        eatenFats += allFoods[i].fat!;
+      }
+    }
+    return AspectRatio(
+      aspectRatio: 1.6,
+      child: Container(
+        padding: EdgeInsets.all(18.w),
+        decoration: BoxDecoration(
+          color: AppColors.colorAccent,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [_circleProgress(), _macronutrients(carbonhydrate)],
+        ),
+      ),
+    );
+  }
+
+  Widget _circleProgress() {
+    return SizedBox(
+      width: 160.w,
+      height: 160.w,
+      child: Stack(
+        children: [
+          SizedBox(
+            width: 160.w,
+            height: 160.w,
+            child: CircularProgressIndicator(
+              strokeWidth: 8.w,
+              value: 0.7,
+              backgroundColor: AppColors.colorTint100.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              margin: EdgeInsets.all(13.w),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: AppColors.colorTint100.withOpacity(0.2), width: 8.w),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.colorTint100.withOpacity(0.1),
+                ),
+                child: Container(
+                  margin: EdgeInsets.all(22.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Remaining',
+                        style: TextStyle(
+                          color: AppColors.colorTint300,
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                      energy == 0
+                          ? Text(
+                              '0',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          : Text(
+                              '${(energy - eatenEnergy).toLimitedStringWithComma(1)}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                      Text(
+                        'kcal',
+                        style: TextStyle(
+                          color: AppColors.colorTint300,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _macronutrients(double carbonhydrate) {
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      _macronutrientsTile(
+          title: 'Carbs',
+          percentValue: carbonhydrate != 0 ? eatenCarbs / carbonhydrate! : 0.1,
+          amountInGram: eatenCarbs != 0
+              ? '${eatenCarbs.toInt()}/${carbonhydrate!.toInt()}g'
+              : '0/${carbonhydrate!.toLimitedStringWithComma(1)}'),
+      _macronutrientsTile(
+          title: 'Proteins',
+          percentValue: protein != 0 ? eatenProteins / protein : 0.1,
+          amountInGram: eatenProteins != 0
+              ? '${eatenProteins.toInt()}/${protein.toInt()}g'
+              : '0/${protein.toLimitedStringWithComma(1)}'),
+      _macronutrientsTile(
+          title: 'Fats',
+          percentValue: fats != 0 ? eatenFats / fats : 0.1,
+          amountInGram:
+              eatenFats != 0 ? '${eatenFats.toInt()}/${fats.toInt()}g' : '0/${fats.toLimitedStringWithComma(1)}')
+    ]);
+  }
+
+  Widget _macronutrientsTile(
+      {String? title, double? percentValue, String? amountInGram}) {
+    return SizedBox(
+      height: 50.w,
+      width: 120.w,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title!,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14.sp,
+            ),
+          ),
+          LinearPercentIndicator(
+            width: 120.w,
+            animation: true,
+            lineHeight: 6,
+            animationDuration: 2500,
+            percent: percentValue!.isNaN ? 0.01 : percentValue,
+            barRadius: Radius.circular(3),
+            progressColor: Colors.white,
+            padding: EdgeInsets.zero,
+            backgroundColor: AppColors.colorTint100.withOpacity(0.2),
+          ),
+          Text(
+            amountInGram!,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12.sp,
+            ),
+          ),
+        ],
       ),
     );
   }
