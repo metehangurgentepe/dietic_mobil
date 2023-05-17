@@ -49,11 +49,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   List<bool> isSelectedSnack = [];
   List<bool> isSelectedOutOfRecord = [];
 
-  double sumBreakfastEnergy = 0;
-  double sumLunchEnergy = 0;
-  double sumDinnerEnergy = 0;
-  double sumSnackEnergy = 0;
-  double sumoutOfRecordEnergy = 0;
+ 
 
  
 
@@ -196,9 +192,11 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   }
 
   Widget BreakfastMeal(List<DietPlanModel> breakfastFoods) {
+    double sumBreakfastEnergy=0;
     List<bool> isSelected =
         List<bool>.generate(breakfastFoods.length, (index) => false);
     for (int i = 0; i < breakfastFoods.length; i++) {
+
           sumBreakfastEnergy += breakfastFoods[i].energy!;
           if (breakfastFoods[i].eaten!.contains('UNCHECKED')) {
             isSelected[i] = false;
@@ -336,11 +334,13 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
 
   Widget LunchMeal(List<DietPlanModel> lunchFoods) {
     List<DietPlanModel> lunchPlan;
+    double sumLunchEnergy=0;
     lunchPlan = lunchFoods;
      List<bool> isSelected =
         List<bool>.generate(lunchPlan.length, (index) => false);
     
     for (int i = 0; i < lunchPlan.length; i++) {
+          
           sumLunchEnergy += lunchPlan[i].energy!;
           if (lunchPlan[i].eaten!.contains('UNCHECKED')) {
             isSelected[i] = false;
@@ -472,6 +472,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
 
   Widget DinnerMeal(List<DietPlanModel> DinnerFoods) {
     List<DietPlanModel> dinnerPlan;
+    double sumDinnerEnergy=0;
     dinnerPlan = DinnerFoods;
     List<bool> isSelected =
         List<bool>.generate(dinnerPlan.length, (index) => false);
@@ -615,6 +616,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
 
   Widget SnackMeal(List<DietPlanModel> snackFoods) {
     List<DietPlanModel> snackPlan;
+    double sumSnackEnergy=0;
     snackPlan = snackFoods;
     List<bool> isSelected =
         List<bool>.generate(snackPlan.length, (index) => false);
@@ -752,6 +754,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   }
 
   Widget OutOfRecordMeal(List<DietPlanModel> outOfRecordFoods) {
+    double sumoutOfRecordEnergy=0;
 
     List<DietPlanModel> outOfRecordPlan = this.outOfRecordFoods;
     List<bool> isSelectedOutOfRecord =
