@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,32 @@ class _HomeDieticianPageState extends State<HomeDietician> {
   String? randevuSaat;
   String profilePic = '';
   UserModel? user;
+   List<Map<String, dynamic>> medCat = [
+    {
+      "icon": FontAwesomeIcons.userDoctor,
+      "category": "General",
+    },
+    {
+      "icon": FontAwesomeIcons.heartPulse,
+      "category": "Cardiology",
+    },
+    {
+      "icon": FontAwesomeIcons.lungs,
+      "category": "Respirations",
+    },
+    {
+      "icon": FontAwesomeIcons.hand,
+      "category": "Dermatology",
+    },
+    {
+      "icon": FontAwesomeIcons.personPregnant,
+      "category": "Gynecology",
+    },
+    {
+      "icon": FontAwesomeIcons.teeth,
+      "category": "Dental",
+    },
+  ];
 
   String? name;
 
@@ -220,6 +247,48 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                               "${appointments.length} Patients",
                               Color(0xffff1759)),
                         ],
+                      ),
+                Config.spaceSmall,
+                const Text(
+                  ' Notes ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Config.spaceSmall,
+                      SizedBox(
+                        height: Config.heightSize * 0.15,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children:
+                              List<Widget>.generate(medCat.length, (index) {
+                            return Card(
+                              shape: BeveledRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                              margin: const EdgeInsets.only(right: 20),
+                              color: Config.primaryColor,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Column(
+                                      children: [
+                                        Text('Title',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                                        Text('note')
+                                      ],
+                                    ),
+                                    SizedBox(width: 50,)
+                                    
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
                       ),
                 Config.spaceSmall,
                 Row(

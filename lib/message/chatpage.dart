@@ -244,7 +244,7 @@ class _ChatPageState extends State<ChatPage> {
     if (imageUrl != '') {
       if (roomId != null) {
         Map<String, dynamic> data = {
-          'message': imageUrl!.trim(),
+          'message': imageUrl,
           'sent_by': FirebaseAuth.instance.currentUser!.uid,
           'datetime': DateTime.now(),
         };
