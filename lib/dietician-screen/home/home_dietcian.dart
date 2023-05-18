@@ -300,7 +300,7 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                                           style: TextStyle(
                                               fontSize: 25,
                                               fontWeight: FontWeight.bold)),
-                                      leading: appointments[index].picture == ''
+                                      leading: appointments[index].picture==null
                                           ? Image.asset('assets/images/user.png')
                                           : ClipOval(
                                             child: Image.network(

@@ -166,7 +166,7 @@ class ChatWidgets {
           String? value = await storage.read(key: 'imageUrl');
           var imageUrl = TextEditingController();
           imageUrl.text = value!;
-          if (value.isNotEmpty) {
+          if (value.isEmpty) {
             onSubmit(imageUrl);
           } else {
             onSubmit(con);

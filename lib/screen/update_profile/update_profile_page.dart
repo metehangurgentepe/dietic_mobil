@@ -30,11 +30,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.user.picture);
     bool isPasswordVisible = false;
-
     //final controller = Get.put(ProfileController());
     String name = '${widget.user.name} ${widget.user.surname}';
     name = nameController.text;
+    String email =widget.user.email!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.colorAccent,
@@ -56,7 +57,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       height: 120,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
-                          child: Image(
+                          child: widget.user.picture==null ? Image.asset('assets/images/user.png') : Image(
                               image: NetworkImage('${widget.user.picture}'))),
                     ),
                     Positioned(
@@ -75,6 +76,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 50),
+                Column(
+            children: [
+              Text.rich(TextSpan(
+                  text: name,
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold))),
+              Text.rich(TextSpan(text: email, style: TextStyle(fontSize: 15)))
+            ],
+          ),
+
           
                 // -- Form Fields
                 Padding(

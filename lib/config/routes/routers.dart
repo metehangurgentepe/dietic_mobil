@@ -2,6 +2,7 @@ import 'package:dietic_mobil/dietician-screen/appointment/appointment.dart';
 import 'package:dietic_mobil/dietician-screen/appointment/choose_patient.dart';
 import 'package:dietic_mobil/dietician-screen/diet_plan/diet_plan_detail/diet_plan_detail.dart';
 import 'package:dietic_mobil/dietician-screen/nav/nav_dietician.dart';
+import 'package:dietic_mobil/dietician-screen/notes/notes.dart';
 import 'package:dietic_mobil/dietician-screen/show-appointment/appointment_detail.dart';
 import 'package:dietic_mobil/message/authScreen.dart';
 import 'package:dietic_mobil/model/get_appointment.dart';
@@ -79,6 +80,8 @@ class AppRouter {
         return DytAppointment.route(patientId: settings.arguments as int);
       case UpdateProfileScreen.routeName:
         return UpdateProfileScreen.route(user: settings.arguments as UserModel);
+      case NoteScreen.routeName:
+        return NoteScreen.route();  
 
       default:
         return _errorRoute();

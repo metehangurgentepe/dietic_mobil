@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dietic_mobil/message/comps/styles.dart';
 import 'package:dietic_mobil/message/comps/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
 import '../../config/theme/theme.dart';
@@ -18,6 +19,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  final storage =FlutterSecureStorage();
   var roomId;
   @override
   Widget build(BuildContext context) {
@@ -133,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
             Container(
               color: Colors.white,
-              child: ChatWidgets.messageField(onSubmit: (controller) {
+              child: ChatWidgets.messageField(onSubmit: (controller) async {
                 if(controller.text.toString() != ''){
                   if (roomId != null) {
                     Map<String, dynamic> data = {
@@ -168,6 +170,7 @@ class _ChatPageState extends State<ChatPage> {
                     });
                   }
                 }
+               
                 controller.clear();
               }),
             )

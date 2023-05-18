@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dietic_mobil/message/Logics/functions.dart';
 import 'package:dietic_mobil/message/chatpage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import '../../config/theme/theme.dart';
 import 'comps/styles.dart';
@@ -23,7 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Functions.updateAvailability();
     super.initState();
   }
-
+final storage = FlutterSecureStorage();
   final firestore = FirebaseFirestore.instance;
   bool open = false;
   @override
@@ -94,7 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return  FutureBuilder(
                                     future: firestore.collection('Users').doc(user).get(),
                                     builder: (context, AsyncSnapshot snap) {
-                                      return !snap.hasData? Container(): ChatWidgets.circleProfile(onTap: (){
+                                      return !snap.hasData? Container(): ChatWidgets.circleProfile(onTap: () async {
+                                        await storage.write(key:'userPatient' ,value: user);
                                         Navigator.of(context)
                                             .push(
                                           MaterialPageRoute(

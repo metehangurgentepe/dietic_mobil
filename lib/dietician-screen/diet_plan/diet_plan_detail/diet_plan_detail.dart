@@ -103,8 +103,9 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                     onPressed: () {
                       setState(() {
                         timeNotifier;
+                        _selectDate(context);
                       });
-                      _selectDate(context);
+                      
                     },
                     icon: Icon(Icons.calendar_month),
                   ),

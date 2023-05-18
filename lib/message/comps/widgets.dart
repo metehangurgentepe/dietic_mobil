@@ -1,3 +1,4 @@
+import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -167,8 +168,7 @@ class ChatWidgets {
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: 'Enter Message',
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           prefixIcon: IconButton(
               onPressed: () async {
                 final cameras = await availableCameras();
@@ -180,36 +180,17 @@ class ChatWidgets {
                 final firstCamera = cameras.first;
                 Grock.to(TakePictureDytScreen(camera: firstCamera));
               },
-              icon: const Icon(Icons.camera_alt)),
+              icon: const Icon(
+                Icons.camera_alt,
+                color: FitnessAppTheme.nearlyDarkBlue,
+              )),
           suffixIcon: IconButton(
               onPressed: () {
                 onSubmit(con);
               },
-              icon: const Icon(Icons.send)),
-
-          // suffixIcon: Row(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: [
-          //     // IconButton(onPressed: () async {
-          //     //   final cameras = await availableCameras();
-          //     //   final firstCamera = cameras.first;
-          //     //   Grock.to(TakePictureScreen(camera:firstCamera));},
-          //     //    icon: const Icon(Icons.camera_alt)),
-          //    // IconButton(onPressed: onSubmit, icon: const Icon(Icons.send))
-          //   ],
-          // ),
+              icon: const Icon(Icons.send,
+                  color: FitnessAppTheme.nearlyDarkBlue)),
         ),
-        // decoration: Styles.messageTextFieldStyle(onSubmit: () async {
-        //   String? value = await storage.read(key: 'imageUrl');
-        //   var imageUrl = TextEditingController();
-        //   imageUrl.text = value!;
-        //   if (value.isNotEmpty) {
-        //     onSubmit(imageUrl);
-        //   } else {
-        //     onSubmit(con);
-        //   }
-        // }),
-
         controller: con,
       ),
       decoration: Styles.messageFieldCardStyle(),

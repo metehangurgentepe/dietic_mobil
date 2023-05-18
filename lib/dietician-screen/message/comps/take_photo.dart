@@ -1,7 +1,7 @@
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,9 +9,6 @@ import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:camera/camera.dart';
-
-
-
 
 import 'package:flutter/material.dart';
 
@@ -22,17 +19,14 @@ class TakePictureDytScreen extends StatefulWidget {
   });
   final CameraDescription camera;
 
-
-
   @override
   TakePictureDytScreenState createState() => TakePictureDytScreenState();
 }
 
 class TakePictureDytScreenState extends State<TakePictureDytScreen> {
-
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  String imageUrl='';
+  String imageUrl = '';
   final storage = FlutterSecureStorage();
 
   @override
@@ -57,6 +51,7 @@ class TakePictureDytScreenState extends State<TakePictureDytScreen> {
     _controller.dispose();
     super.dispose();
   }
+
   final ImagePicker picker = ImagePicker();
 // Pick an image.
 
@@ -94,33 +89,26 @@ class TakePictureDytScreenState extends State<TakePictureDytScreen> {
 
             if (!mounted) return;
 
-            String uniqFileName=DateTime.now().millisecondsSinceEpoch.toString();
+            String uniqFileName =
+                DateTime.now().millisecondsSinceEpoch.toString();
             print('burada****************************************************');
             XFile? picture = await picker.pickImage(source: ImageSource.camera);
-            if(picture==null) return;
+            if (picture == null) return;
 
             print('${picture!.path}');
 
+            Reference referenceRoot = FirebaseStorage.instance.ref();
+            Reference referenceDirImages = referenceRoot.child('images');
 
-            Reference referenceRoot=FirebaseStorage.instance.ref();
-            Reference referenceDirImages=referenceRoot.child('images');
+            Reference referenceImageToUpload =
+                referenceDirImages.child(uniqFileName);
 
-
-            Reference referenceImageToUpload=referenceDirImages.child(uniqFileName);
-
-
-            try{
+            try {
               await referenceImageToUpload.putFile(File(picture!.path));
-              imageUrl=await referenceImageToUpload.getDownloadURL();
+              imageUrl = await referenceImageToUpload.getDownloadURL();
               print(imageUrl);
               await storage.write(key: 'imageUrl', value: imageUrl);
-            }
-            catch(error){
-
-            }
-
-
-
+            } catch (error) {}
             await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => DisplayPictureScreen(
@@ -140,10 +128,14 @@ class TakePictureDytScreenState extends State<TakePictureDytScreen> {
     );
   }
 }
+
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
+  final storage = FlutterSecureStorage();
+  final firestore = FirebaseFirestore.instance;
+  var roomId;
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  DisplayPictureScreen({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +143,87 @@ class DisplayPictureScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
+      body: Center(
+        child: Column(
+          children: [
+            Image.file(File(imagePath)),
+            StreamBuilder(
+              stream: firestore
+                  .collection('Rooms')
+                  .snapshots(), // Replace with the appropriate stream for reading the image URL
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                return ElevatedButton(
+                  onPressed: () async {
+                    String? userId = await storage.read(key: 'email');
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.docs.isNotEmpty) {
+                        String? imageUrl = await storage.read(key: 'imageUrl');
+                        List<QueryDocumentSnapshot?> allData = snapshot
+                            .data!.docs
+                            .where((element) =>
+                                element['users'].contains(userId) &&
+                                element['users'].contains(
+                                    FirebaseAuth.instance.currentUser!.uid))
+                            .toList();
+                        QueryDocumentSnapshot? data =
+                            allData.isNotEmpty ? allData.first : null;
+                        if (data != null) {
+                          roomId = data.id;
+                          print(roomId);
+                          print('submit button');
+                          print(imageUrl);
+                          onSubmit(imageUrl, roomId);
+                        }
+                      }
+                    }
+                  },
+                  child: Text('Send to message'),
+                );
+              },
+            )
+          ],
+        ),
+      ),
     );
+  }
+
+  Future<void> onSubmit(String? imageUrl, String roomId) async {
+    final firestore = FirebaseFirestore.instance;
+    String? userId = await storage.read(key: 'email');
+    String? userPatient = await storage.read(key: 'userPatient');
+    if (imageUrl != '') {
+      if (roomId != null) {
+        Map<String, dynamic> data = {
+          'message': imageUrl!.trim(),
+          'sent_by': FirebaseAuth.instance.currentUser!.uid,
+          'datetime': DateTime.now(),
+        };
+        firestore.collection('Rooms').doc(roomId).update({
+          'last_message_time': DateTime.now(),
+          'last_message': imageUrl,
+        });
+        firestore
+            .collection('Rooms')
+            .doc(roomId)
+            .collection('messages')
+            .add(data);
+      } else {
+        Map<String, dynamic> data = {
+          'message': imageUrl,
+          'sent_by': FirebaseAuth.instance.currentUser!.uid,
+          'datetime': DateTime.now(),
+        };
+        firestore.collection('Rooms').add({
+          'users': [
+            userPatient,
+            FirebaseAuth.instance.currentUser!.uid,
+          ],
+          'last_message': imageUrl,
+          'last_message_time': DateTime.now(),
+        }).then((value) async {
+          value.collection('messages').add(data);
+        });
+      }
+    }
   }
 }

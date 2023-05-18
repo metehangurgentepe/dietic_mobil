@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dietic_mobil/message/Logics/functions.dart';
 import 'package:dietic_mobil/message/chatpage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import '../config/theme/theme.dart';
 import 'comps/styles.dart';
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      drawer: ChatWidgets.drawer(context),
+      //drawer: ChatWidgets.drawer(context),
       body: SafeArea(
         child: Stack(
           alignment: AlignmentDirectional.topEnd,
@@ -150,8 +151,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                       var friend = users.where((element) => element != FirebaseAuth.instance.currentUser!.uid);
                                       var user = friend.isNotEmpty ? friend.first : users .where((element) => element == FirebaseAuth.instance .currentUser!.uid).first;
                                       var lastMessage =data[i]['last_message'];
-
-
                                       return FutureBuilder(
                                         future: firestore.collection('Users').doc(user).get(),
                                         builder: (context,AsyncSnapshot snap) {

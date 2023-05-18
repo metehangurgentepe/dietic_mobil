@@ -15,25 +15,16 @@ class UpdateProfilePic{
       'Authorization': 'Bearer $token'
     };
     String url='${baseUrl}updatePicture';
-
-    
-
     try {
       var response = await dio.put(url,data:{"picture":pictureUrl} );
       print('update profile pic');
       print(response.statusCode);
-      
-      
     } catch (e) {
       throw Exception('${e} patient detail alınamadı');
     }
   }
-
-
-
   
     Future<UserModel?> getProfilePic() async {
-
     Dio dio = Dio();
     String? token = await storage.read(key: 'token');
     dio.options.headers = {
@@ -43,7 +34,6 @@ class UpdateProfilePic{
     String url = '${baseUrl}getPicture';
     try {
       var response = await dio.get(url);
-      
       UserModel user=UserModel.fromJson(response.data);
       print(user.name);
       print('userrrr');

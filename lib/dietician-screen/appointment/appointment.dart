@@ -45,7 +45,7 @@ class _DytAppointmentState extends State<DytAppointment> {
   List<String> sumTime = [];
   List<String> sum = [];
   List<dynamic> allTimes = [];
-  List<String> zamanlar=['9:00:00','10:00:00','11:00:00','12:00:00','13:00:00','14:00:00','15:00:00','16:00:00'];
+  List<String> zamanlar=['9:00:00','9:30:00','10:00:00','10:30:00','11:00:00','11:30:00','12:00:00','12:30:00','13:00:00','13:30:00','14:00:00','14:30:00','15:00:00','15:30:00','16:00:00','16:30:00'];
 List<String>? differenceList;
   final service = AppointmentService();
   
@@ -142,7 +142,7 @@ List<String>? differenceList;
                                   });
                                 },
                                 child: Container(
-                                  margin: const EdgeInsets.all(5),
+                                  margin: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: value == index
@@ -177,12 +177,12 @@ List<String>? differenceList;
                                 ),
                               );
                             },
-                            childCount: buttonNumber ?? 8,
+                            childCount:buttonNumber?? 16
                           ),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4,
-                            childAspectRatio: 1.5,
+                            childAspectRatio: 2,
                           ),
                         );
                       },
@@ -262,7 +262,7 @@ List<String>? differenceList;
               }  
               allTimes.length=value.length;
           });
-          buttonNumber=8-allTimes.length;
+          buttonNumber=16-allTimes.length;
          differenceList = zamanlar.where((element) => !allTimes.contains(element)).toList();
           
           //check if weekend is selected

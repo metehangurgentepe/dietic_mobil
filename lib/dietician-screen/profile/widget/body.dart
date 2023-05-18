@@ -56,7 +56,9 @@ class _BodyDieticianState extends State<BodyDietician> {
           ProfileMenu(
             text: "My Account",
             icon: "assets/icons/User Icon.svg",
-            press: () => {},
+            press: () => {
+                Navigator.pushNamed(context, '/update_profile', arguments: user)
+            },
           ),
           ProfileMenu(
             text: "Appointment",
@@ -78,9 +80,11 @@ class _BodyDieticianState extends State<BodyDietician> {
             press: () {},
           ),
           ProfileMenu(
-            text: "Help Center",
-            icon: "assets/icons/Question mark.svg",
-            press: () {},
+            text: "Notes",
+            icon: "assets/icons/notes-svgrepo-com.svg",
+            press: () {
+              Navigator.pushNamed(context,'/note');
+            },
           ),
           ProfileMenu(
             text: "Log Out",
