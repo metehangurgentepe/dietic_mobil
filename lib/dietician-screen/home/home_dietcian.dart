@@ -12,9 +12,12 @@ import 'package:getwidget/getwidget.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../hexColor.dart';
 import '../../model/get_appointment_for_dietitian.dart';
+import '../../model/note_model.dart';
 import '../../model/user_model.dart';
 import '../../screen/appointment/comps/config.dart';
+import '../../service/notes/note_service.dart';
 import 'comps/appointment_card.dart';
 import 'comps/chart_painter.dart';
 import 'comps/doctor_card.dart';
@@ -27,50 +30,42 @@ class HomeDietician extends StatefulWidget {
   State<HomeDietician> createState() => _HomeDieticianPageState();
 }
 
-class _HomeDieticianPageState extends State<HomeDietician> {
+class _HomeDieticianPageState extends State<HomeDietician>
+    with SingleTickerProviderStateMixin {
+  AnimationController? animationController;
   final storage = FlutterSecureStorage();
   final service = AppointmentService();
   List<GetAppointmentModel> appointments = [];
   GetAppointmentModel? nextAppointment;
   List<String> appointmentTimes = [];
   final userService = UpdateProfilePic();
+  final noteService = NoteService();
   Map hastalar = {};
   String? patientName;
   String? randevuSaat;
   String profilePic = '';
   UserModel? user;
-   List<Map<String, dynamic>> medCat = [
-    {
-      "icon": FontAwesomeIcons.userDoctor,
-      "category": "General",
-    },
-    {
-      "icon": FontAwesomeIcons.heartPulse,
-      "category": "Cardiology",
-    },
-    {
-      "icon": FontAwesomeIcons.lungs,
-      "category": "Respirations",
-    },
-    {
-      "icon": FontAwesomeIcons.hand,
-      "category": "Dermatology",
-    },
-    {
-      "icon": FontAwesomeIcons.personPregnant,
-      "category": "Gynecology",
-    },
-    {
-      "icon": FontAwesomeIcons.teeth,
-      "category": "Dental",
-    },
+  List<String> imagePath = [
+    'assets/fitness_app/breakfast.png',
+    'assets/fitness_app/lunch.png',
+    'assets/fitness_app/dinner.png',
+    'assets/fitness_app/snack.png'
   ];
+  List<String> titleTxt = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
+  List<String> startColor = ['#FA7D82', '#738AE6', '#6F72CA', '#FE95B6'];
+  List<String> endColor = ['#FFB295', '#5C5EDD', '#1E1466', '#FF5287'];
 
   String? name;
+  List<NoteModel> notes = [];
 
   String string = 'No appointment';
+  List<Color> firstContainer=[Color(0xFF6F72CA),Color(0xFF1E1466)];
+  List<Color> secondContainer=[Color(0xFFFFB295),Color(0xFFA7D82)];
+
   @override
   initState() {
+    DateTime now = DateTime.now();
+    String date = now.toString().substring(0, 10);
     service.getAppointmentsToday().then((value) {
       setState(() {
         DateTime now = DateTime.now();
@@ -104,10 +99,23 @@ class _HomeDieticianPageState extends State<HomeDietician> {
         setState(() {
           user = value;
         });
-        profilePic = user!.picture!;
+        try {
+          profilePic = user!.picture!;
+        } catch (e) {}
       });
     });
+    noteService.getDailyNotes(date).then((value) {
+      setState(() {
+        notes = value;
+      });
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<String?> getName() async {
@@ -137,10 +145,10 @@ class _HomeDieticianPageState extends State<HomeDietician> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,39 +265,65 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                   ),
                 ),
                 Config.spaceSmall,
-                      SizedBox(
-                        height: Config.heightSize * 0.15,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children:
-                              List<Widget>.generate(medCat.length, (index) {
-                            return Card(
-                              shape: BeveledRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                              margin: const EdgeInsets.only(right: 20),
-                              color: Config.primaryColor,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: <Widget>[
-                                    Column(
-                                      children: [
-                                        Text('Title',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                                        Text('note')
-                                      ],
-                                    ),
-                                    SizedBox(width: 50,)
-                                    
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
+                notes.length==0 ? 
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal:88),
+                  child: Container(
+                   decoration: BoxDecoration(
+                     color:FitnessAppTheme.nearlyDarkBlue.withOpacity(0.6),
+                     //backgroundBlendMode:BlendMode.lighten,
+                     borderRadius: BorderRadius.circular(10),
+                     gradient: LinearGradient(colors:firstContainer)
+                   ),
+                   height:Config.heightSize * 0.15,
+                   width: Config.screenWidth! * 0.5,
+                   child:InkWell(
+                     onTap: (){
+                       Navigator.pushNamed(context,'/note');
+                     },
+                     child: Icon(Icons.add,size:Config.heightSize * 0.07,color: FitnessAppTheme.nearlyWhite,)
+                   ) ,
+                  ),
+                ) :SizedBox(
+                           height: Config.heightSize * 0.15,
+                           child: ListView.builder(
+                             shrinkWrap: true,
+                             itemCount: notes.length,
+                             scrollDirection: Axis.horizontal,
+                             itemBuilder: (context, index) {
+                               return Card(
+                                 shape: BeveledRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10)),
+                                 margin: const EdgeInsets.only(right: 20),
+                                 color: Config.primaryColor,
+                                 child: Padding(
+                                   padding: const EdgeInsets.symmetric(
+                                       horizontal: 15, vertical: 10),
+                                   child: Row(
+                                     mainAxisAlignment:
+                                         MainAxisAlignment.spaceAround,
+                                     children: <Widget>[
+                                       Column(
+                                         children: [
+                                           Text(
+                                             notes[index].note!,
+                                             style: TextStyle(
+                                                 fontWeight: FontWeight.bold,
+                                                 fontSize: 18),
+                                           ),
+                                           Text('note')
+                                         ],
+                                       ),
+                                       SizedBox(
+                                         width: 50,
+                                       )
+                                     ],
+                                   ),
+                                 ),
+                               );
+                             },
+                           )),
+                Config.spaceSmall,
                 Config.spaceSmall,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -369,12 +403,14 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                                           style: TextStyle(
                                               fontSize: 25,
                                               fontWeight: FontWeight.bold)),
-                                      leading: appointments[index].picture==null
-                                          ? Image.asset('assets/images/user.png')
-                                          : ClipOval(
-                                            child: Image.network(
-                                                '${appointments[index].picture}'),
-                                          ),
+                                      leading:
+                                          appointments[index].picture == null
+                                              ? Image.asset(
+                                                  'assets/images/user.png')
+                                              : ClipOval(
+                                                  child: Image.network(
+                                                      '${appointments[index].picture}'),
+                                                ),
                                     ),
                                   ),
                                 ],
@@ -401,9 +437,7 @@ class _HomeDieticianPageState extends State<HomeDietician> {
                           ),
                         ),
                       ),
-              ],
-            ),
-          ),
+              ])),
         ),
       ),
     );
