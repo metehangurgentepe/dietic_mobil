@@ -59,6 +59,8 @@ class LoginRiverpod extends ChangeNotifier {
           String? password = await storage.read(key: 'password');
           // await FirebaseAuth.instance
           //     .signInWithEmailAndPassword(email: email!, password: password!);
+          String? string=await storage.read(key: 'patientId');
+          print(string);
           Grock.to(FitnessAppHomeScreen());
         }
 

@@ -152,7 +152,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Out of Record Foods",
+                                      "Cheat Foods",
                                       style: TextStyle(
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold),

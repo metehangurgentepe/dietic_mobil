@@ -5,6 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:text_scroll/text_scroll.dart';
+
+import '../../../config/theme/fitness_app_theme.dart';
 
 class BreakfastMealConsumed extends StatefulWidget {
   const BreakfastMealConsumed({Key? key}) : super(key: key);
@@ -105,7 +109,12 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.save),
+                        icon: Container(
+                          decoration: BoxDecoration(
+                            color: FitnessAppTheme.nearlyBlue,
+                            shape: BoxShape.circle
+                          ),
+                          child: FaIcon(FontAwesomeIcons.check)),
                         onPressed: () {
                           for (int i = 0; i < breakfastFoods.length; i++) {
                             service.checkedEaten(selectedFoods[i]);
@@ -148,43 +157,36 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                                     thickness: 2,
                                   ),
                                   SizedBox(width: 15.w),
-                                  Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
                                         children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                '${breakfastFoods[index].foodName} ',
-                                                style: TextStyle(
-                                                    color: AppColors.colorTint700,
-                                                    fontSize: 15.sp,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                              Text('x(${breakfastFoods[index].portion})',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 12),)
-                                            ],
+                                          TextSpan(
+                                            text:
+                                                '${breakfastFoods[index].foodName}',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                          SizedBox(height: 5.w),
-                                          Visibility(
-                                            visible: breakfastFoods[index]
-                                                .details!
-                                                .trim()
-                                                .isNotEmpty,
-                                            child: Text(
-                                              'Description: ${breakfastFoods[index].details!}',
+                                          TextSpan(
+                                              text:
+                                                  ' x(${breakfastFoods[index].portion})',
                                               style: TextStyle(
-                                                color: AppColors.colorTint600,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 12.sp,
-                                              ),
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${breakfastFoods[index].details}',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
                                             ),
                                           ),
-                                          Text(
-                                            '${breakfastFoods[index].energy!.toInt()} kcal',
+                                          TextSpan(
+                                            text:
+                                                '\n${breakfastFoods[index].energy} kcal',
                                             style: TextStyle(
                                               color: AppColors.colorTint500,
                                               fontWeight: FontWeight.bold,
@@ -193,8 +195,11 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                                           ),
                                         ],
                                       ),
-                                    ],
+                                      maxLines: 5,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
+                                
                                 ])),
                           );
                         },

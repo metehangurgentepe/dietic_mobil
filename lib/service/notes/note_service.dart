@@ -8,7 +8,7 @@ class NoteService {
 
   FlutterSecureStorage storage = FlutterSecureStorage();
 
-  String baseUrl = 'http://localhost:8080/api/v1/notes/';
+  String baseUrl = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/notes/';
   
   
   

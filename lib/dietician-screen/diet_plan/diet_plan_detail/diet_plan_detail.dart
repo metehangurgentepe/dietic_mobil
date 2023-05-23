@@ -1019,10 +1019,10 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       _macronutrientsTile(
           title: 'Carbs',
-          percentValue: carbonhydrate != 0 ? eatenCarbs / carbonhydrate! : 0.1,
+          percentValue: carbonhydrate != 0 ? eatenCarbs / carbonhydrate : 0.1,
           amountInGram: eatenCarbs != 0
-              ? '${eatenCarbs.toInt()}/${carbonhydrate!.toInt()}g'
-              : '0/${carbonhydrate!.toLimitedStringWithComma(1)}'),
+              ? '${eatenCarbs.toInt()}/${carbonhydrate.toInt()}g'
+              : '0/${carbonhydrate.toLimitedStringWithComma(1)}'),
       _macronutrientsTile(
           title: 'Proteins',
           percentValue: protein != 0 ? eatenProteins / protein : 0.1,

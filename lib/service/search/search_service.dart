@@ -10,7 +10,7 @@ class SearchService {
   var data = [];
   List<SearchModel> results = [];
   final storage = FlutterSecureStorage();
-  final String baseUrl = 'http://localhost:8080/api/v1/foods/search?query=';
+  final String baseUrl = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/foods/search?query=';
   final dio = Dio();
 
   Future<List<SearchModel>>searchCall(String value) async {

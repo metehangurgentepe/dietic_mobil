@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../config/theme/fitness_app_theme.dart';
 import '../../../service/diet_plan/diet_plan_service.dart';
 
 class DinnerMealConsumed extends StatefulWidget {
@@ -109,7 +111,12 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.save),
+                        icon: Container(
+                          decoration: BoxDecoration(
+                            color: FitnessAppTheme.nearlyBlue,
+                            shape: BoxShape.circle
+                          ),
+                          child: FaIcon(FontAwesomeIcons.check)),
                         onPressed: () {
                           for (int i = 0; i < dinnerPlan.length; i++) {
                             service.checkedEaten(selectedFoods[i]);
@@ -150,47 +157,48 @@ class _DinnerMealConsumedState extends State<DinnerMealConsumed> {
                             thickness: 2,
                           ),
                           SizedBox(width: 15.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${dinnerPlan[index].foodName} x(${dinnerPlan[index].portion}) ' ?? '',
-                                style: TextStyle(
-                                    color: AppColors.colorTint700,
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 5.w),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Visibility(
-                                    visible: dinnerPlan[index].details!.trim().isNotEmpty,
-                                    child: Text(
-                                      'Description: ${dinnerPlan[index].details!}',
-                                      style: TextStyle(
-                                        color: AppColors.colorTint600,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12.sp,
+                           Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${dinnerPlan[index].foodName}',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  ' x(${dinnerPlan[index].portion})',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${dinnerPlan[index].details}',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${dinnerPlan[index].energy} kcal',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint500,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                      maxLines: 5,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-
-                                  Text(
-                                    '${dinnerPlan[index].energy!.toInt()} kcal' ??
-                                        '',
-                                    style: TextStyle(
-                                      color: AppColors.colorTint500,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
                         ])),
                   );
                 },

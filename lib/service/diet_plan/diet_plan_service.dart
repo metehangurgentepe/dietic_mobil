@@ -11,7 +11,7 @@ class DietPlanService {
   List<DietPlanModel> results = [];
   final storage = FlutterSecureStorage();
   final String baseUrl =
-      'http://localhost:8080/api/v1/dietPlans/patient/3/day/1';
+      'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/3/day/1';
   final dio = Dio();
 
   var jsonResponse;
@@ -54,7 +54,7 @@ class DietPlanService {
     String? patientId = await storage.read(key: 'patientId');
     String? token = await storage.read(key: 'token');
 
-    String Url = 'http://localhost:8080/api/v1/dietPlans/patient/${patientId}';
+    String Url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}';
 
     dio.options.headers = {
       'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ class DietPlanService {
     String? patientId = await storage.read(key: 'patientId');
     String? token = await storage.read(key: 'token');
 
-    String Url = 'http://localhost:8080/api/v1/dietPlans/patient/${patientId}';
+    String Url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}';
 
     dio.options.headers = {
       'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/1';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/1';
     print('zaman');
     print(time);
     print(patientId);
@@ -169,7 +169,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/2';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/2';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -199,7 +199,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/3';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/3';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -231,7 +231,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/4';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/4';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -262,7 +262,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/5';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/5';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -294,7 +294,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -345,7 +345,7 @@ class DietPlanService {
     print('timing');
     print(time);
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/1';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/1';
     print('zaman');
     print(time);
     print(patientId);
@@ -381,7 +381,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/2';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/2';
     print('zaman');
     print(time);
     print(patientId);
@@ -418,7 +418,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/3';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/3';
     print('zaman');
     print(patientId);
     dio.options.headers = {
@@ -454,7 +454,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/4';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/4';
     print('zaman');
     print(time);
     print(patientId);
@@ -490,7 +490,7 @@ class DietPlanService {
     String? token = await storage.read(key: 'token');
 
     final String Url =
-        'http://localhost:8080/api/v1/dietPlans/patient/${patientId}/meal/5';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}/meal/5';
     print('zaman');
     print(time);
     print(patientId);
@@ -522,7 +522,7 @@ class DietPlanService {
     DateTime now =DateTime.now();
     String time=now.toString().substring(0,10);
     String url =
-        'http://localhost:8080/api/v1/dietPlans/${dietId}/${patientId}';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/${dietId}/${patientId}';
     String? token = await storage.read(key: 'token');
     print(url);
     dio.options.headers = {
@@ -549,7 +549,7 @@ class DietPlanService {
   Future checkedEaten(DietPlanModel dietPlanModel) async {
     Dio dio = Dio();
     String url =
-        'http://localhost:8080/api/v1/dietPlans/updateEaten/${dietPlanModel.planId}';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/updateEaten/${dietPlanModel.planId}';
     String? token = await storage.read(key: 'token');
     dio.options.headers = {
       'Content-Type': 'application/json',

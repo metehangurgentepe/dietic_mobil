@@ -2,6 +2,7 @@ import 'package:dietic_mobil/model/get_appointment.dart';
 import 'package:dietic_mobil/screen/appointment/comps/config.dart';
 import 'package:dietic_mobil/service/appointment/appointment_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -13,14 +14,16 @@ import 'comps/button.dart';
 import 'comps/custom_app_bar.dart';
 
 class Appointment extends StatefulWidget {
-  const Appointment({Key? key}) : super(key: key);
+  const Appointment({Key? key, required this.date}) : super(key: key);
   static const String routeName = '/appointment';
 
-  static Route route() {
+  static Route route({required String date}) {
     return MaterialPageRoute(
-        builder: (_) => Appointment(),
+        builder: (_) => Appointment(date: date),
         settings: const RouteSettings(name: routeName));
   }
+
+  final String date;
 
   @override
   State<Appointment> createState() => _AppointmentState();
@@ -31,7 +34,7 @@ class _AppointmentState extends State<Appointment> {
   CalendarFormat _format = CalendarFormat.month;
   DateTime _focusDay = DateTime.now();
   DateTime _currentDay = DateTime.now();
-  String? _currentIndex;
+  int? _currentIndex;
   bool _isWeekend = false;
   bool _dateSelected = false;
   bool _timeSelected = false;
@@ -57,35 +60,50 @@ class _AppointmentState extends State<Appointment> {
     '14:30:00',
     '15:00:00',
     '15:30:00',
-    '16:00:00'
+    '16:00:00',
+    '16:30:00',
   ];
   List<String>? differenceList;
   final service = AppointmentService();
 
   int? buttonNumber;
+  ValueNotifier<String>? dateNotifier;
+
+  ValueNotifier<List>? list;
+
   @override
   void initState() {
-    // service.getPatientAppointments().then((data) {
-    //   appointments = data;
-    //   for (int i = 0; i < appointments.length; i++) {
-    //     print(appointments[i].appointmentDate);
-    //    print(appointments[i].appointmentTime);
+    dateNotifier = ValueNotifier<String>(widget.date);
+    list=ValueNotifier<List>(zamanlar);
+    service.getAppointmentsByDate(widget.date).then((value) {
+      setState(() {
+        allTimes.clear();
+        for (int i = 0; i < value.length; i++) {
+          allTimes.add(value[i].appointmentTime);
+        }
+        allTimes.length = value.length;
+      });
+      allTimes.isEmpty
+          ? list = ValueNotifier<List>(zamanlar)
+          : list = ValueNotifier<List>(allTimes);
+          allTimes.isEmpty
+          ? differenceList = zamanlar
+          : differenceList = allTimes.cast<String>();
+          
+    });
+    //list = ValueNotifier<List>(zamanlar);
 
-    //     Map<String, String> myMap = {};
-    //     myMap['${appointments[i].appointmentDate}']='${appointments[i].appointmentTime}';
-    //     map=myMap;
-
-    //   }
-
-    // });
     super.initState();
   }
 
   ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
+  String? dateWithoutTime;
+  final storage = FlutterSecureStorage();
 
   @override
   void dispose() {
     _currentIndexNotifier.dispose();
+    list!.dispose();
     super.dispose();
   }
 
@@ -141,9 +159,15 @@ class _AppointmentState extends State<Appointment> {
                         ),
                       ),
                     )
-                  : ValueListenableBuilder<int>(
-                      valueListenable: _currentIndexNotifier,
+                  : 
+                   ValueListenableBuilder<List>(
+                      valueListenable: list!,
                       builder: (context, value, child) {
+                        buttonNumber = 16 - allTimes.length;
+                        differenceList = zamanlar
+                            .where((element) => !allTimes.contains(element))
+                            .toList();
+                        
                         return SliverGrid(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
@@ -151,35 +175,35 @@ class _AppointmentState extends State<Appointment> {
                                 splashColor: Colors.transparent,
                                 onTap: () {
                                   setState(() {
-                                    print('index burada');
-                                    print(index);
-                                    _currentIndexNotifier.value = index;
-                                    _currentIndex = differenceList![index];
+                                    
+                                    _currentIndex=index;
+                                   // _currentIndexNotifier.value = index;
+                                   
                                     _timeSelected = true;
-                                    // Other code logic
-                                    print(index);
+                                    print(_timeSelected);
+                                    print('_timeSelected');
                                   });
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: value == index
+                                      color: _currentIndex == index
                                           ? Colors.white
                                           : Colors.black,
                                     ),
                                     borderRadius: BorderRadius.circular(15),
-                                    color: value == index
+                                    color: _currentIndex == index
                                         ? AppColors.colorAccent
                                         : null,
                                   ),
                                   alignment: Alignment.center,
-                                  child: differenceList == null
+                                  child: allTimes == null
                                       ? Text(
                                           zamanlar[index],
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: value == index
+                                            color: _currentIndex == index
                                                 ? Colors.white
                                                 : null,
                                           ),
@@ -188,7 +212,7 @@ class _AppointmentState extends State<Appointment> {
                                           differenceList![index],
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: value == index
+                                            color: _currentIndex == index
                                                 ? Colors.white
                                                 : null,
                                           ),
@@ -196,12 +220,12 @@ class _AppointmentState extends State<Appointment> {
                                 ),
                               );
                             },
-                            childCount: buttonNumber ?? 8,
+                            childCount: buttonNumber ?? 16,
                           ),
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4,
-                            childAspectRatio: 1.5,
+                            childAspectRatio: 2,
                           ),
                         );
                       },
@@ -217,20 +241,16 @@ class _AppointmentState extends State<Appointment> {
                       //convert date/day/time into string first
                       final getDate = DateConverted.getDate(_currentDay);
                       final getDay = DateConverted.getDay(_currentDay.weekday);
-                      // print('current index' + _currentIndex!);
-                      //final getTime = DateConverted.getTime(int.parse(_currentIndex!));
 
-                      //String time= '${getTime.substring(0,5)}:00';
-
-                      //DateTime dateTime = DateFormat('hh:mm a').parse(getTime);
                       DateTime date = DateTime.parse(_currentDay.toString());
                       String DateString = date.toString().substring(0, 10);
-
-                      service.postAppointment(DateString, _currentIndex!);
+                      print(differenceList![_currentIndex!]);
+                      service.postAppointment(
+                          DateString, differenceList![_currentIndex!]);
 
                       Navigator.pushNamed(context, '/success-appointment');
                     },
-                    disable: _timeSelected && _dateSelected ? false : true,
+                    disable: _timeSelected ? false : true,
                   ),
                 ),
               ),
@@ -250,11 +270,11 @@ class _AppointmentState extends State<Appointment> {
       calendarFormat: _format,
       currentDay: _currentDay,
       rowHeight: 48,
-      calendarStyle: const CalendarStyle(
+      calendarStyle: CalendarStyle(
         todayDecoration:
             BoxDecoration(color: AppColors.colorAccent, shape: BoxShape.circle),
       ),
-      availableCalendarFormats: const {
+      availableCalendarFormats: {
         CalendarFormat.month: 'Month',
       },
       onFormatChanged: (format) {
@@ -263,25 +283,34 @@ class _AppointmentState extends State<Appointment> {
         });
       },
       onDaySelected: ((selectedDay, focusedDay) {
-        setState(() {
+        setState(() async {
           _currentDay = selectedDay;
           _focusDay = focusedDay;
-          _dateSelected = true;
-          String dateWithoutTime = selectedDay.toString().substring(0, 10);
-          print(dateWithoutTime);
 
-          //sıkıntı var
-          service.getAppointmentsByDate(dateWithoutTime).then((value) {
-            allTimes.clear();
-            for (int i = 0; i < value.length; i++) {
-              allTimes.add(value[i].appointmentTime);
-              //print(allTimes[i]);
-            }
-            allTimes.length = value.length;
+          _dateSelected = true;
+          dateWithoutTime = selectedDay.toString().substring(0, 10);
+          dateNotifier = ValueNotifier<String>(dateWithoutTime!);
+          await storage.write(key: 'time', value: dateWithoutTime);
+
+          service.getAppointmentsByDate(dateWithoutTime!).then((value) {
+            setState(() {
+              allTimes.clear();
+              for (int i = 0; i < value.length; i++) {
+                allTimes.add(value[i].appointmentTime);
+                //print(allTimes[i]);
+              }
+              allTimes.length = value.length;
+              list=ValueNotifier<List>(allTimes);
+            });
           });
-          buttonNumber = 8 - allTimes.length;
-          differenceList =
-              zamanlar.where((element) => !allTimes.contains(element)).toList();
+
+         
+
+          String? index = await storage.read(key: 'index');
+          try {
+            _currentIndex = int.parse(differenceList![int.parse(index!)]);
+            print(_currentIndex);
+          } catch (e) {}
 
           //check if weekend is selected
           if (selectedDay.weekday == 6 || selectedDay.weekday == 7) {
@@ -295,4 +324,38 @@ class _AppointmentState extends State<Appointment> {
       }),
     );
   }
+
+  Future<String?> getTime() async {
+    String? time = await storage.read(key: 'time');
+    return time;
+  }
 }
+
+
+// Widget ClockWidget(){
+
+//   String _getCurrentTime() {
+//     DateTime now = DateTime.now();
+//     String twoDigits(int n) => n.toString().padLeft(2, "0");
+//     String currentTime =
+//         '${twoDigits(now.hour)}:${twoDigits(now.minute)}:${twoDigits(now.second)}';
+//     return currentTime;
+//   }
+//   return Container(
+//       width: 200,
+//       height: 200,
+//       decoration: BoxDecoration(
+//         shape: BoxShape.circle,
+//         color: Colors.grey[200],
+//       ),
+//       child: Center(
+//         child: Text(
+//           _getCurrentTime(),
+//           style: TextStyle(fontSize: 40),
+//         ),
+//       ),
+//     );
+//   }
+  
+
+  

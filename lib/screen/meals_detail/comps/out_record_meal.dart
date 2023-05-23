@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dietic_mobil/config/config.dart';
 import 'package:dietic_mobil/model/model.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../config/theme/fitness_app_theme.dart';
 import '../../../model/diet_plan_model.dart';
 import '../../../service/diet_plan/diet_plan_service.dart';
 
@@ -105,7 +107,12 @@ class _OutOfRecordMealConsumedState extends State<OutOfRecordMealConsumed> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.save),
+                        icon: Container(
+                          decoration: BoxDecoration(
+                            color: FitnessAppTheme.nearlyBlue,
+                            shape: BoxShape.circle
+                          ),
+                          child: FaIcon(FontAwesomeIcons.check)),
                         onPressed: () {
                           for (int i = 0; i < outOfRecordFoods.length; i++) {
                             service.checkedEaten(selectedFoods[i]);
@@ -148,53 +155,49 @@ class _OutOfRecordMealConsumedState extends State<OutOfRecordMealConsumed> {
                                     thickness: 2,
                                   ),
                                   SizedBox(width: 15.w),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
+                                   Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
                                         children: [
-                                          Text(
-                                            '${outOfRecordFoods[index].foodName} ',
+                                          TextSpan(
+                                            text:
+                                                '${outOfRecordFoods[index].foodName}',
                                             style: TextStyle(
                                                 color: AppColors.colorTint700,
                                                 fontSize: 15.sp,
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          Text(
-                                            'x(${outOfRecordFoods[index].portion})',
+                                          TextSpan(
+                                              text:
+                                                  ' x(${outOfRecordFoods[index].portion})',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${outOfRecordFoods[index].details}',
                                             style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12),
-                                          )
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${outOfRecordFoods[index].energy} kcal',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint500,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                      Visibility(
-                                        visible: outOfRecordFoods[index]
-                                            .details!
-                                            .trim()
-                                            .isNotEmpty,
-                                        child: Text(
-                                          'Description: ${outOfRecordFoods[index].details!}',
-                                          style: TextStyle(
-                                            color: AppColors.colorTint600,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12.sp,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5.w),
-                                      Text(
-                                        outOfRecordFoods[index].energy.toString(),
-                                        style: TextStyle(
-                                          color: AppColors.colorTint500,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.sp,
-                                        ),
-                                      ),
-                                    ],
-                                  )
+                                      maxLines: 5,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                
                                 ])),
                           );
                         },

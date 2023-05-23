@@ -71,7 +71,8 @@ class _BodyState extends State<Body> {
             text: "Appointment",
             icon: "assets/icons/calendar.svg",
             press: () {
-              Navigator.pushNamed(context, '/appointment');
+              String date=DateTime.now().toString().substring(0,10);
+              Navigator.pushNamed(context, '/appointment',arguments: date);
             },
           ),
           ProfileMenu(

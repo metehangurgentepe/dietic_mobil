@@ -78,7 +78,7 @@ class PlanService {
 
   Future<List<DietPlanModel>> getFirstDietPlanForDyt(String time,int patientId) async {
     String? token = await storage.read(key: 'token');
-    String Url = 'http://localhost:8080/api/v1/dietPlans/patient/${patientId}';
+    String Url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietPlans/patient/${patientId}';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'

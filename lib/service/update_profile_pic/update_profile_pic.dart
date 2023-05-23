@@ -5,7 +5,7 @@ import '../../model/user_model.dart';
 
 class UpdateProfilePic{
   FlutterSecureStorage storage = FlutterSecureStorage();
-  String baseUrl = 'http://localhost:8080/api/v1/users/';
+  String baseUrl = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/users/';
   
   Future postProfilePic(String pictureUrl) async {
     Dio dio = Dio();

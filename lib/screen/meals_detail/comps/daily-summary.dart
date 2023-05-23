@@ -1,3 +1,4 @@
+
 import 'package:dietic_mobil/service/diet_plan/diet_plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,10 +38,14 @@ class _DailySummaryState extends State<DailySummary> {
         print(dietPlan);
       });
       for (int i = 0; i < dietPlan.length; i++) {
+        
         carbonhydrate += dietPlan[i].carb!;
         protein += dietPlan[i].protein!;
         energy += dietPlan[i].energy!;
         fats += dietPlan[i].fat!;
+        print(carbonhydrate);
+        print('carbonhydrate');
+        
 
         if (dietPlan[i].eaten == 'CHECKED') {
           eatenCarbs += dietPlan[i].carb!;
@@ -50,6 +55,8 @@ class _DailySummaryState extends State<DailySummary> {
         }
       }
     });
+    print(carbonhydrate);
+    print('carbonhydrate');
     super.initState();
   }
 
@@ -157,15 +164,15 @@ class _DailySummaryState extends State<DailySummary> {
       _macronutrientsTile(
           title: 'Carbs',
           percentValue: carbonhydrate == 0 ? eatenCarbs / carbonhydrate : 0.1,
-          amountInGram:  carbonhydrate == 0 ? '${eatenCarbs.toInt()}/${carbonhydrate.toInt()}g': '0'),
+          amountInGram:  carbonhydrate != 0 ? '${eatenCarbs.toInt()}/${carbonhydrate.toInt()}g': '0'),
       _macronutrientsTile(
           title: 'Proteins',
           percentValue: protein == 0 ? eatenProteins / protein : 0.1,
-          amountInGram: protein==0 ? '${eatenProteins.toInt()}/${protein.toInt()}g' :'0'),
+          amountInGram: protein!=0 ? '${eatenProteins.toInt()}/${protein.toInt()}g' :'0'),
       _macronutrientsTile(
           title: 'Fats',
           percentValue: fats == 0 ? eatenFats / fats : 0.1,
-          amountInGram: eatenFats==0 ? '${eatenFats.toInt()}/${fats.toInt()}g':'0')
+          amountInGram: fats!=0 ? '${eatenFats.toInt()}/${fats.toInt()}g':'0')
     ]);
   }
 
@@ -207,4 +214,5 @@ class _DailySummaryState extends State<DailySummary> {
       ),
     );
   }
+
 }

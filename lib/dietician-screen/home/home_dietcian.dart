@@ -295,7 +295,7 @@ class _HomeDieticianPageState extends State<HomeDietician>
                                  shape: BeveledRectangleBorder(
                                      borderRadius: BorderRadius.circular(10)),
                                  margin: const EdgeInsets.only(right: 20),
-                                 color: Config.primaryColor,
+                                 color: FitnessAppTheme.nearlyDarkBlue.withOpacity(0.4),
                                  child: Padding(
                                    padding: const EdgeInsets.symmetric(
                                        horizontal: 15, vertical: 10),
@@ -304,6 +304,9 @@ class _HomeDieticianPageState extends State<HomeDietician>
                                          MainAxisAlignment.spaceAround,
                                      children: <Widget>[
                                        Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                          children: [
                                            Text(
                                              notes[index].note!,
@@ -311,12 +314,10 @@ class _HomeDieticianPageState extends State<HomeDietician>
                                                  fontWeight: FontWeight.bold,
                                                  fontSize: 18),
                                            ),
-                                           Text('note')
+                                           Text(notes[index].date!,textAlign: TextAlign.end,)
                                          ],
                                        ),
-                                       SizedBox(
-                                         width: 50,
-                                       )
+                                       
                                      ],
                                    ),
                                  ),

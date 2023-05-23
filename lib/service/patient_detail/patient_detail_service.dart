@@ -5,7 +5,7 @@ import '../../model/patient_detail.dart';
 
 class PatientDetailService {
   FlutterSecureStorage storage = FlutterSecureStorage();
-  String url = 'http://localhost:8080/api/v1/dietitians/patients/details';
+  String url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietitians/patients/details';
   PatientModel? patient;
   Future<PatientModel> getPatientDetail() async {
     Dio dio = Dio();

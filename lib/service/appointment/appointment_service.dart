@@ -42,8 +42,9 @@ class AppointmentService {
     };
 
     String url =
-        'http://localhost:8080/api/v1/appointments/book/${dietitianId}/${patientId}';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/book/${dietitianId}/${patientId}';
     print(getDate + ' ' + getTime);
+    print(patientId);
     print('${dietitianId} + ${patientId}');
 
     try {
@@ -77,7 +78,7 @@ class AppointmentService {
     };
 
     String url =
-        'http://localhost:8080/api/v1/appointments/book/${dietitianId}/${patientId}';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/book/${dietitianId}/${patientId}';
     print(getDate + ' ' + getTime);
     print('${dietitianId} + ${patientId}');
 
@@ -91,7 +92,7 @@ class AppointmentService {
 
   Future<List<GetAppointmentModel>> getPatientAppointments() async {
     String? dieticianId = await storage.read(key: 'dieticianId');
-    String url = 'http://localhost:8080/api/v1/appointments/patient/3';
+    String url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/patient/3';
     var response = await dio.get(url);
     print(response.data.length);
     print('json');
@@ -106,7 +107,7 @@ class AppointmentService {
 
   Future<List<GetAppointmentModel>> getAppointment() async {
     String? token = await storage.read(key: 'token');
-    String url = 'http://localhost:8080/api/v1/appointments/dietitian';
+    String url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/dietitian';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -127,7 +128,7 @@ class AppointmentService {
   Future<List<GetAppointmentModel>> getPatientAppointment() async {
     String? token = await storage.read(key: 'token');
     String? patientId = await storage.read(key: 'patientId');
-    String url = 'http://localhost:8080/api/v1/appointments/patient/${patientId}';
+    String url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/patient/${patientId}';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -154,7 +155,7 @@ class AppointmentService {
     String? patientID = await storage.read(key: 'patientId');
 
     String url =
-        'http://localhost:8080/api/v1/appointments/dietitian/byDate/${dietitianId}';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/dietitian/byDate/${dietitianId}';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -191,7 +192,7 @@ class AppointmentService {
     String? patientID = await storage.read(key: 'patientId');
 
     String url =
-        'http://localhost:8080/api/v1/appointments/dietitian/byDate/${dietitianId}';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/dietitian/byDate/${dietitianId}';
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -220,7 +221,7 @@ class AppointmentService {
 
   Future updateStatus(GetAppointmentModel getAppointmentModel) async {
     String? token = await storage.read(key: 'token');
-    String url='http://localhost:8080/api/v1/appointments/updateStatus/${getAppointmentModel.appointmentId}';
+    String url='http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/updateStatus/${getAppointmentModel.appointmentId}';
     Map<String, dynamic> data ={
         "appointment_id":getAppointmentModel.appointmentId,
         "status": "AVAILABLE",

@@ -12,7 +12,7 @@ class StepService {
   Future<List<StepsModel>> getAllSteps() async {
     String? patientId = await storage.read(key: 'patientId');
     String url =
-        'http://localhost:8080/api/v1/dietitians/patients/${patientId}/getAllSteps';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietitians/patients/${patientId}/getAllSteps';
 
     Dio dio = Dio();
     String? token = await storage.read(key: 'token');
@@ -37,7 +37,7 @@ class StepService {
     String date = now.toString().substring(0, 10);
     String? patientId = await storage.read(key: 'patientId');
     String url =
-        'http://localhost:8080/api/v1/dietitians/patients/${patientId}/saveSteps';
+        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietitians/patients/${patientId}/saveSteps';
 
     Dio dio = Dio();
     String? token = await storage.read(key: 'token');

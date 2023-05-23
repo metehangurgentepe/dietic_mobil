@@ -5,6 +5,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../config/theme/theme.dart';
 import '../../model/user_model.dart';
+import '../../service/change password/change_password_service.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   UpdateProfileScreen({Key? key, required this.user}) : super(key: key);
@@ -23,10 +24,11 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController currentPasswordController = TextEditingController();
   TextEditingController ageController = TextEditingController();
 
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  final service = ChangePasswordService();
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +36,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     bool isPasswordVisible = false;
     //final controller = Get.put(ProfileController());
     String name = '${widget.user.name} ${widget.user.surname}';
-    name = nameController.text;
-    String email =widget.user.email!;
+
+    String email = widget.user.email!;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.colorAccent,
-        title:
-            Text('EditProfile',)
-      ),
+          backgroundColor: AppColors.colorAccent,
+          title: Text(
+            'EditProfile',
+          )),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Padding(
-            padding: const EdgeInsets.only(top:18.0),
+            padding: const EdgeInsets.only(top: 18.0),
             child: Column(
               children: [
                 // -- IMAGE with ICON
@@ -57,8 +59,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       height: 120,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
-                          child: widget.user.picture==null ? Image.asset('assets/images/user.png') : Image(
-                              image: NetworkImage('${widget.user.picture}'))),
+                          child: widget.user.picture == null
+                              ? Image.asset('assets/images/user.png')
+                              : Image(
+                                  image:
+                                      NetworkImage('${widget.user.picture}'))),
                     ),
                     Positioned(
                       bottom: 0,
@@ -77,18 +82,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ),
                 const SizedBox(height: 50),
                 Column(
-            children: [
-              Text.rich(TextSpan(
-                  text: name,
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold))),
-              Text.rich(TextSpan(text: email, style: TextStyle(fontSize: 15)))
-            ],
-          ),
-
-          
+                  children: [
+                    Text.rich(TextSpan(
+                        text: name,
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold))),
+                    Text.rich(
+                        TextSpan(text: email, style: TextStyle(fontSize: 15)))
+                  ],
+                ),
                 // -- Form Fields
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(top:28.0,bottom: 10,left: 10,right: 10),
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.grey[400],
@@ -97,27 +102,28 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        
                         CupertinoTextField.borderless(
+                            obscureText: !isPasswordVisible,
                             cursorColor: FitnessAppTheme.nearlyDarkBlue,
-                            controller: nameController,
+                            controller: currentPasswordController,
                             padding: EdgeInsets.only(
                                 left: 15, top: 10, right: 6, bottom: 10),
-                            prefix: Text('Full Name'),
+                            prefix: Text('Current Password'),
                             placeholder: 'Required'),
                         Divider(
                           thickness: 1,
                           color: Colors.black,
                         ),
-                        
                         CupertinoTextField.borderless(
                           obscureText: !isPasswordVisible,
-                          controller: passwordController,
-                            cursorColor: FitnessAppTheme.nearlyDarkBlue,
+                          controller: newPasswordController,
+                          cursorColor: FitnessAppTheme.nearlyDarkBlue,
                           padding: EdgeInsets.only(
                               left: 15, top: 10, right: 6, bottom: 10),
                           prefix: Padding(
                             padding: EdgeInsets.only(left: 8.0),
-                            child: Text('Password'),
+                            child: Text('New Password'),
                           ),
                           placeholder: 'Required',
                         )
@@ -142,7 +148,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        service.passwordChange(currentPasswordController.text,
+                            newPasswordController.text);
+                      },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent.withOpacity(0.1),
                           elevation: 0,

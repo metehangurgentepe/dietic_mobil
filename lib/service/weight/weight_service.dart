@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../model/weight_model.dart';
 class WeightService {
   FlutterSecureStorage storage = FlutterSecureStorage();
-  String url = 'http://localhost:8080/api/v1/dietitians/patients/progress';
+  String url = 'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/dietitians/patients/progress';
   List<WeightModel> weight=[];
   Future<List<WeightModel>> getWeights() async {
     Dio dio = Dio();

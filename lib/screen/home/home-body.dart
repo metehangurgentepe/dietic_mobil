@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'widget/appbar.dart';
 import 'widget/daily-calorie-statistics.dart';
-import 'widget/daily-summary.dart';
+import '../meals_detail/comps/daily-summary.dart';
 import '../meals_detail/comps/breakfast-meal-consumed.dart';
 import 'package:permission_handler/permission_handler.dart';
 

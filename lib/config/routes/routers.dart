@@ -47,7 +47,8 @@ class AppRouter {
       case ExerciseScreen.routeName:
         return ExerciseScreen.route();
       case Appointment.routeName:
-        return Appointment.route();
+        return Appointment.route(
+          date: settings.arguments as String);
       case NavDieticianScreen.routeName:
         return NavDieticianScreen.route();
       case TrainingScreen.routeName:
