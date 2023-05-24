@@ -167,7 +167,6 @@ class _AppointmentState extends State<Appointment> {
                         differenceList = zamanlar
                             .where((element) => !allTimes.contains(element))
                             .toList();
-                        
                         return SliverGrid(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
@@ -177,11 +176,8 @@ class _AppointmentState extends State<Appointment> {
                                   setState(() {
                                     
                                     _currentIndex=index;
-                                   // _currentIndexNotifier.value = index;
-                                   
                                     _timeSelected = true;
-                                    print(_timeSelected);
-                                    print('_timeSelected');
+                                    
                                   });
                                 },
                                 child: Container(
@@ -223,13 +219,14 @@ class _AppointmentState extends State<Appointment> {
                             childCount: buttonNumber ?? 16,
                           ),
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                             const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4,
                             childAspectRatio: 2,
                           ),
                         );
                       },
                     ),
+            
               SliverToBoxAdapter(
                 child: Container(
                   padding:
