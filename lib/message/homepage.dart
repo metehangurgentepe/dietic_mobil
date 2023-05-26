@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 10),
                           child: Text(
-                            'Your Dietitian',
+                            'Patients',
                             style: Styles.h1(),
                           ),
                         ),
