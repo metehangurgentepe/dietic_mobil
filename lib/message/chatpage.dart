@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:dietic_mobil/message/comps/styles.dart';
 import 'package:dietic_mobil/message/comps/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:grock/grock.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,38 +44,47 @@ class _ChatPageState extends State<ChatPage> {
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 return IconButton(
                     onPressed: () async {
-                      final image = await ImagePicker().pickImage(
-                        source: ImageSource.gallery,
-                        maxHeight: 512,
-                        maxWidth: 512,
-                        imageQuality: 90,
-                      );
-                      Reference ref =
-                          FirebaseStorage.instance.ref().child("pictures");
-                      await ref.putFile(File(image!.path));
+                      try {
+                        final image = await ImagePicker().pickImage(
+                          source: ImageSource.gallery,
+                          maxHeight: 512,
+                          maxWidth: 512,
+                          imageQuality: 90,
+                        );
+                        Reference ref =
+                            FirebaseStorage.instance.ref().child("pictures");
+                        await ref.putFile(File(image!.path));
 
-                      String? userId = await storage.read(key: 'email');
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.docs.isNotEmpty) {
-                          List<QueryDocumentSnapshot?> allData = snapshot
-                              .data!.docs
-                              .where((element) =>
-                                  element['users'].contains(userId) &&
-                                  element['users'].contains(
-                                      FirebaseAuth.instance.currentUser!.uid))
-                              .toList();
-                          QueryDocumentSnapshot? data =
-                              allData.isNotEmpty ? allData.first : null;
-                          if (data != null) {
-                            roomId = data.id;
-                            ref.getDownloadURL().then((value) async {
-                              setState(() {
-                                photo = value;
+                        String? userId = await storage.read(key: 'email');
+                        if (snapshot.hasData) {
+                          if (snapshot.data!.docs.isNotEmpty) {
+                            List<QueryDocumentSnapshot?> allData = snapshot
+                                .data!.docs
+                                .where((element) =>
+                                    element['users'].contains(userId) &&
+                                    element['users'].contains(
+                                        FirebaseAuth.instance.currentUser!.uid))
+                                .toList();
+                            QueryDocumentSnapshot? data =
+                                allData.isNotEmpty ? allData.first : null;
+                            if (data != null) {
+                              roomId = data.id;
+                              ref.getDownloadURL().then((value) async {
+                                setState(() {
+                                  photo = value;
+                                  print(photo);
+                                });
                               });
-                            });
-                            onSubmit(photo, roomId);
+                              print(roomId);
+                              onSubmit(photo, roomId);
+                            }
                           }
                         }
+                      } catch (e) {
+                        Grock.snackBar(
+                            title: "Error",
+                            description:
+                                "Photo type must be jpg");
                       }
                     },
                     icon: const Icon(Icons.attachment_rounded));
@@ -143,7 +153,6 @@ class _ChatPageState extends State<ChatPage> {
                           if (data != null) {
                             roomId = data.id;
                           }
-
                           return data == null
                               ? Container()
                               : StreamBuilder(

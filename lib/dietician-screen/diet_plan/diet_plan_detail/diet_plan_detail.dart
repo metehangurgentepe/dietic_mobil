@@ -49,10 +49,6 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   List<bool> isSelectedSnack = [];
   List<bool> isSelectedOutOfRecord = [];
 
- 
-
- 
-
   String? desiredTime;
 
   Future<void> _selectDate(BuildContext context) async {
@@ -62,9 +58,11 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
       firstDate: DateTime(2010),
       lastDate: DateTime(2030),
     );
+    timeNotifier = ValueNotifier<String>(picked.toString());
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        //timeNotifier=ValueNotifier<String>(selectedDate.toString());
       });
     }
   }
@@ -74,17 +72,23 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
     String? time;
     setState(() {
       time = selectedDate.toString().substring(0, 10);
+      timeNotifier = ValueNotifier(time!);
       print(time);
     });
     super.initState();
   }
 
+  ValueNotifier<String>? timeNotifier;
+  @override
+  void dispose() {
+    timeNotifier!.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     String time = selectedDate.toString().substring(0, 10);
-
-    ValueNotifier<String?> timeNotifier = ValueNotifier<String?>(time);
-    desiredTime = timeNotifier.value!;
+    timeNotifier = ValueNotifier<String>(time);
 
     return Scaffold(
         appBar: AppBar(
@@ -102,10 +106,10 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        timeNotifier;
                         _selectDate(context);
+                        
                       });
-                      
+                      // timeNotifier;
                     },
                     icon: Icon(Icons.calendar_month),
                   ),
@@ -113,73 +117,77 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                       .toString()
                       .substring(0, 10)
                       .replaceAll('-', '/')),
-                  ValueListenableBuilder<String?>(
-                      valueListenable: timeNotifier,
+                  ValueListenableBuilder<String>(
+                      valueListenable: timeNotifier!,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
+                        print(timeNotifier);
+                        print('timeNotifier');
                         dytService
                             .getFirstDietPlanForDyt(
-                                timeNotifier.value!, widget.patients.patientId!)
+                                timeNotifier!.value, widget.patients.patientId!)
                             .then((value) {
-                          allFoods = value;
+                          setState(() {
+                            allFoods = value;
+                          });
                         });
                         return DailySummary(allFoods);
                       }),
-                  ValueListenableBuilder<String?>(
-                      valueListenable: timeNotifier,
+                  ValueListenableBuilder<String>(
+                      valueListenable: timeNotifier!,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
                         print(timeNotifier);
                         service.BreakfastDietPlan(
-                                timeNotifier.value!, widget.patients.patientId!)
+                                timeNotifier!.value, widget.patients.patientId!)
                             .then((value) {
                           breakfastFoods = value;
                         });
                         return BreakfastMeal(breakfastFoods);
                       }),
-                  ValueListenableBuilder<String?>(
-                      valueListenable: timeNotifier,
+                  ValueListenableBuilder<String>(
+                      valueListenable: timeNotifier!,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
                         print(timeNotifier);
                         service.LunchDietPlan(
-                                timeNotifier.value!, widget.patients.patientId!)
+                                timeNotifier!.value, widget.patients.patientId!)
                             .then((value) {
                           lunchFoods = value;
                         });
                         return LunchMeal(lunchFoods);
                       }),
-                  ValueListenableBuilder<String?>(
-                      valueListenable: timeNotifier,
+                  ValueListenableBuilder<String>(
+                      valueListenable: timeNotifier!,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
                         print(timeNotifier);
                         service.DinnerDietPlan(
-                                timeNotifier.value!, widget.patients.patientId!)
+                                timeNotifier!.value, widget.patients.patientId!)
                             .then((value) {
                           dinnerPlan = value;
                         });
                         return DinnerMeal(dinnerPlan);
                       }),
-                  ValueListenableBuilder<String?>(
-                      valueListenable: timeNotifier,
+                  ValueListenableBuilder<String>(
+                      valueListenable: timeNotifier!,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
                         print(timeNotifier);
                         service.SnackDietPlan(
-                                timeNotifier.value!, widget.patients.patientId!)
+                                timeNotifier!.value, widget.patients.patientId!)
                             .then((value) {
                           snackFoods = value;
                         });
                         return SnackMeal(snackFoods);
                       }),
-                  ValueListenableBuilder<String?>(
-                      valueListenable: timeNotifier,
+                  ValueListenableBuilder<String>(
+                      valueListenable: timeNotifier!,
                       builder:
                           (BuildContext context, String? value, Widget? child) {
                         print(timeNotifier);
                         service.OutOfRecordDietPlan(
-                                timeNotifier.value!, widget.patients.patientId!)
+                                timeNotifier!.value, widget.patients.patientId!)
                             .then((value) {
                           outOfRecordFoods = value;
                         });
@@ -193,20 +201,19 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   }
 
   Widget BreakfastMeal(List<DietPlanModel> breakfastFoods) {
-    double sumBreakfastEnergy=0;
+    double sumBreakfastEnergy = 0;
     List<bool> isSelected =
         List<bool>.generate(breakfastFoods.length, (index) => false);
     for (int i = 0; i < breakfastFoods.length; i++) {
-
-          sumBreakfastEnergy += breakfastFoods[i].energy!;
-          if (breakfastFoods[i].eaten!.contains('UNCHECKED')) {
-            isSelected[i] = false;
-          } else {
-            isSelected[i] = true;
-          }
-        }
+      sumBreakfastEnergy += breakfastFoods[i].energy!;
+      if (breakfastFoods[i].eaten!.contains('UNCHECKED')) {
+        isSelected[i] = false;
+      } else {
+        isSelected[i] = true;
+      }
+    }
     List<DietPlanModel> breakfastPlan = this.breakfastFoods;
-    
+
     print('plan burada');
     print(breakfastPlan);
     return ConstrainedBox(
@@ -299,19 +306,36 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                     thickness: 2,
                                   ),
                                   SizedBox(width: 15.w),
-                                  Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
                                         children: [
-                                          Text(
-                                              '${breakfastPlan[index].foodName} (x${breakfastPlan[index].portion!.toStringAsFixed(0)})'),
-                                          SizedBox(height: 5.w),
-                                          Text(
-                                            '${breakfastPlan[index].energy} kcal',
+                                          TextSpan(
+                                            text:
+                                                '${breakfastFoods[index].foodName}',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  ' x(${breakfastFoods[index].portion})',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${breakfastFoods[index].details}',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${breakfastFoods[index].energy} kcal',
                                             style: TextStyle(
                                               color: AppColors.colorTint500,
                                               fontWeight: FontWeight.bold,
@@ -320,7 +344,9 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                           ),
                                         ],
                                       ),
-                                    ],
+                                      maxLines: 7,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ])),
                           );
@@ -335,22 +361,19 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
 
   Widget LunchMeal(List<DietPlanModel> lunchFoods) {
     List<DietPlanModel> lunchPlan;
-    double sumLunchEnergy=0;
+    double sumLunchEnergy = 0;
     lunchPlan = lunchFoods;
-     List<bool> isSelected =
+    List<bool> isSelected =
         List<bool>.generate(lunchPlan.length, (index) => false);
-    
+
     for (int i = 0; i < lunchPlan.length; i++) {
-          
-          sumLunchEnergy += lunchPlan[i].energy!;
-          if (lunchPlan[i].eaten!.contains('UNCHECKED')) {
-            isSelected[i] = false;
-          } else {
-            isSelected[i] = true;
-          }
-        }
-    
-   
+      sumLunchEnergy += lunchPlan[i].energy!;
+      if (lunchPlan[i].eaten!.contains('UNCHECKED')) {
+        isSelected[i] = false;
+      } else {
+        isSelected[i] = true;
+      }
+    }
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -442,23 +465,47 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                     thickness: 2,
                                   ),
                                   SizedBox(width: 15.w),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                          '${lunchPlan[index].foodName} (x ${lunchPlan[index].portion!.toStringAsFixed(0)})'),
-                                      SizedBox(height: 5.w),
-                                      Text(
-                                        '${lunchPlan[index].energy.toString()} kcal',
-                                        style: TextStyle(
-                                          color: AppColors.colorTint500,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.sp,
-                                        ),
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${lunchFoods[index].foodName}',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  ' x(${lunchFoods[index].portion})',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${lunchFoods[index].details}',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${lunchFoods[index].energy} kcal',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint500,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                      maxLines: 7,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ])),
                           );
@@ -473,18 +520,18 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
 
   Widget DinnerMeal(List<DietPlanModel> DinnerFoods) {
     List<DietPlanModel> dinnerPlan;
-    double sumDinnerEnergy=0;
+    double sumDinnerEnergy = 0;
     dinnerPlan = DinnerFoods;
     List<bool> isSelected =
         List<bool>.generate(dinnerPlan.length, (index) => false);
-         for (int i = 0; i < dinnerPlan.length; i++) {
-          sumDinnerEnergy += dinnerPlan[i].energy!;
-          if (dinnerPlan[i].eaten!.contains('UNCHECKED')) {
-            isSelected[i] = false;
-          } else {
-            isSelected[i] = true;
-          }
-        }
+    for (int i = 0; i < dinnerPlan.length; i++) {
+      sumDinnerEnergy += dinnerPlan[i].energy!;
+      if (dinnerPlan[i].eaten!.contains('UNCHECKED')) {
+        isSelected[i] = false;
+      } else {
+        isSelected[i] = true;
+      }
+    }
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -576,24 +623,36 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                     thickness: 2,
                                   ),
                                   SizedBox(width: 15.w),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${dinnerPlan[index].foodName} (x ${dinnerPlan[index].portion!.toStringAsFixed(0)})',
-                                        style: TextStyle(
-                                            color: AppColors.colorTint700,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 5.w),
-                                      Row(
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
                                         children: [
-                                          Text(
-                                            '${dinnerPlan[index].energy.toString()} kcal' ??
-                                                '',
+                                          TextSpan(
+                                            text:
+                                                '${dinnerPlan[index].foodName}',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  ' x(${dinnerPlan[index].portion})',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${dinnerPlan[index].details}',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${dinnerPlan[index].energy} kcal',
                                             style: TextStyle(
                                               color: AppColors.colorTint500,
                                               fontWeight: FontWeight.bold,
@@ -602,8 +661,10 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  )
+                                      maxLines: 7,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ])),
                           );
                         },
@@ -617,20 +678,20 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
 
   Widget SnackMeal(List<DietPlanModel> snackFoods) {
     List<DietPlanModel> snackPlan;
-    double sumSnackEnergy=0;
+    double sumSnackEnergy = 0;
     snackPlan = snackFoods;
     List<bool> isSelected =
         List<bool>.generate(snackPlan.length, (index) => false);
 
-           for (int i = 0; i < snackPlan.length; i++) {
-          sumSnackEnergy += snackPlan[i].energy!;
-          if (snackPlan[i].eaten!.contains('UNCHECKED')) {
-            isSelected[i] = false;
-          } else {
-            isSelected[i] = true;
-          }
-        }
-        
+    for (int i = 0; i < snackPlan.length; i++) {
+      sumSnackEnergy += snackPlan[i].energy!;
+      if (snackPlan[i].eaten!.contains('UNCHECKED')) {
+        isSelected[i] = false;
+      } else {
+        isSelected[i] = true;
+      }
+    }
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: double.infinity,
@@ -720,29 +781,48 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                     thickness: 2,
                                   ),
                                   SizedBox(width: 15.w),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${snackPlan[index].foodName} (x ${snackPlan[index].portion!.toStringAsFixed(0)})',
-                                        style: TextStyle(
-                                            color: AppColors.colorTint700,
-                                            fontSize: 15.sp,
-                                            fontWeight: FontWeight.bold),
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${snackFoods[index].foodName}',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  ' x(${snackFoods[index].portion})',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${snackFoods[index].details}',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${snackFoods[index].energy} kcal',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint500,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(height: 5.w),
-                                      Text(
-                                        snackPlan[index].energy.toString(),
-                                        style: TextStyle(
-                                          color: AppColors.colorTint500,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.sp,
-                                        ),
-                                      ),
-                                    ],
-                                  )
+                                      maxLines: 7,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ])),
                           );
                         },
@@ -755,20 +835,20 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
   }
 
   Widget OutOfRecordMeal(List<DietPlanModel> outOfRecordFoods) {
-    double sumoutOfRecordEnergy=0;
+    double sumoutOfRecordEnergy = 0;
 
     List<DietPlanModel> outOfRecordPlan = this.outOfRecordFoods;
     List<bool> isSelectedOutOfRecord =
         List<bool>.generate(outOfRecordPlan.length, (index) => false);
-           for (int i = 0; i < outOfRecordPlan.length; i++) {
-          sumoutOfRecordEnergy += outOfRecordPlan[i].energy!;
-          if (outOfRecordPlan[i].eaten!.contains('UNCHECKED')) {
-            isSelectedOutOfRecord[i] = false;
-          } else {
-            isSelectedOutOfRecord[i] = true;
-          }
-        }
-        
+    for (int i = 0; i < outOfRecordPlan.length; i++) {
+      sumoutOfRecordEnergy += outOfRecordPlan[i].energy!;
+      if (outOfRecordPlan[i].eaten!.contains('UNCHECKED')) {
+        isSelectedOutOfRecord[i] = false;
+      } else {
+        isSelectedOutOfRecord[i] = true;
+      }
+    }
+
     print('plan burada');
     print(outOfRecordPlan);
     return ConstrainedBox(
@@ -861,19 +941,36 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                     thickness: 2,
                                   ),
                                   SizedBox(width: 15.w),
-                                  Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
                                         children: [
-                                          Text(
-                                              '${outOfRecordPlan[index].foodName} (x${outOfRecordPlan[index].portion!.toStringAsFixed(0)})'),
-                                          SizedBox(height: 5.w),
-                                          Text(
-                                            '${outOfRecordPlan[index].energy} kcal',
+                                          TextSpan(
+                                            text:
+                                                '${outOfRecordPlan[index].foodName}',
+                                            style: TextStyle(
+                                                color: AppColors.colorTint700,
+                                                fontSize: 15.sp,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  ' x(${outOfRecordPlan[index].portion})',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12)),
+                                          TextSpan(
+                                            text:
+                                                '\nDescription: ${outOfRecordPlan[index].details}',
+                                            style: TextStyle(
+                                              color: AppColors.colorTint600,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '\n${outOfRecordPlan[index].energy} kcal',
                                             style: TextStyle(
                                               color: AppColors.colorTint500,
                                               fontWeight: FontWeight.bold,
@@ -882,7 +979,9 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
                                           ),
                                         ],
                                       ),
-                                    ],
+                                      maxLines: 7,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ])),
                           );
@@ -897,16 +996,16 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
 
   Widget DailySummary(List<DietPlanModel> allFoods) {
     List<DietPlanModel> allFoods = this.allFoods;
-     double carbonhydrate=0;
-  double protein = 0;
-  double energy = 0;
-  double fats = 0;
+    double carbonhydrate = 0;
+    double protein = 0;
+    double energy = 0;
+    double fats = 0;
 
-  double eatenEnergy = 0;
-  double eatenCarbs = 0;
-  double eatenFats = 0;
-  double eatenProteins = 0;
- 
+    double eatenEnergy = 0;
+    double eatenCarbs = 0;
+    double eatenFats = 0;
+    double eatenProteins = 0;
+
     for (int i = 0; i < allFoods.length; i++) {
       carbonhydrate += allFoods[i].carb!;
       protein += allFoods[i].protein!;
@@ -920,7 +1019,7 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
         eatenFats += allFoods[i].fat!;
       }
     }
-     allFoods.clear();
+    allFoods.clear();
     return AspectRatio(
       aspectRatio: 1.6,
       child: Container(
@@ -932,7 +1031,11 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_circleProgress(energy,eatenEnergy), _macronutrients(carbonhydrate,protein,fats,eatenCarbs,eatenProteins,eatenFats)],
+          children: [
+            _circleProgress(energy, eatenEnergy),
+            _macronutrients(carbonhydrate, protein, fats, eatenCarbs,
+                eatenProteins, eatenFats)
+          ],
         ),
       ),
     );
@@ -1015,7 +1118,8 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
     );
   }
 
-  Widget _macronutrients(double carbonhydrate, double protein, double fats, double eatenCarbs, double eatenProteins, double eatenFats) {
+  Widget _macronutrients(double carbonhydrate, double protein, double fats,
+      double eatenCarbs, double eatenProteins, double eatenFats) {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       _macronutrientsTile(
           title: 'Carbs',
@@ -1032,8 +1136,9 @@ class _DietPlanDetailState extends State<DietPlanDetail> {
       _macronutrientsTile(
           title: 'Fats',
           percentValue: fats != 0 ? eatenFats / fats : 0.1,
-          amountInGram:
-              eatenFats != 0 ? '${eatenFats.toInt()}/${fats.toInt()}g' : '0/${fats.toLimitedStringWithComma(1)}')
+          amountInGram: eatenFats != 0
+              ? '${eatenFats.toInt()}/${fats.toInt()}g'
+              : '0/${fats.toLimitedStringWithComma(1)}')
     ]);
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dietic_mobil/service/update_profile_pic/update_profile_pic.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class _ProfilePicState extends State<ProfilePic> {
   final service = UpdateProfilePic();
   UserModel? user;
   String picture = '';
+  final firestore = FirebaseFirestore.instance;
 
   void pickUploadProfilePic() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,6 +52,13 @@ class _ProfilePicState extends State<ProfilePic> {
       if (profilePicLink.contains('firebase')) {
         service.postProfilePic(profilePicLink);
       }
+      String? email = await storage.read(key: 'email');
+     
+      Map<String, dynamic> data = {'profile_pic': profilePicLink};
+      
+      firestore.collection('Users').doc(email).update(data);
+      
+
 
       await prefs.setString('profile_pic', profilePicLink);
     });

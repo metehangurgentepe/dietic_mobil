@@ -36,21 +36,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Dietic App'),
         elevation: 0,
         centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            // child: IconButton(
-            //     onPressed: () {
-            //       setState(() {
-            //         open == true ? open = false : open = true;
-            //       });
-            //     },
-            //     icon: Icon(
-            //       open == true ? Icons.close_rounded : Icons.search_rounded,
-            //       size: 30,
-            //     )),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 10.0),
+        //     child: IconButton(
+        //         onPressed: () {
+        //           setState(() {
+        //             open == true ? open = false : open = true;
+        //           });
+        //         },
+        //         icon: Icon(
+        //           open == true ? Icons.close_rounded : Icons.search_rounded,
+        //           size: 30,
+        //         )),
+        //   )
+        // ],
       ),
       //drawer: ChatWidgets.drawer(context),
       body: SafeArea(
@@ -96,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     future: firestore.collection('Users').doc(user).get(),
                                     builder: (context, AsyncSnapshot snap) {
                                       return !snap.hasData? Container(): ChatWidgets.circleProfile(onTap: (){
+                                        //print(snap.data['profile_pic']);
                                         Navigator.of(context)
                                             .push(
                                           MaterialPageRoute(
@@ -107,7 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                             },
                                           ),
                                         );
-                                      },name:  snap.data['name']);
+                                      },profilePic: snap.data['profile_pic'],
+                                      name:  snap.data['name']);
+                                      
                                     }
                                   );
                                 },
@@ -155,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         future: firestore.collection('Users').doc(user).get(),
                                         builder: (context,AsyncSnapshot snap) {
                                           return !snap.hasData? Container(): ChatWidgets.card(
+                                            profilePic: snap.data['profile_pic'],
                                             title: snap.data['name'],
                                             subtitle:Uri.tryParse(lastMessage)!.hasAbsolutePath ?
                                               'Photo' :

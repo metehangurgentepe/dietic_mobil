@@ -12,7 +12,7 @@ import '../../config/theme/theme.dart';
 import '../../dietician-screen/message/comps/take_photo.dart';
 
 class ChatWidgets {
-  static Widget card({title, time, subtitle, onTap}) {
+  static Widget card({title, time, subtitle, onTap,profilePic}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Card(
@@ -20,15 +20,24 @@ class ChatWidgets {
         child: ListTile(
           onTap: onTap,
           contentPadding: const EdgeInsets.all(5),
-          leading: const Padding(
+          leading:  Padding(
             padding: EdgeInsets.all(0.0),
-            child: CircleAvatar(
+            child: profilePic=='' ? CircleAvatar(
                 backgroundColor: Colors.grey,
-                child: Icon(
+                child:Icon(
                   Icons.person,
                   size: 30,
                   color: Colors.white,
-                )),
+                )
+                ) : ClipOval(
+                      child: Image.network(
+                        profilePic,
+                        fit: BoxFit.cover,
+                        width:
+                            50, // Adjust the width and height as per your requirement
+                        height: 50,
+                      ),
+                    )
           ),
           title: Text(title),
           subtitle: subtitle != null ? Text(subtitle) : null,
@@ -41,7 +50,7 @@ class ChatWidgets {
     );
   }
 
-  static Widget circleProfile({onTap, name}) {
+  static Widget circleProfile({onTap, name, profilePic}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: InkWell(
@@ -49,15 +58,23 @@ class ChatWidgets {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const CircleAvatar(
+           profilePic == '' ? CircleAvatar(
               radius: 25,
               backgroundColor: Colors.grey,
               child: Icon(
-                Icons.person,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
+                      Icons.person,
+                      size: 40,
+                      color: Colors.white,
+                    )
+            ):ClipOval(
+                      child: Image.network(
+                        profilePic,
+                        fit: BoxFit.cover,
+                        width:
+                            50, // Adjust the width and height as per your requirement
+                        height: 50,
+                      ),
+                    ),
             SizedBox(
                 width: 50,
                 child: Center(
@@ -95,7 +112,7 @@ class ChatWidgets {
         children: [
           if (check) const Spacer(),
           if (!check)
-            const CircleAvatar(
+             CircleAvatar(
               child: Icon(
                 Icons.person,
                 size: 13,
