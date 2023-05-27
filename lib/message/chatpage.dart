@@ -47,9 +47,6 @@ class _ChatPageState extends State<ChatPage> {
                       try {
                         final image = await ImagePicker().pickImage(
                           source: ImageSource.gallery,
-                          maxHeight: 512,
-                          maxWidth: 512,
-                          imageQuality: 90,
                         );
                         Reference ref =
                             FirebaseStorage.instance.ref().child("pictures");
@@ -81,6 +78,7 @@ class _ChatPageState extends State<ChatPage> {
                           }
                         }
                       } catch (e) {
+                        print(e);
                         Grock.snackBar(
                             title: "Error",
                             description:

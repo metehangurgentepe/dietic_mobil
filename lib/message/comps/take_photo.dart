@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,10 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:camera/camera.dart';
 
-
-
-
 import 'package:flutter/material.dart';
+
+import '../../config/theme/theme.dart';
 
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
@@ -22,17 +20,14 @@ class TakePictureScreen extends StatefulWidget {
   });
   final CameraDescription camera;
 
-
-
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
-
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  String imageUrl='';
+  String imageUrl = '';
   final storage = FlutterSecureStorage();
 
   @override
@@ -57,13 +52,16 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     _controller.dispose();
     super.dispose();
   }
+
   final ImagePicker picker = ImagePicker();
 // Pick an image.
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
+      appBar: AppBar(
+          backgroundColor: AppColors.colorAccent,
+          title: const Text('Take a picture')),
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
@@ -94,32 +92,26 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             if (!mounted) return;
 
-            String uniqFileName=DateTime.now().millisecondsSinceEpoch.toString();
+            String uniqFileName =
+                DateTime.now().millisecondsSinceEpoch.toString();
             print('burada****************************************************');
             XFile? picture = await picker.pickImage(source: ImageSource.camera);
-            if(picture==null) return;
+            if (picture == null) return;
 
             print('${picture!.path}');
 
+            Reference referenceRoot = FirebaseStorage.instance.ref();
+            Reference referenceDirImages = referenceRoot.child('images');
 
-            Reference referenceRoot=FirebaseStorage.instance.ref();
-            Reference referenceDirImages=referenceRoot.child('images');
+            Reference referenceImageToUpload =
+                referenceDirImages.child(uniqFileName);
 
-
-            Reference referenceImageToUpload=referenceDirImages.child(uniqFileName);
-
-
-            try{
+            try {
               await referenceImageToUpload.putFile(File(picture!.path));
-              imageUrl=await referenceImageToUpload.getDownloadURL();
+              imageUrl = await referenceImageToUpload.getDownloadURL();
               print(imageUrl);
               await storage.write(key: 'imageUrl', value: imageUrl);
-            }
-            catch(error){
-
-            }
-
-
+            } catch (error) {}
 
             await Navigator.of(context).push(
               MaterialPageRoute(
@@ -140,6 +132,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     );
   }
 }
+
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
 
@@ -148,7 +141,9 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
+      appBar: AppBar(
+          backgroundColor: AppColors.colorAccent,
+          title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       body: Image.file(File(imagePath)),

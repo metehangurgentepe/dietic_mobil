@@ -173,6 +173,8 @@ class DisplayPictureScreen extends StatelessWidget {
                           print('submit button');
                           print(imageUrl);
                           onSubmit(imageUrl, roomId);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                         }
                       }
                     }
