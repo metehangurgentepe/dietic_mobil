@@ -75,11 +75,6 @@ class _BodyDieticianState extends State<BodyDietician> {
             },
           ),
           ProfileMenu(
-            text: "Settings",
-            icon: "assets/icons/Settings.svg",
-            press: () {},
-          ),
-          ProfileMenu(
             text: "Notes",
             icon: "assets/icons/notes-svgrepo-com.svg",
             press: () {

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../model/patient_detail.dart';
 import '../../service/get_patients/get_patients_service.dart';
@@ -45,8 +46,8 @@ class _ChoosePatientScreenState extends State<ChoosePatientScreen> {
         backgroundColor: AppColors.colorAccent,
       ),
       body: 
-    SingleChildScrollView(
-      child: patients.isNotEmpty ? ListView.builder(
+    patients.isNotEmpty? SingleChildScrollView(
+      child: ListView.builder(
         shrinkWrap: true,
         itemCount: patients.length,
         itemBuilder: (context,index){
@@ -60,25 +61,26 @@ class _ChoosePatientScreenState extends State<ChoosePatientScreen> {
                     children: [
                       Text('age:${patients[index].age}'),
                       Icon(Icons.arrow_forward_ios),
-                      
                     ],
                   ),
-                  
-                  
                 ),
-                
                 Divider(height: 10,)
               ],
             ),
             onTap: () => Navigator.pushNamed(context,'/dyt_appointment',arguments: patients[index].patientId),
           );
     
-      }) : Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text('There is no patient',style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold),),
-        ],
+      })) : Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 118.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            FaIcon(FontAwesomeIcons.person,size: 200),
+            Text('There is no patient attached to you',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+          ],
+        ),
       )
-    ));
+    );
   }
 }

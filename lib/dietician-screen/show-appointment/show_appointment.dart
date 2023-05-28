@@ -63,15 +63,21 @@ class _ShowAppointmentState extends State<ShowAppointment> {
                     color: Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Center(
+                  child:  Center(
                     child: Padding(
                       padding: EdgeInsets.all(20),
-                      child: Text(
-                        'No Appointments',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset('assets/images/c76be460-0033-47ce-8b41-51c8bef39bd6.png'),
+                          Text(
+                            'There is no appointments',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
