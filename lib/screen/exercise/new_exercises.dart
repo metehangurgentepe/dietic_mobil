@@ -473,6 +473,19 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                   child: FutureBuilder(
                       future: healthService.fetchEnergyData(),
                       builder: (context, snapshot) {
+                        saveEnergy() async {
+                          print(snapshot.data);
+                          if (snapshot.data != null) {
+                            var value = snapshot.data;
+                            await storage.write(
+                                key: 'activeCalories', value: value);
+                          } else {
+                            await storage.write(
+                                key: 'activeCalories', value: '0');
+                          }
+                        }
+                        saveEnergy();
+
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [

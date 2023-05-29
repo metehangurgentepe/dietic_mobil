@@ -1,6 +1,7 @@
 
 import 'package:dietic_mobil/model/diet_plan_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:grock/grock.dart';
 import 'dart:math' as math;
 
@@ -33,6 +34,9 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   double sumFat=0;
   double protein=0;
   double fat=0;
+  final storage=FlutterSecureStorage();
+
+  String? energy;
   @override
   void initState() {
 
@@ -54,6 +58,9 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
       }
       
     });
+    getEnergy();
+    print(energy);
+    
     super.initState();
   }
   @override
@@ -249,8 +256,23 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                   padding:
                                                       const EdgeInsets.only(
                                                           left: 4, bottom: 3),
-                                                  child: Text(
-                                                    '${(102 * widget.animation!.value).toInt()}',
+                                                  child:energy==null ? 
+                                                  Text(
+                                                    '${(0 * widget.animation!.value).toInt()}',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          FitnessAppTheme
+                                                              .fontName,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 16,
+                                                      color: FitnessAppTheme
+                                                          .darkerText,
+                                                    ),
+                                                  )
+                                                  : Text(
+                                                    '${0 * widget.animation!.value.toInt()}',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontFamily:
@@ -608,6 +630,9 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
       },
     );
   }
+  getEnergy() async {
+      energy=await storage.read(key: 'activeCalories');
+    }
 }
 
 class CurvePainter extends CustomPainter {
