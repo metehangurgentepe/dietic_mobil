@@ -49,7 +49,6 @@ class TitleView extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       onTap: () {
                         Navigator.pushNamed(context, '/meals_detail');
-
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
@@ -64,15 +63,6 @@ class TitleView extends StatelessWidget {
                                 fontSize: 16,
                                 letterSpacing: 0.5,
                                 color: FitnessAppTheme.nearlyDarkBlue,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 38,
-                              width: 26,
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: FitnessAppTheme.darkText,
-                                size: 18,
                               ),
                             ),
                           ],

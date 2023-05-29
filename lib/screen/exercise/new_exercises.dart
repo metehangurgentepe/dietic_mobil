@@ -83,10 +83,18 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
   ];
 
   List<StepsModel> steps = [];
+  String? water;
 
   @override
   void initState() {
     super.initState();
+    getWater();
+    getdata() async {
+    String? dietitianId=await storage.read(key: 'patientId');
+    print(dietitianId);
+
+    }
+    getdata();
     Future fetchData() async {
       setState(() => _state = AppState.FETCHING_DATA);
 
@@ -187,6 +195,9 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     String? move_mins = await storage.read(key: 'move_min');
     return move_mins;
   }
+  getWater() async {
+    water= await storage.read(key: 'water');
+  }
 
   HealthFactory health = HealthFactory(useHealthConnectIfAvailable: true);
 
@@ -240,16 +251,16 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: [
-                                        Icon(Icons.directions_run,
+                                        Icon(Icons.water,
                                             size: 30,
-                                            color: Colors.amberAccent),
-                                        Text('${stepWeekData ?? 0}')
+                                            color: Colors.blueAccent),
+                                        Text('${water ?? 0} mL')
                                       ],
                                     ),
                                     Text('Water',
                                         style: TextStyle(
                                             color: Colors.black, fontSize: 15)),
-                                    Text('%30'),
+                                     water ==null ? Text('%0')  :Text('%${(int.parse(water!)/2500*100).toInt()}'),
                                     LinearPercentIndicator(
                                         barRadius: Radius.circular(20),
                                         width: 130,
@@ -257,8 +268,8 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                         animationDuration: 10000,
                                         lineHeight: 10,
                                         percent: 0.3,
-                                        progressColor: Colors.amberAccent,
-                                        backgroundColor: Color(0xfffaf1be))
+                                        progressColor: Colors.blueAccent,
+                                        backgroundColor: Color.fromARGB(255, 64, 202, 241))
                                   ],
                                 ),
                               ),
