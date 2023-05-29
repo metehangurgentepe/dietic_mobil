@@ -1,6 +1,6 @@
-import 'package:dietic_mobil/model/get_appointment.dart';
-import 'package:dietic_mobil/screen/appointment/comps/config.dart';
-import 'package:dietic_mobil/service/appointment/appointment_service.dart';
+import 'package:Dietic/model/get_appointment.dart';
+import 'package:Dietic/screen/appointment/comps/config.dart';
+import 'package:Dietic/service/appointment/appointment_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

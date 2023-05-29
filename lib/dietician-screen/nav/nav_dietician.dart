@@ -1,12 +1,12 @@
-import 'package:dietic_mobil/dietician-screen/home/home_dietcian.dart';
+import 'package:Dietic/dietician-screen/home/home_dietcian.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dietic_mobil/config/config.dart';
-import 'package:dietic_mobil/screen/exercise/exercises_screen.dart';
-import 'package:dietic_mobil/screen/login/login.dart';
-import 'package:dietic_mobil/screen/screen.dart';
+import 'package:Dietic/config/config.dart';
+import 'package:Dietic/screen/exercise/exercises_screen.dart';
+import 'package:Dietic/screen/login/login.dart';
+import 'package:Dietic/screen/screen.dart';
 import '../../message/authScreen.dart';
 import '../../screen/search/search_screen.dart';
 import '../diet_plan/diet_plan_screen.dart';

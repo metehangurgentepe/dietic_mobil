@@ -1,6 +1,6 @@
 
 import 'package:dio/dio.dart';
-import 'package:dietic_mobil/model/register_model.dart';
+import 'package:Dietic/model/register_model.dart';
 
 class SignUpService {
   final String baseUrl = "http://192.168.1.103:8080/api/v1/auth/register";

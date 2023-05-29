@@ -1,6 +1,6 @@
-import 'package:dietic_mobil/model/get_appointment.dart';
-import 'package:dietic_mobil/model/get_appointment_for_dietitian.dart';
-import 'package:dietic_mobil/screen/appointment/appointment.dart';
+import 'package:Dietic/model/get_appointment.dart';
+import 'package:Dietic/model/get_appointment_for_dietitian.dart';
+import 'package:Dietic/screen/appointment/appointment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';

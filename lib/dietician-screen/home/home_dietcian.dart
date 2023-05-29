@@ -1,9 +1,9 @@
 import 'dart:collection';
 
-import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
-import 'package:dietic_mobil/model/get_appointment.dart';
-import 'package:dietic_mobil/service/appointment/appointment_service.dart';
-import 'package:dietic_mobil/service/update_profile_pic/update_profile_pic.dart';
+import 'package:Dietic/config/theme/fitness_app_theme.dart';
+import 'package:Dietic/model/get_appointment.dart';
+import 'package:Dietic/service/appointment/appointment_service.dart';
+import 'package:Dietic/service/update_profile_pic/update_profile_pic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

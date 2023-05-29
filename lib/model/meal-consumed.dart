@@ -1,5 +1,5 @@
 
-import 'package:dietic_mobil/model/food-consumed.dart';
+import 'package:Dietic/model/food-consumed.dart';
 class MealConsumed {
   final List<FoodConsumed> ? consumedFoods;
   final String ? mealName;

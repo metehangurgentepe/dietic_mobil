@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/service/update_profile_pic/update_profile_pic.dart';
+import 'package:Dietic/service/update_profile_pic/update_profile_pic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dietic_mobil/config/config.dart';
+import 'package:Dietic/config/config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Date extends StatelessWidget {

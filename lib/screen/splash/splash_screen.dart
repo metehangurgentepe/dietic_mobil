@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
-import 'package:dietic_mobil/screen/login/login.dart';
+import 'package:Dietic/config/theme/fitness_app_theme.dart';
+import 'package:Dietic/screen/login/login.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 

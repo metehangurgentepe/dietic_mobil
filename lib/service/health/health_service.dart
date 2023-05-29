@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:dietic_mobil/model/health_model.dart';
+import 'package:Dietic/model/health_model.dart';
 import 'package:health/health.dart';
 
 class HealthService{
@@ -10,40 +10,6 @@ class HealthService{
   Future<List<HealthDataPoint>>? weekSteps;
   var water;
   final List<HealthDataPoint> healthDataPoints=[];
-
-  Future<List<HealthDataPoint>> fetchWeekStepData() async {
-    var permissions = [
-      HealthDataAccess.READ,
-    ];
-
-    int? steps;
-    int? todaySteps;
-    var result;
-    List<HealthDataPoint>? stepsList;
-    // get steps for today (i.e., since midnight)
-    final now = DateTime.now();
-    final month = DateTime.now().subtract(Duration(days: 30));
-    bool requested = await health.requestAuthorization([HealthDataType.STEPS],permissions: permissions);
-
-    if (requested) {
-      try {
-        weekSteps=health.getHealthDataFromTypes(month, now, [HealthDataType.STEPS]);
-        print('week step');
-        print(weekSteps!.then((value) => print(value.first)));
-        
-        weekSteps!.then((List<HealthDataPoint> data){
-          stepsList=data;
-          });
-          
-
-        return stepsList!;
-      } catch (error) {
-        return throw Exception('$error');
-      }
-    } else {
-      return throw Exception();
-    }
-  }
   
   Future<int> fetchTodayStepData() async {
     int? todaySteps;
@@ -92,29 +58,5 @@ class HealthService{
       print("Authorization not granted - error in authorization");
     }
   }
-  Future<HealthModel?> fetchWaterData() async {
-    // get steps for today (i.e., since midnight)
-    final now = DateTime.now();
-    bool requested = await health.requestAuthorization([HealthDataType.WATER],permissions: [HealthDataAccess.READ]);
-
-    if (requested) {
-      try {
-        DateTime midnight=DateTime(now.year,now.month,now.day);
-        water = await health.getHealthDataFromTypes(midnight, now,[HealthDataType.WATER]);
-        print("su");
-        print(water);
-        print(jsonEncode(water));
-
-        return HealthModel.fromJson(water);
-      } catch (error) {
-        return throw("Caught exception in getTotalStepsInInterval: $error");
-      }
-
-
-    } else {
-      return throw("Authorization not granted - error in authorization");
-    }
-  }
-  
 
 }

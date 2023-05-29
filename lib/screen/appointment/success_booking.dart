@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/screen/my_diary/home-fitness-app.dart';
+import 'package:Dietic/screen/my_diary/home-fitness-app.dart';
 import 'package:flutter/material.dart';
 import 'package:grock/grock.dart';
 import 'package:lottie/lottie.dart';

@@ -1,5 +1,5 @@
-import 'package:dietic_mobil/dietician-screen/diet_plan/diet_plan_detail/comps/daily-summary.dart';
-import 'package:dietic_mobil/model/patient_detail.dart';
+import 'package:Dietic/dietician-screen/diet_plan/diet_plan_detail/comps/daily-summary.dart';
+import 'package:Dietic/model/patient_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';

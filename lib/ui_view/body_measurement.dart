@@ -1,5 +1,5 @@
-import 'package:dietic_mobil/model/patient_detail.dart';
-import 'package:dietic_mobil/service/patient_detail/patient_detail_service.dart';
+import 'package:Dietic/model/patient_detail.dart';
+import 'package:Dietic/service/patient_detail/patient_detail_service.dart';
 import 'package:flutter/material.dart';
 import 'package:grock/grock.dart';
 
@@ -27,7 +27,8 @@ class _BodyMeasurementViewState extends State<BodyMeasurementView> {
   @override
   void initState() {
     service.getPatientDetail().then((value) {
-      try{
+      setState(() {
+        try{
         if (value != null) {
         patient = value;
         weight = patient!.weight!;
@@ -39,6 +40,9 @@ class _BodyMeasurementViewState extends State<BodyMeasurementView> {
       }catch(e){
 
       }
+        
+      });
+      
       
     });
 

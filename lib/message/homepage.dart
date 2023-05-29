@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:dietic_mobil/message/Logics/functions.dart';
-import 'package:dietic_mobil/message/chatpage.dart';
+import 'package:Dietic/message/Logics/functions.dart';
+import 'package:Dietic/message/chatpage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

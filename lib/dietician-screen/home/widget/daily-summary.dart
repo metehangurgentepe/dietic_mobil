@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:dietic_mobil/config/config.dart';
-import 'package:dietic_mobil/screen/screen.dart';
+import 'package:Dietic/config/config.dart';
+import 'package:Dietic/screen/screen.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class DailySummary extends StatelessWidget {

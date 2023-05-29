@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:dietic_mobil/config/theme/theme.dart';
-import 'package:dietic_mobil/model/search_model.dart';
-import 'package:dietic_mobil/service/search/search_service.dart';
+import 'package:Dietic/config/theme/theme.dart';
+import 'package:Dietic/model/search_model.dart';
+import 'package:Dietic/service/search/search_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';

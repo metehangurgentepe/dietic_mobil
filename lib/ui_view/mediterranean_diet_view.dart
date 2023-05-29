@@ -1,5 +1,4 @@
-
-import 'package:dietic_mobil/model/diet_plan_model.dart';
+import 'package:Dietic/model/diet_plan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:grock/grock.dart';
@@ -8,7 +7,6 @@ import 'dart:math' as math;
 import '../config/theme/fitness_app_theme.dart';
 import '../hexColor.dart';
 import '../service/diet_plan/diet_plan_service.dart';
-
 
 class MediterranesnDietView extends StatefulWidget {
   final AnimationController? animationController;
@@ -23,46 +21,45 @@ class MediterranesnDietView extends StatefulWidget {
 }
 
 class _MediterranesnDietViewState extends State<MediterranesnDietView> {
-  DietPlanService service =DietPlanService();
-  List<DietPlanModel> foods=[];
-  double eatenEnergy=0;
-  double sumEnergy=0;
-  int leftEnergy=0;
-  double carbs=0;
-  double sumCarbs=0;
-  double sumProtein=0;
-  double sumFat=0;
-  double protein=0;
-  double fat=0;
-  final storage=FlutterSecureStorage();
+  DietPlanService service = DietPlanService();
+  List<DietPlanModel> foods = [];
+  double eatenEnergy = 0;
+  double sumEnergy = 0;
+  int leftEnergy = 0;
+  double carbs = 0;
+  double sumCarbs = 0;
+  double sumProtein = 0;
+  double sumFat = 0;
+  double protein = 0;
+  double fat = 0;
+  final storage = FlutterSecureStorage();
 
   String? energy;
   @override
   void initState() {
-
-    service.getFirstDietPlan().then((value){
-      foods=value;
-      for(int i = 0;i<foods.length;i++){
+    service.getFirstDietPlan().then((value) {
+      foods = value;
+      for (int i = 0; i < foods.length; i++) {
         //toplam carbon protein fat değerleri
-        sumCarbs+=foods[i].carb!;
-        sumProtein+=foods[i].protein!;
-        sumFat+=foods[i].fat!;
-        sumEnergy+=foods[i].energy!;
+        sumCarbs += foods[i].carb!;
+        sumProtein += foods[i].protein!;
+        sumFat += foods[i].fat!;
+        sumEnergy += foods[i].energy!;
         //yenilmiş carbon protein fat degerleri
-        if(foods[i].eaten=='CHECKED'){
-          eatenEnergy+=foods[i].energy!;
-          carbs+=foods[i].carb!;
-          protein+=foods[i].protein!;
-          fat+=foods[i].fat!;
+        if (foods[i].eaten == 'CHECKED') {
+          eatenEnergy += foods[i].energy!;
+          carbs += foods[i].carb!;
+          protein += foods[i].protein!;
+          fat += foods[i].fat!;
         }
       }
-      
     });
     getEnergy();
     print(energy);
-    
+
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -70,8 +67,8 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
           opacity: widget.animation!,
-          child:  Transform(
-            transform:  Matrix4.translationValues(
+          child: Transform(
+            transform: Matrix4.translationValues(
                 0.0, 30 * (1.0 - widget.animation!.value), 0.0),
             child: Padding(
               padding: const EdgeInsets.only(
@@ -158,7 +155,8 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                       const EdgeInsets.only(
                                                           left: 4, bottom: 3),
                                                   child: Text(
-                                                    '${(eatenEnergy * widget.animation!.value).toInt()}' ?? ' ',
+                                                    '${(eatenEnergy * widget.animation!.value).toInt()}' ??
+                                                        ' ',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontFamily:
@@ -256,35 +254,39 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                   padding:
                                                       const EdgeInsets.only(
                                                           left: 4, bottom: 3),
-                                                  child:energy==null ? 
-                                                  Text(
-                                                    '${(0 * widget.animation!.value).toInt()}',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          FitnessAppTheme
-                                                              .fontName,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 16,
-                                                      color: FitnessAppTheme
-                                                          .darkerText,
-                                                    ),
-                                                  )
-                                                  : Text(
-                                                    '${0 * widget.animation!.value.toInt()}',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          FitnessAppTheme
-                                                              .fontName,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 16,
-                                                      color: FitnessAppTheme
-                                                          .darkerText,
-                                                    ),
-                                                  ),
+                                                  child: energy == null
+                                                      ? Text(
+                                                          '${(0 * widget.animation!.value).toInt()}',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                FitnessAppTheme
+                                                                    .fontName,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 16,
+                                                            color:
+                                                                FitnessAppTheme
+                                                                    .darkerText,
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          '${0 * widget.animation!.value.toInt()}',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                FitnessAppTheme
+                                                                    .fontName,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 16,
+                                                            color:
+                                                                FitnessAppTheme
+                                                                    .darkerText,
+                                                          ),
+                                                        ),
                                                 ),
                                                 Padding(
                                                   padding:
@@ -334,7 +336,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(100.0),
                                         ),
-                                        border:  Border.all(
+                                        border: Border.all(
                                             width: 4,
                                             color: FitnessAppTheme
                                                 .nearlyDarkBlue
@@ -385,7 +387,8 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                             HexColor("#8A98E8"),
                                             HexColor("#8A98E8")
                                           ],
-                                          angle: (eatenEnergy/sumEnergy) * 360),
+                                          angle:
+                                              (eatenEnergy / sumEnergy) * 360),
                                       child: SizedBox(
                                         width: 108,
                                         height: 108,
@@ -445,7 +448,9 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                     child: Row(
                                       children: <Widget>[
                                         Container(
-                                          width: carbs==0 ? 0.01 : ((carbs / sumCarbs) * 70),
+                                          width: carbs == 0
+                                              ? 0.01
+                                              : ((carbs / sumCarbs) * 70),
                                           height: 4,
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(colors: [
@@ -512,7 +517,11 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                         child: Row(
                                           children: <Widget>[
                                             Container(
-                                              width:protein==0 ? (0.01) : ((protein/sumProtein)*70) ?? 0,
+                                              width: protein == 0
+                                                  ? (0.01)
+                                                  : ((protein / sumProtein) *
+                                                          70) ??
+                                                      0,
                                               height: 4,
                                               decoration: BoxDecoration(
                                                 gradient:
@@ -582,7 +591,9 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                         child: Row(
                                           children: <Widget>[
                                             Container(
-                                              width:fat==0 ? (0.01) : ((fat/sumFat)*70),
+                                              width: fat == 0
+                                                  ? (0.01)
+                                                  : ((fat / sumFat) * 70),
                                               height: 4,
                                               decoration: BoxDecoration(
                                                 gradient:
@@ -630,9 +641,10 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
       },
     );
   }
+
   getEnergy() async {
-      energy=await storage.read(key: 'activeCalories');
-    }
+    energy = await storage.read(key: 'activeCalories');
+  }
 }
 
 class CurvePainter extends CustomPainter {
@@ -650,16 +662,16 @@ class CurvePainter extends CustomPainter {
       colorsList.addAll([Colors.white, Colors.white]);
     }
 
-    final shdowPaint =  Paint()
+    final shdowPaint = Paint()
       ..color = Colors.black.withOpacity(0.4)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..strokeWidth = 14;
-    final shdowPaintCenter =  Offset(size.width / 2, size.height / 2);
+    final shdowPaintCenter = Offset(size.width / 2, size.height / 2);
     final shdowPaintRadius =
         math.min(size.width / 2, size.height / 2) - (14 / 2);
     canvas.drawArc(
-         Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
+        Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
         degreeToRadians(278),
         degreeToRadians(360 - (365 - angle!)),
         false,
@@ -668,7 +680,7 @@ class CurvePainter extends CustomPainter {
     shdowPaint.color = Colors.grey.withOpacity(0.3);
     shdowPaint.strokeWidth = 16;
     canvas.drawArc(
-         Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
+        Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
         degreeToRadians(278),
         degreeToRadians(360 - (365 - angle!)),
         false,
@@ -677,7 +689,7 @@ class CurvePainter extends CustomPainter {
     shdowPaint.color = Colors.grey.withOpacity(0.2);
     shdowPaint.strokeWidth = 20;
     canvas.drawArc(
-         Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
+        Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
         degreeToRadians(278),
         degreeToRadians(360 - (365 - angle!)),
         false,
@@ -686,40 +698,40 @@ class CurvePainter extends CustomPainter {
     shdowPaint.color = Colors.grey.withOpacity(0.1);
     shdowPaint.strokeWidth = 22;
     canvas.drawArc(
-         Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
+        Rect.fromCircle(center: shdowPaintCenter, radius: shdowPaintRadius),
         degreeToRadians(278),
         degreeToRadians(360 - (365 - angle!)),
         false,
         shdowPaint);
 
-    final rect =  Rect.fromLTWH(0.0, 0.0, size.width, size.width);
-    final gradient =  SweepGradient(
+    final rect = Rect.fromLTWH(0.0, 0.0, size.width, size.width);
+    final gradient = SweepGradient(
       startAngle: degreeToRadians(268),
       endAngle: degreeToRadians(270.0 + 360),
       tileMode: TileMode.repeated,
       colors: colorsList,
     );
-    final paint =  Paint()
+    final paint = Paint()
       ..shader = gradient.createShader(rect)
       ..strokeCap = StrokeCap.round // StrokeCap.round is not recommended.
       ..style = PaintingStyle.stroke
       ..strokeWidth = 14;
-    final center =  Offset(size.width / 2, size.height / 2);
+    final center = Offset(size.width / 2, size.height / 2);
     final radius = math.min(size.width / 2, size.height / 2) - (14 / 2);
 
     canvas.drawArc(
-         Rect.fromCircle(center: center, radius: radius),
+        Rect.fromCircle(center: center, radius: radius),
         degreeToRadians(278),
         degreeToRadians(360 - (365 - angle!)),
         false,
         paint);
 
-    final gradient1 =  SweepGradient(
+    final gradient1 = SweepGradient(
       tileMode: TileMode.repeated,
       colors: [Colors.white, Colors.white],
     );
 
-    var cPaint =  Paint();
+    var cPaint = Paint();
     cPaint..shader = gradient1.createShader(rect);
     cPaint..color = Colors.white;
     cPaint..strokeWidth = 14 / 2;
@@ -733,7 +745,7 @@ class CurvePainter extends CustomPainter {
 
     canvas.save();
     canvas.translate(0.0, -centerToCircle + 14 / 2);
-    canvas.drawCircle( Offset(0, 0), 14 / 5, cPaint);
+    canvas.drawCircle(Offset(0, 0), 14 / 5, cPaint);
 
     canvas.restore();
     canvas.restore();

@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/screen/my_diary/water_view.dart';
+import 'package:Dietic/screen/my_diary/water_view.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme/fitness_app_theme.dart';
 import '../../ui_view/body_measurement.dart';

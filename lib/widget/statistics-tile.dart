@@ -1,6 +1,6 @@
   import 'package:flutter/material.dart';
   import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-  import 'package:dietic_mobil/config/config.dart';
+  import 'package:Dietic/config/config.dart';
   import 'package:flutter_screenutil/flutter_screenutil.dart';
   import 'package:percent_indicator/linear_percent_indicator.dart';
 

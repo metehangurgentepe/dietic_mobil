@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:dietic_mobil/service/diet_plan/diet_plan_service.dart';
+import 'package:Dietic/service/diet_plan/diet_plan_service.dart';
 
 class MealsListData {
   MealsListData({

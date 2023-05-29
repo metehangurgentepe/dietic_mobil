@@ -1,4 +1,4 @@
-name: dietic_mobil
+name: Dietic
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -84,6 +84,13 @@ dev_dependencies:
   path_provider: any
   path: any
   gallery_saver: any
+  flutter_launcher_icons: ^0.13.1
+  
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/dietic_icon.png"
+
 
 
   flutter_lints: ^2.0.0

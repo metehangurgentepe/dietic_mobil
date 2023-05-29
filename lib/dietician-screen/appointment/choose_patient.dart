@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/config/theme/theme.dart';
+import 'package:Dietic/config/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';

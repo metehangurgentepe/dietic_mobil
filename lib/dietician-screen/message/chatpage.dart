@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:dietic_mobil/message/comps/styles.dart';
-import 'package:dietic_mobil/message/comps/widgets.dart';
+import 'package:Dietic/message/comps/styles.dart';
+import 'package:Dietic/message/comps/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 

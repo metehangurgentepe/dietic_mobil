@@ -1,7 +1,7 @@
-import 'package:dietic_mobil/dietician-screen/home/widget/meal-consumed.dart';
-import 'package:dietic_mobil/screen/meals_detail/comps/daily-summary.dart';
-import 'package:dietic_mobil/screen/meals_detail/comps/out_record_meal.dart';
-import 'package:dietic_mobil/service/diet_plan/dyt_plan_service.dart';
+import 'package:Dietic/dietician-screen/home/widget/meal-consumed.dart';
+import 'package:Dietic/screen/meals_detail/comps/daily-summary.dart';
+import 'package:Dietic/screen/meals_detail/comps/out_record_meal.dart';
+import 'package:Dietic/service/diet_plan/dyt_plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grock/grock.dart';

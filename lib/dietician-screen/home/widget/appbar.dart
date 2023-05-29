@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:dietic_mobil/config/config.dart';
+import 'package:Dietic/config/config.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreenAppBar extends StatefulWidget {

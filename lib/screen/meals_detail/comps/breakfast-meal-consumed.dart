@@ -1,10 +1,10 @@
-import 'package:dietic_mobil/model/diet_plan_model.dart';
-import 'package:dietic_mobil/service/diet_plan/diet_plan_service.dart';
+import 'package:Dietic/model/diet_plan_model.dart';
+import 'package:Dietic/service/diet_plan/diet_plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:dietic_mobil/config/config.dart';
-import 'package:dietic_mobil/model/model.dart';
+import 'package:Dietic/config/config.dart';
+import 'package:Dietic/model/model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:text_scroll/text_scroll.dart';
 

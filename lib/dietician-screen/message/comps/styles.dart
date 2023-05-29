@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/message/comps/take_photo.dart';
+import 'package:Dietic/message/comps/take_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:grock/grock.dart';
 import 'package:camera/camera.dart';

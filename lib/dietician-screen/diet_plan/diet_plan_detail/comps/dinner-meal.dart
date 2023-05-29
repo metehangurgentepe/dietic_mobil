@@ -1,9 +1,9 @@
-import 'package:dietic_mobil/model/diet_plan_model.dart';
+import 'package:Dietic/model/diet_plan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:dietic_mobil/config/config.dart';
-import 'package:dietic_mobil/model/model.dart';
+import 'package:Dietic/config/config.dart';
+import 'package:Dietic/model/model.dart';
 
 import '../../../../service/diet_plan/diet_plan_service.dart';
 

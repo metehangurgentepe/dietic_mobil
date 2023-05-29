@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:dietic_mobil/config/config.dart';
+import 'package:Dietic/config/config.dart';
 
 class ChangeAmount extends StatefulWidget {
   const ChangeAmount({

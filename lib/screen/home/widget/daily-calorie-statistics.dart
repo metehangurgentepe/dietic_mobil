@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:dietic_mobil/config/config.dart';
-import 'package:dietic_mobil/widget/widget.dart';
+import 'package:Dietic/config/config.dart';
+import 'package:Dietic/widget/widget.dart';
 import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
 

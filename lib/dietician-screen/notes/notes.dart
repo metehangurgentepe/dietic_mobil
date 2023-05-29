@@ -1,5 +1,5 @@
-import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
-import 'package:dietic_mobil/service/notes/note_service.dart';
+import 'package:Dietic/config/theme/fitness_app_theme.dart';
+import 'package:Dietic/service/notes/note_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';

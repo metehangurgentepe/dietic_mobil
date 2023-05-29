@@ -51,6 +51,7 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
 
   int water = 0;
   int localWater = 0;
+  double percentWater = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +105,11 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                                 if (time!.toDate().day == date.day) {
                                   localWater = data[i]['water'];
                                   water = data[i]['water'];
+                                  percentWater = ((water / 2500) * 100);
                                 } else {
                                   time = null;
                                 }
                               }
-
                               //water=data[0];
                               return Column(
                                 children: <Widget>[
@@ -329,11 +330,13 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                                   size: 24,
                                 ),
                                 onPressed: () {
-                                  water -= 100;
-                                  if (water < 0) {
-                                  } else {
-                                    postWaterData(water);
-                                  }
+                                  setState(() {
+                                    water -= 100;
+                                    if (water < 0) {
+                                    } else {
+                                      postWaterData(water);
+                                    }
+                                  });
                                 },
                               ),
                             ),
@@ -341,14 +344,13 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                         ),
                       ),
                       Padding(
-                        padding:
-                             EdgeInsets.only(left: 16, right: 8, top: 16),
+                        padding: EdgeInsets.only(left: 16, right: 8, top: 16),
                         child: Container(
                           width: 60,
                           height: 160,
                           decoration: BoxDecoration(
                             color: HexColor('#E8EDFE'),
-                            borderRadius:  BorderRadius.only(
+                            borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(80.0),
                                 bottomLeft: Radius.circular(80.0),
                                 bottomRight: Radius.circular(80.0),
@@ -360,9 +362,34 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                                   blurRadius: 4),
                             ],
                           ),
-                          child: WaveView(
-                            percentageValue: (water / 2500)*100,
-                          ),
+                          child: StreamBuilder(
+                              stream: firestore.collection('Water').snapshots(),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                DateTime date = DateTime.now();
+
+                                List data = !snapshot.hasData
+                                    ? []
+                                    : snapshot.data!.docs
+                                        .where((element) => element['email']
+                                            .toString()
+                                            .contains(FirebaseAuth
+                                                .instance.currentUser!.uid))
+                                        .toList();
+                                for (int i = 0; i < 1; i++) {
+                                  time = data[i]['datetime'];
+                                  if (time!.toDate().day == date.day) {
+                                    localWater = data[i]['water'];
+                                    water = data[i]['water'];
+                                    percentWater = ((water / 2500) * 100);
+                                  } else {
+                                    time = null;
+                                  }
+                                }
+                                return WaveView(
+                                  percentageValue: (water / 2500) * 100,
+                                );
+                              }),
                         ),
                       )
                     ],

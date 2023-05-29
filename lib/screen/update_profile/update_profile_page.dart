@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
+import 'package:Dietic/config/theme/fitness_app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';

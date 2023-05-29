@@ -1,9 +1,9 @@
-import 'package:dietic_mobil/config/theme/fitness_app_theme.dart';
+import 'package:Dietic/config/theme/fitness_app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:dietic_mobil/message/comps/animated-dialog.dart';
-import 'package:dietic_mobil/message/comps/styles.dart';
+import 'package:Dietic/message/comps/animated-dialog.dart';
+import 'package:Dietic/message/comps/styles.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:grock/grock.dart';
 import 'package:camera/camera.dart';

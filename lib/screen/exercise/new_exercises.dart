@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dietic_mobil/model/health_model.dart';
-import 'package:dietic_mobil/model/steps_model.dart';
-import 'package:dietic_mobil/service/health/health_service.dart';
-import 'package:dietic_mobil/service/weight/weight_service.dart';
+import 'package:Dietic/model/health_model.dart';
+import 'package:Dietic/model/steps_model.dart';
+import 'package:Dietic/service/health/health_service.dart';
+import 'package:Dietic/service/weight/weight_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
@@ -136,31 +136,6 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       });
     }
 
-    healthService.fetchWeekStepData().then((value) {
-      if (value != null) {
-        setState(() {
-          stepWeekData = value;
-          //stepWeekData = HealthFactory.removeDuplicates(stepWeekData!);
-          for (int i = 0; i < stepWeekData!.length; i++) {
-            print(stepWeekData![i]);
-          }
-        });
-      } else {
-        throw Exception('company data null came');
-      }
-    });
-
-    healthService.fetchWaterData().then((value) {
-      if (value != null) {
-        setState(() {
-          waterData = value;
-          print('water');
-          print(waterData);
-        });
-      } else {
-        throw Exception('company data null came');
-      }
-    });
 
     healthService.fetchEnergyData();
     healthService.fetchTodayStepData();
@@ -283,7 +258,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                               Icon(Icons.water,
                                                   size: 30,
                                                   color: Colors.blueAccent),
-                                              Text('${water ?? 0} mL')
+                                              Text('${waterNumberData} mL')
                                             ],
                                           ),
                                           Text('Water',

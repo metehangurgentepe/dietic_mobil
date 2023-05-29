@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/dietician-screen/profile/widget/body.dart';
+import 'package:Dietic/dietician-screen/profile/widget/body.dart';
 import 'package:flutter/material.dart';
 
 class DietitianProfilesScreen extends StatelessWidget {

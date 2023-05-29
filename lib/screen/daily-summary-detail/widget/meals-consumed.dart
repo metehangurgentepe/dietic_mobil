@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:dietic_mobil/config/config.dart';
-import 'package:dietic_mobil/model/model.dart';
+import 'package:Dietic/config/config.dart';
+import 'package:Dietic/model/model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:dietic_mobil/widget/meal-consumed-tile.dart';
+import 'package:Dietic/widget/meal-consumed-tile.dart';
 
 
 class MealsConsumed extends StatefulWidget {

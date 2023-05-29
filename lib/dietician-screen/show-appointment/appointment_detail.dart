@@ -1,4 +1,4 @@
-import 'package:dietic_mobil/model/get_appointment.dart';
+import 'package:Dietic/model/get_appointment.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';

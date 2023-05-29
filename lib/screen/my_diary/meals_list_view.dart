@@ -1,5 +1,5 @@
-import 'package:dietic_mobil/model/diet_plan_model.dart';
-import 'package:dietic_mobil/service/diet_plan/diet_plan_service.dart';
+import 'package:Dietic/model/diet_plan_model.dart';
+import 'package:Dietic/service/diet_plan/diet_plan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 

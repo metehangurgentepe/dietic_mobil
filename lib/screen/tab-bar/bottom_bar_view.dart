@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:dietic_mobil/screen/tab-bar/TabIcon.dart';
+import 'package:Dietic/screen/tab-bar/TabIcon.dart';
 import 'package:flutter/material.dart';
 
 import '../../config/theme/fitness_app_theme.dart';
