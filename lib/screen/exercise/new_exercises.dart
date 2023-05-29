@@ -79,6 +79,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     // Uncomment these lines on iOS - only available on iOS
     // HealthDataType.AUDIOGRAM
   ];
+  
 
   final List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -86,61 +87,84 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
   ];
   final firestore = FirebaseFirestore.instance;
 
-  List<StepsModel> steps = [];
   String? water;
   Timestamp? time;
 
   var waterNumberData = 0;
   List<int> step = [];
+   String? heartRate;
+  String? bp;
+  String? steps;
+  String? activeEnergy;
 
-  @override
-  void initState() {
-    super.initState();
-    getWater();
-    getdata() async {
-      String? dietitianId = await storage.read(key: 'patientId');
-      print(dietitianId);
-    }
+  String? bloodPreSys;
+  String? bloodPreDia;
 
-    getdata();
-    Future fetchData() async {
-      setState(() => _state = AppState.FETCHING_DATA);
+  List<HealthDataPoint> healthData = [];
 
-      // get data within the last 24 hours
-      final now = DateTime.now();
-      final yesterday = now.subtract(Duration(hours: 24));
+  HealthFactory health = HealthFactory();
+  Future fetchData() async {
+    // define the types to get
+    final types = [
+      HealthDataType.HEART_RATE,
+      HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+      HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+      HealthDataType.STEPS,
+      HealthDataType.ACTIVE_ENERGY_BURNED,
+    ];
 
-      // Clear old data points
-      _healthDataList.clear();
+    // get data within the last 24 hours
+    final now = DateTime.now();
+    final yesterday = now.subtract(const Duration(days: 1));
 
+    // requesting access to the data types before reading them
+    bool requested = await health.requestAuthorization(types);
+    print(requested);
+
+    if (requested) {
       try {
         // fetch health data
-        List<HealthDataPoint> healthData =
-            await health.getHealthDataFromTypes(yesterday, now, types);
-        // save all the new data points (only the first 100)
-        _healthDataList.addAll((healthData.length < 100)
-            ? healthData
-            : healthData.sublist(0, 100));
+        healthData = await health.getHealthDataFromTypes(yesterday, now, types);
+        if (healthData.isNotEmpty) {
+          for (HealthDataPoint h in healthData) {
+            if (h.type == HealthDataType.HEART_RATE) {
+              heartRate = "${h.value}";
+            } else if (h.type == HealthDataType.BLOOD_PRESSURE_SYSTOLIC) {
+              bloodPreSys = "${h.value}";
+            } else if (h.type == HealthDataType.BLOOD_PRESSURE_DIASTOLIC) {
+              bloodPreDia = "${h.value}";
+            } else if (h.type == HealthDataType.STEPS) {
+              steps = "${h.value}";
+            } else if (h.type == HealthDataType.ACTIVE_ENERGY_BURNED) {
+              activeEnergy = "${h.value}";
+            }
+          }
+          if (bloodPreSys != "null" && bloodPreDia != "null") {
+            bp = "$bloodPreSys / $bloodPreDia mmHg";
+          }
+          print(steps);
+          print('buradadaaaddaada');
+
+          setState(() {});
+        }
       } catch (error) {
         print("Exception in getHealthDataFromTypes: $error");
       }
 
       // filter out duplicates
-      _healthDataList = HealthFactory.removeDuplicates(_healthDataList);
-
-      // print the results
-      _healthDataList.forEach((x) => print(x));
-
-      // update the UI to display the results
-      setState(() {
-        _state =
-            _healthDataList.isEmpty ? AppState.NO_DATA : AppState.DATA_READY;
-      });
+      healthData = HealthFactory.removeDuplicates(healthData);
+    } else {
+      print("Authorization not granted");
     }
+  }
 
-    healthService.fetchEnergyData();
-    healthService.fetchTodayStepData();
+  @override
+  void initState() {
+    super.initState();
+    
+    fetchData();
 
+    
     service.getWeights().then((value) {
       setState(() {
         weightsData = value;
@@ -159,16 +183,16 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       });
     });
 
-    stepService.getAllSteps().then((value) {
-      steps = value;
-      for (int i = 0; i < steps.length; i++) {
-        stepsFl.add(FlSpot(i.toDouble(), steps[i].steps!.toDouble()));
-        stepsDate.add(steps[i].date!);
-      }
+    // stepService.getAllSteps().then((value) {
+    //   steps = value;
+    //   for (int i = 0; i < steps.length; i++) {
+    //     stepsFl.add(FlSpot(i.toDouble(), steps[i].steps!.toDouble()));
+    //     stepsDate.add(steps[i].date!);
+    //   }
       
-      print(stepsFl);
-      print(stepsDate);
-    });
+    //   print(stepsFl);
+    //   print(stepsDate);
+    // });
   }
 
   final storage = new FlutterSecureStorage();
@@ -182,7 +206,6 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     water = await storage.read(key: 'water');
   }
 
-  HealthFactory health = HealthFactory(useHealthConnectIfAvailable: true);
 
   @override
   Widget build(BuildContext context) {
@@ -317,65 +340,43 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                   borderRadius: BorderRadius.circular(30)),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
-                                child: FutureBuilder(
-                                    future: healthService.fetchTodayStepData(),
-                                    builder: (context, snapshot) {
-                                      print('snap');
-                                      print(snapshot.data.toString());
-                                      if (snapshot.data == null) {
-                                        return Text('No steps data today');
-                                      }
-                                      try {
-                                        stepService.saveSteps(snapshot.data!);
-                                      } catch (e) {}
-                                      double _percent = snapshot.data! / 15000;
-                                      String percentNumber =
-                                          (_percent * 100).toStringAsFixed(2);
-                                      if (_percent > 1) {
-                                        _percent = 0.99;
-                                      } else {
-                                        print('adım');
-                                        print(snapshot.data);
-                                        _percent ??= 0.1;
-                                      }
-                                      return Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Icon(Icons.directions_walk,
-                                                  size: 30,
-                                                  color: Colors.pinkAccent),
-                                              Text(
-                                                '${snapshot.data}',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
-                                          Text('Steps',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18)),
-                                          Text("%${percentNumber}"),
-                                          LinearPercentIndicator(
-                                            barRadius: Radius.circular(20),
-                                            width: 130,
-                                            animation: true,
-                                            animationDuration: 10000,
-                                            lineHeight: 10,
-                                            percent: _percent,
-                                            progressColor: Colors.pinkAccent,
-                                            backgroundColor: Color(0xffE0A0B2),
-                                          ),
-                                        ],
-                                      );
-                                    }),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Icon(Icons.directions_walk,
+                                            size: 30,
+                                            color: Colors.pinkAccent),
+                                        Text(
+                                          '${steps}',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight:
+                                                  FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
+                                    Text('Steps',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 18)),
+                                    Text("%${0}"),
+                                    LinearPercentIndicator(
+                                      barRadius: Radius.circular(20),
+                                      width: 130,
+                                      animation: true,
+                                      animationDuration: 10000,
+                                      lineHeight: 10,
+                                      percent: 0,
+                                      progressColor: Colors.pinkAccent,
+                                      backgroundColor: Color(0xffE0A0B2),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],

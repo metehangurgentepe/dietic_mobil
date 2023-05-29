@@ -66,6 +66,9 @@ dependencies:
   flutter_gif: ^0.0.4
   animations: ^2.0.7
   text_scroll: ^0.2.0
+  google_sign_in: ^5.0.0
+  googleapis: ^5.0.0
+  googleapis_auth: ^3.0.0
 
   
 

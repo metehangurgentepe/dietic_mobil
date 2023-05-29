@@ -9,6 +9,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:Dietic/config/routes/routers.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:grock/grock.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dietician-screen/nav/nav_dietician.dart';
