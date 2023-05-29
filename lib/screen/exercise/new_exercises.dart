@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dietic_mobil/model/health_model.dart';
 import 'package:dietic_mobil/model/steps_model.dart';
 import 'package:dietic_mobil/service/health/health_service.dart';
 import 'package:dietic_mobil/service/weight/weight_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -81,19 +83,23 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     const Color(0xff23b6e6),
     const Color(0xff23b6e6),
   ];
+  final firestore = FirebaseFirestore.instance;
 
   List<StepsModel> steps = [];
   String? water;
+  Timestamp? time;
+
+  var waterNumberData = 0;
 
   @override
   void initState() {
     super.initState();
     getWater();
     getdata() async {
-    String? dietitianId=await storage.read(key: 'patientId');
-    print(dietitianId);
-
+      String? dietitianId = await storage.read(key: 'patientId');
+      print(dietitianId);
     }
+
     getdata();
     Future fetchData() async {
       setState(() => _state = AppState.FETCHING_DATA);
@@ -195,8 +201,9 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     String? move_mins = await storage.read(key: 'move_min');
     return move_mins;
   }
+
   getWater() async {
-    water= await storage.read(key: 'water');
+    water = await storage.read(key: 'water');
   }
 
   HealthFactory health = HealthFactory(useHealthConnectIfAvailable: true);
@@ -234,46 +241,74 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              height: 170,
-                              width: 170,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Icon(Icons.water,
-                                            size: 30,
-                                            color: Colors.blueAccent),
-                                        Text('${water ?? 0} mL')
-                                      ],
+                            StreamBuilder(
+                                stream:
+                                    firestore.collection('Water').snapshots(),
+                                builder: (context, snapshot) {
+                                  DateTime date = DateTime.now();
+                                  List data = !snapshot.hasData
+                                      ? []
+                                      : snapshot.data!.docs
+                                          .where((element) => element['email']
+                                              .toString()
+                                              .contains(FirebaseAuth
+                                                  .instance.currentUser!.uid))
+                                          .toList();
+                                  for (int i = 0; i < 1; i++) {
+                                    time = data[i]['datetime'];
+                                    if (time!.toDate().day == date.day) {
+                                      waterNumberData = data[i]['water'];
+                                    } else {
+                                      time = null;
+                                    }
+                                  }
+                                  return Container(
+                                    height: 170,
+                                    width: 170,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Icon(Icons.water,
+                                                  size: 30,
+                                                  color: Colors.blueAccent),
+                                              Text('${water ?? 0} mL')
+                                            ],
+                                          ),
+                                          Text('Water',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15)),
+                                          waterNumberData == null
+                                              ? Text('%0')
+                                              : Text(
+                                                  '%${(waterNumberData / 2500 * 100).toInt()}'),
+                                          LinearPercentIndicator(
+                                              barRadius: Radius.circular(20),
+                                              width: 130,
+                                              animation: true,
+                                              animationDuration: 10000,
+                                              lineHeight: 10,
+                                              percent: (waterNumberData / 2500),
+                                              progressColor: Colors.blueAccent,
+                                              backgroundColor: Color.fromARGB(
+                                                  255, 64, 202, 241))
+                                        ],
+                                      ),
                                     ),
-                                    Text('Water',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 15)),
-                                     water ==null ? Text('%0')  :Text('%${(int.parse(water!)/2500*100).toInt()}'),
-                                    LinearPercentIndicator(
-                                        barRadius: Radius.circular(20),
-                                        width: 130,
-                                        animation: true,
-                                        animationDuration: 10000,
-                                        lineHeight: 10,
-                                        percent: 0.3,
-                                        progressColor: Colors.blueAccent,
-                                        backgroundColor: Color.fromARGB(255, 64, 202, 241))
-                                  ],
-                                ),
-                              ),
-                            ),
+                                  );
+                                }),
                             Container(
                               height: 170,
                               width: 170,
@@ -291,7 +326,9 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                       if (snapshot.data == null) {
                                         return Text('No steps data today');
                                       }
-                                      stepService.saveSteps(snapshot.data!);
+                                      try {
+                                        stepService.saveSteps(snapshot.data!);
+                                      } catch (e) {}
                                       double _percent = snapshot.data! / 15000;
                                       String percentNumber =
                                           (_percent * 100).toStringAsFixed(2);
@@ -326,14 +363,14 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18)),
-                                          Text("%${percentNumber}" ?? ' '),
+                                          Text("%${percentNumber}"),
                                           LinearPercentIndicator(
                                             barRadius: Radius.circular(20),
                                             width: 130,
                                             animation: true,
                                             animationDuration: 10000,
                                             lineHeight: 10,
-                                            percent: _percent ?? 0.0,
+                                            percent: _percent,
                                             progressColor: Colors.pinkAccent,
                                             backgroundColor: Color(0xffE0A0B2),
                                           ),
@@ -447,7 +484,9 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                               ),
                             ),
                             Text(
-                              '${snapshot.data} kcal',
+                              snapshot.data == null
+                                  ? '0 kcal'
+                                  : '${snapshot.data} kcal',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 13.sp,

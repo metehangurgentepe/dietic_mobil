@@ -70,7 +70,6 @@ class HealthService{
   }
   Future fetchEnergyData() async {
     int? energy;
-
     // get steps for today (i.e., since midnight)
     final now = DateTime.now();
     final week = DateTime(now.year, now.month,now.day-7);
