@@ -23,6 +23,7 @@ import '../../config/theme/theme.dart';
 import '../../dietician-screen/home/widget/appbar.dart';
 import '../../model/weight_model.dart';
 import '../../service/steps/steps_service.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class NewExercises extends ConsumerStatefulWidget {
   const NewExercises({Key? key}) : super(key: key);
@@ -90,6 +91,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
   Timestamp? time;
 
   var waterNumberData = 0;
+  List<int> step = [];
 
   @override
   void initState() {
@@ -136,7 +138,6 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       });
     }
 
-
     healthService.fetchEnergyData();
     healthService.fetchTodayStepData();
 
@@ -164,7 +165,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
         stepsFl.add(FlSpot(i.toDouble(), steps[i].steps!.toDouble()));
         stepsDate.add(steps[i].date!);
       }
-      print('flutter chart');
+      
       print(stepsFl);
       print(stepsDate);
     });
@@ -185,6 +186,25 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
 
   @override
   Widget build(BuildContext context) {
+    final List<OrdinalSales> data = [
+      OrdinalSales('Jan', 5),
+      OrdinalSales('Feb', 25),
+      OrdinalSales('Mar', 100),
+      OrdinalSales('Apr', 75),
+      OrdinalSales('May', 40),
+    ];
+    final series = [
+      charts.Series(
+        id: 'Sales',
+        data: data,
+        domainFn: (OrdinalSales sales, _) => sales.month,
+        measureFn: (OrdinalSales sales, _) => sales.sales,
+      ),
+    ];
+    final chart = charts.BarChart(
+      series,
+      animate: true,
+    );
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -229,13 +249,17 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                               .contains(FirebaseAuth
                                                   .instance.currentUser!.uid))
                                           .toList();
-                                  for (int i = 0; i < 1; i++) {
-                                    time = data[i]['datetime'];
-                                    if (time!.toDate().day == date.day) {
-                                      waterNumberData = data[i]['water'];
-                                    } else {
-                                      time = null;
+                                  if (data.isNotEmpty) {
+                                    for (int i = 0; i < 1; i++) {
+                                      time = data[i]['datetime'];
+                                      if (time!.toDate().day == date.day) {
+                                        waterNumberData = data[i]['water'];
+                                      } else {
+                                        time = null;
+                                      }
                                     }
+                                  } else {
+                                    waterNumberData = 0;
                                   }
                                   return Container(
                                     height: 170,
@@ -387,22 +411,26 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                           SizedBox(height: 300, child: LineChart(weightData())),
                         ],
                       ),
-                      Column(
-                        children: [
-                          Center(
-                            child: Text(
-                              'Steps',
-                              style: TextStyle(
-                                color: AppColors.colorAccentDark,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 300, child: LineChart(stepData())),
-                        ],
-                      ),
+                      // Column(
+                      //   children: [
+                      //     Center(
+                      //       child: Text(
+                      //         'Steps',
+                      //         style: TextStyle(
+                      //           color: AppColors.colorAccentDark,
+                      //           fontSize: 32,
+                      //           fontWeight: FontWeight.bold,
+                      //           letterSpacing: 2,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     SizedBox(height: 300, child: LineChart(stepData())),
+                      //   ],
+                      // ),
+                      // charts.BarChart(
+                      //   series,
+                      //   animate: true,
+                      // ),
                     ]),
                 SizedBox(height: 100),
               ]),
@@ -459,6 +487,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                 key: 'activeCalories', value: '0');
                           }
                         }
+
                         saveEnergy();
 
                         return Column(
@@ -588,22 +617,22 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       case 0:
         text = '0';
         break;
-      case 3000:
+      case 300:
         text = '3000';
         break;
-      case 5000:
+      case 500:
         text = '5000';
         break;
-      case 7000:
+      case 700:
         text = '7000';
         break;
-      case 10000:
+      case 1000:
         text = '10000';
         break;
-      case 14000:
+      case 1400:
         text = '14000';
         break;
-      case 18000:
+      case 1800:
         text = '18000';
         break;
 
@@ -624,13 +653,13 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: gradientColors[1],
-            strokeWidth: 1,
+            strokeWidth: 0.001,
           );
         },
         getDrawingVerticalLine: (value) {
           return FlLine(
             color: gradientColors[1],
-            strokeWidth: 1,
+            strokeWidth: 0.001,
           );
         },
       ),
@@ -769,4 +798,11 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
       ],
     );
   }
+}
+
+class OrdinalSales {
+  final String month;
+  final int sales;
+
+  OrdinalSales(this.month, this.sales);
 }

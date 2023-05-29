@@ -38,21 +38,23 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   @override
   void initState() {
     service.getFirstDietPlan().then((value) {
-      foods = value;
-      for (int i = 0; i < foods.length; i++) {
-        //toplam carbon protein fat değerleri
-        sumCarbs += foods[i].carb!;
-        sumProtein += foods[i].protein!;
-        sumFat += foods[i].fat!;
-        sumEnergy += foods[i].energy!;
-        //yenilmiş carbon protein fat degerleri
-        if (foods[i].eaten == 'CHECKED') {
-          eatenEnergy += foods[i].energy!;
-          carbs += foods[i].carb!;
-          protein += foods[i].protein!;
-          fat += foods[i].fat!;
+      setState(() {
+        foods = value;
+        for (int i = 0; i < foods.length; i++) {
+          //toplam carbon protein fat değerleri
+          sumCarbs += foods[i].carb!;
+          sumProtein += foods[i].protein!;
+          sumFat += foods[i].fat!;
+          sumEnergy += foods[i].energy!;
+          //yenilmiş carbon protein fat degerleri
+          if (foods[i].eaten == 'CHECKED') {
+            eatenEnergy += foods[i].energy!;
+            carbs += foods[i].carb!;
+            protein += foods[i].protein!;
+            fat += foods[i].fat!;
+          }
         }
-      }
+      });
     });
     getEnergy();
     print(energy);
@@ -155,8 +157,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                       const EdgeInsets.only(
                                                           left: 4, bottom: 3),
                                                   child: Text(
-                                                    '${(eatenEnergy * widget.animation!.value).toInt()}' ??
-                                                        ' ',
+                                                    '${(eatenEnergy * widget.animation!.value).toInt()}',
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontFamily:
@@ -362,7 +363,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                             ),
                                           ),
                                           Text(
-                                            'Kcal left',
+                                            'Kcal Eaten',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily:

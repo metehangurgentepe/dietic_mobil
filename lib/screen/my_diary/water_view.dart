@@ -100,16 +100,19 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                                           .contains(FirebaseAuth
                                               .instance.currentUser!.uid))
                                       .toList();
-                              for (int i = 0; i < 1; i++) {
-                                time = data[i]['datetime'];
-                                if (time!.toDate().day == date.day) {
-                                  localWater = data[i]['water'];
-                                  water = data[i]['water'];
-                                  percentWater = ((water / 2500) * 100);
-                                } else {
-                                  time = null;
+                              if (data.isNotEmpty) {
+                                for (int i = 0; i < 1; i++) {
+                                  time = data[i]['datetime'];
+                                  if (time!.toDate().day == date.day) {
+                                    localWater = data[i]['water'];
+                                    water = data[i]['water'];
+                                    percentWater = ((water / 2500) * 100);
+                                  } else {
+                                    time = null;
+                                  }
                                 }
-                              }
+                              } else {}
+
                               //water=data[0];
                               return Column(
                                 children: <Widget>[
@@ -367,7 +370,6 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                               builder: (context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
                                 DateTime date = DateTime.now();
-
                                 List data = !snapshot.hasData
                                     ? []
                                     : snapshot.data!.docs
@@ -376,18 +378,29 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                                             .contains(FirebaseAuth
                                                 .instance.currentUser!.uid))
                                         .toList();
-                                for (int i = 0; i < 1; i++) {
-                                  time = data[i]['datetime'];
-                                  if (time!.toDate().day == date.day) {
-                                    localWater = data[i]['water'];
-                                    water = data[i]['water'];
-                                    percentWater = ((water / 2500) * 100);
-                                  } else {
-                                    time = null;
+                                if (data.isEmpty) {
+                                  try {
+                                    for (int i = 0; i < 1; i++) {
+                                      time = data[i]['datetime'];
+                                      if (time!.toDate().day == date.day) {
+                                        localWater = data[i]['water'];
+                                        water = data[i]['water'];
+                                        percentWater = ((water / 2500) * 100);
+                                      } else {
+                                        time = null;
+                                      }
+                                    }
+                                  } catch (e) {
                                   }
+                                  print('buraburabura');
+                                  print(water);
+                                } else {
+                                  print('buraburabura232323');
+                                  print(water);
                                 }
                                 return WaveView(
-                                  percentageValue: (water / 2500) * 100,
+                                  percentageValue:
+                                      water == 0 ? 0 : (water / 2500) * 100,
                                 );
                               }),
                         ),
