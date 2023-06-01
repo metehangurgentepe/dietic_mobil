@@ -91,10 +91,8 @@ class _HomeDieticianPageState extends State<HomeDietician>
 
         return 'There is no appointment'; // No upcoming appointments
       }
-
       print('next appointment');
       print(getNextAppointment(appointmentTimes));
-
       userService.getProfilePic().then((value) {
         setState(() {
           user = value;
@@ -109,15 +107,12 @@ class _HomeDieticianPageState extends State<HomeDietician>
         notes = value;
       });
     });
-
     super.initState();
   }
-
   @override
   void dispose() {
     super.dispose();
   }
-
   Future<String?> getName() async {
     String? dietitanName = await storage.read(key: 'dietitian-name');
     return dietitanName;

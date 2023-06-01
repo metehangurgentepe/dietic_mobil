@@ -203,7 +203,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                                   top: 10,
                                                   right: 6,
                                                   bottom: 10),
-                                              prefix: Text('How much eat portion'),
+                                              prefix:
+                                                  Text('How much eat portion'),
                                               placeholder: 'Required',
                                             ),
                                           ],
@@ -211,7 +212,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 20.0),
                                       child: GFButton(
                                           text: 'Add Foods',
                                           color: Colors.deepOrange,
@@ -223,6 +225,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                                     foodList![index].foodId!,
                                                     double.parse(portion.text),
                                                     details.text);
+                                                Grock.snackBar(
+                                                    title: "Successful",
+                                                    description:
+                                                        "Cheat Meal Added");
+                                                        Navigator.pop(context);
                                               } catch (e) {
                                                 Grock.snackBar(
                                                   title: 'Invalid text field',

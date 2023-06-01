@@ -24,7 +24,6 @@ class NoteScreen extends StatefulWidget {
   @override
   State<NoteScreen> createState() => _NoteScreenState();
 }
-
 class _NoteScreenState extends State<NoteScreen> with TickerProviderStateMixin {
   final service = NoteService();
   DateTime? _selectedDate;
@@ -33,12 +32,15 @@ class _NoteScreenState extends State<NoteScreen> with TickerProviderStateMixin {
   TextEditingController dateController = TextEditingController();
   List<NoteModel> notes = [];
   Function(BuildContext)? deleteFunction;
+  ValueNotifier<List<NoteModel>> notesNotifier=ValueNotifier<List<NoteModel>>([]);
 
+  
   @override
   void initState() {
     service.getNotes().then((value) {
       setState(() {
         notes = value;
+       notesNotifier=ValueNotifier<List<NoteModel>>(notes);
       });
     });
     super.initState();
@@ -60,74 +62,71 @@ class _NoteScreenState extends State<NoteScreen> with TickerProviderStateMixin {
           ],
         ),
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: notes.isEmpty
-              ? Padding(
-                padding: const EdgeInsets.only(top:68.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                        'assets/images/Cartoon of businessman thinking hard with pen vector image on VectorStock.jpeg'),
-                        SizedBox(height: 10.h,),
-                      Text('There is no notes, add notes for reminding',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),textAlign: TextAlign.center,)
-                  ],
-                ),
-              )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: notes.length,
-                  itemBuilder: (context, index) {
-                    return Slidable(
-                      endActionPane:
-                          ActionPane(motion: StretchMotion(), children: [
-                        SlidableAction(
-                          onPressed: deleteTask(context, notes[index].noteId!),
-                          icon: Icons.delete,
-                          backgroundColor: AppColors.colorWarning,
+  scrollDirection: Axis.vertical,
+  child: ValueListenableBuilder<List<NoteModel>>(
+    valueListenable: notesNotifier,
+    builder: (context, notes, _) {
+      return notes.isEmpty
+          ? Padding(
+              padding: const EdgeInsets.only(top: 68.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/Cartoon of businessman thinking hard with pen vector image on VectorStock.jpeg'),
+                  SizedBox(height: 10),
+                  Text(
+                    'There are no notes. Add notes for reminding.',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: notes.length,
+              itemBuilder: (context, index) {
+                return Slidable(
+                  endActionPane: ActionPane(motion: StretchMotion(), children: [
+                    SlidableAction(
+                      onPressed: (BuildContext context) {
+                        service.deleteNote(notes[index].noteId!);
+                      },
+                      icon: Icons.delete,
+                      backgroundColor: AppColors.colorWarning,
+                    ),
+                  ]),
+                  child: Container(
+                    height: 160,
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      children: [
+                        GFCard(
+                          color: AppColors.colorBackColor,
+                          title: GFListTile(
+                            color: AppColors.colorBackColor,
+                            avatar: GFCheckbox(
+                              activeBgColor: FitnessAppTheme.nearlyDarkBlue,
+                              value: notes[index].done!,
+                              onChanged: (bool? value) {},
+                            ),
+                            title: Text(notes[index].note!),
+                          ),
                         ),
-                        SlidableAction(
-                          onPressed: updateStatus(context, notes[index].noteId!,
-                              notes[index].done!),
-                          icon: Icons.done,
-                          backgroundColor: FitnessAppTheme.deactivatedText,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 24, right: 24),
+                          child: Text(notes[index].date!.replaceAll('-', '/')),
                         ),
-                        SlidableAction(
-                          onPressed: editNote,
-                          icon: Icons.edit,
-                          backgroundColor: FitnessAppTheme.darkText,
-                        ),
-                      ]),
-                      child: Container(
-                        height: 160,
-                        child: Stack(
-                          alignment: AlignmentDirectional.bottomEnd,
-                          children: [
-                            GFCard(
-                                color: AppColors.colorBackColor,
-                                title: GFListTile(
-                                  color: AppColors.colorBackColor,
-                                  avatar: GFCheckbox(
-                                    activeBgColor:
-                                        FitnessAppTheme.nearlyDarkBlue,
-                                    value: notes[index].done!,
-                                    onChanged: (bool? value) {},
-                                  ),
-                                  title: Text(notes[index].note!),
-                                )),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(bottom: 24, right: 24),
-                              child:
-                                  Text(notes[index].date!.replaceAll('-', '/')),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-        ));
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+    },
+  ),
+));
   }
 
   void _popUp() {
@@ -213,7 +212,9 @@ class _NoteScreenState extends State<NoteScreen> with TickerProviderStateMixin {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: FitnessAppTheme.nearlyDarkBlue),
                   onPressed: () {
-                    service.postNote(dateController.text, noteController.text, false);
+                    service.postNote(
+                        dateController.text, noteController.text, false);
+                        Navigator.pop(context);
                   },
                   child: Text('Add Note')),
             ],
@@ -228,44 +229,11 @@ class _NoteScreenState extends State<NoteScreen> with TickerProviderStateMixin {
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-
     if (pickedDate != null && pickedDate != _selectedDate) {
       setState(() {
         _selectedDate = pickedDate;
         dateController.text = pickedDate.toString().substring(0, 10);
       });
     }
-  }
-
-  deleteTask(BuildContext context, int id) {
-    print(id);
-    service.deleteNote(id);
-  }
-
-  updateStatus(BuildContext context, int id, bool undone) {
-    bool isTrue = undone;
-    service.updateStatus(id, isTrue);
-  }
-
-  editNote(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            Container(
-              height: 200,
-              color: Colors.white,
-              child: Center(
-                child: Text(
-                  'This is a bottom sheet',
-                  style: TextStyle(fontSize: 24),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

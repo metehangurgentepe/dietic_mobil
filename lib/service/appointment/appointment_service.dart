@@ -41,8 +41,7 @@ class AppointmentService {
       'appointmentTime': getTime
     };
 
-    String url =
-        'http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/book/${dietitianId}/${patientId}';
+    String url ='http://dietic.eu-north-1.elasticbeanstalk.com/api/v1/appointments/book/${dietitianId}/${patientId}';
     print(getDate + ' ' + getTime);
     print(patientId);
     print('${dietitianId} + ${patientId}');

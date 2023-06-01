@@ -392,10 +392,9 @@ class _WaterViewState extends State<WaterView> with TickerProviderStateMixin {
                                     }
                                   } catch (e) {
                                   }
-                                  print('buraburabura');
                                   print(water);
                                 } else {
-                                  print('buraburabura232323');
+                                  
                                   print(water);
                                 }
                                 return WaveView(

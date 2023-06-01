@@ -1,6 +1,8 @@
 import 'package:Dietic/screen/my_diary/water_view.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme/fitness_app_theme.dart';
+import '../../model/diet_plan_model.dart';
+import '../../service/diet_plan/diet_plan_service.dart';
 import '../../ui_view/body_measurement.dart';
 import '../../ui_view/glass_view.dart';
 import '../../ui_view/mediterranean_diet_view.dart';
@@ -16,12 +18,49 @@ class MyDiaryScreen extends StatefulWidget {
 }
 
 class _MyDiaryScreenState extends State<MyDiaryScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, RouteAware {
   Animation<double>? topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
+  DietPlanService service = DietPlanService();
+  List<DietPlanModel> foods = [];
+  double eatenEnergy = 0;
+  double sumEnergy = 0;
+  int leftEnergy = 0;
+  double carbs = 0;
+  double sumCarbs = 0;
+  double sumProtein = 0;
+  double sumFat = 0;
+  double protein = 0;
+  double fat = 0;
+  ValueNotifier<double> eatenEnergyNotifier = ValueNotifier(0.0);
+   @override
+  void didPopNext() {
+    super.didPopNext();
+    initState(); // İstediğiniz işlemleri initState gibi çağırabilirsiniz
+    service.getFirstDietPlan().then((value) {
+      setState(() {
+        foods = value;
+        for (int i = 0; i < foods.length; i++) {
+          //toplam carbon protein fat değerleri
+          sumCarbs += foods[i].carb!;
+          sumProtein += foods[i].protein!;
+          sumFat += foods[i].fat!;
+          sumEnergy += foods[i].energy!;
+          //yenilmiş carbon protein fat degerleri
+          if (foods[i].eaten == 'CHECKED') {
+            eatenEnergy += foods[i].energy!;
+            carbs += foods[i].carb!;
+            protein += foods[i].protein!;
+            fat += foods[i].fat!;
+            eatenEnergyNotifier = ValueNotifier(eatenEnergy);
+          }
+        }
+      });
+    });
+  }
 
   @override
   void initState() {
@@ -30,6 +69,26 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
     addAllListData();
+    service.getFirstDietPlan().then((value) {
+      setState(() {
+        foods = value;
+        for (int i = 0; i < foods.length; i++) {
+          //toplam carbon protein fat değerleri
+          sumCarbs += foods[i].carb!;
+          sumProtein += foods[i].protein!;
+          sumFat += foods[i].fat!;
+          sumEnergy += foods[i].energy!;
+          //yenilmiş carbon protein fat degerleri
+          if (foods[i].eaten == 'CHECKED') {
+            eatenEnergy += foods[i].energy!;
+            carbs += foods[i].carb!;
+            protein += foods[i].protein!;
+            fat += foods[i].fat!;
+            eatenEnergyNotifier = ValueNotifier(eatenEnergy);
+          }
+        }
+      });
+    });
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -58,13 +117,12 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
   void addAllListData() {
     const int count = 9;
-
     listViews.add(
       MediterranesnDietView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController!,
             curve:
-            Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
+                Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController!,
       ),
     );
@@ -75,11 +133,10 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController!,
             curve:
-            Interval((1 / count) * 2, 1.0, curve: Curves.fastOutSlowIn))),
+                Interval((1 / count) * 2, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController!,
       ),
     );
-
     listViews.add(
       MealsListView(
         mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -97,7 +154,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController!,
             curve:
-            Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
+                Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController!,
       ),
     );
@@ -107,7 +164,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController!,
             curve:
-            Interval((1 / count) * 5, 1.0, curve: Curves.fastOutSlowIn))),
+                Interval((1 / count) * 5, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController!,
       ),
     );
@@ -118,11 +175,10 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController!,
             curve:
-            Interval((1 / count) * 6, 1.0, curve: Curves.fastOutSlowIn))),
+                Interval((1 / count) * 6, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController!,
       ),
     );
-
     listViews.add(
       WaterView(
         mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -151,23 +207,22 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: FitnessAppTheme.background,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            getMainListViewUI(),
-            getAppBarUI(),
-            SizedBox(
-              height: MediaQuery.of(context).padding.bottom,
-            )
-          ],
-        ),
-      ),
-    );
+          return Container(
+            color: FitnessAppTheme.background,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Stack(
+                children: <Widget>[
+                  getMainListViewUI(),
+                  getAppBarUI(),
+                  SizedBox(
+                    height: MediaQuery.of(context).padding.bottom,
+                  )
+                ],
+              ),
+            ),
+          );
   }
-
   Widget getMainListViewUI() {
     return FutureBuilder<bool>(
       future: getData(),
@@ -194,7 +249,6 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
       },
     );
   }
-
   Widget getAppBarUI() {
     return Column(
       children: <Widget>[
@@ -250,7 +304,6 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                 ),
                               ),
                             ),
-                           
                           ],
                         ),
                       )

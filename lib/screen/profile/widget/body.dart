@@ -68,13 +68,6 @@ class _BodyState extends State<Body> {
             },
           ),
           ProfileMenu(
-            text: "My Account",
-            icon: "assets/icons/User Icon.svg",
-            press: () => {
-              Navigator.pushNamed(context, '/health-app')
-            },
-          ),
-          ProfileMenu(
             text: "Appointment",
             icon: "assets/icons/calendar.svg",
             press: () {

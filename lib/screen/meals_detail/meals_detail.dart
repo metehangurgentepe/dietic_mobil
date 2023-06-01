@@ -17,7 +17,6 @@ import 'comps/lunchs-meal-consumed.dart';
 import 'comps/snack-meal-consumed.dart';
 import 'package:getwidget/getwidget.dart';
 
-
 class MealsDetailScreen extends StatefulWidget {
   static const String routeName = '/meals_detail';
 
@@ -53,48 +52,48 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
         dietPlan = value;
         print('buralar');
         print(dietPlan);
-      });
-      
-      for (int i = 0; i < dietPlan.length; i++) {
-        
-        carbonhydrate += dietPlan[i].carb ?? 0;
-        protein += dietPlan[i].protein!;
-        energy += dietPlan[i].energy!;
-        fats += dietPlan[i].fat!;
-        print(carbonhydrate);
-        print('buraburaburabura**********************');
-        
+        for (int i = 0; i < dietPlan.length; i++) {
+          carbonhydrate += dietPlan[i].carb ?? 0;
+          protein += dietPlan[i].protein!;
+          energy += dietPlan[i].energy!;
+          fats += dietPlan[i].fat!;
+          print(carbonhydrate);
+          print('buraburaburabura**********************');
 
-        if (dietPlan[i].eaten == 'CHECKED') {
-          eatenCarbs += dietPlan[i].carb ?? 0;
-          eatenProteins += dietPlan[i].protein!;
-          eatenEnergy += dietPlan[i].energy!;
-          eatenFats += dietPlan[i].fat!;
+          if (dietPlan[i].eaten == 'CHECKED') {
+            eatenCarbs += dietPlan[i].carb ?? 0;
+            eatenProteins += dietPlan[i].protein!;
+            eatenEnergy += dietPlan[i].energy!;
+            eatenFats += dietPlan[i].fat!;
+          }
         }
-      }
+      });
     });
-    
+
     super.initState();
   }
-  
- 
-    
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Diet Plan Detail'),
-        backgroundColor: AppColors.colorAccent,
-      ),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pushNamed(context, '/fitness-home');
+            },
+          ),
+          title: Text('Diet Plan Detail'),
+          backgroundColor: AppColors.colorAccent,
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
               child: Container(
                 child: Column(
                   children: [
-                    
                     DailySummaryPatient(),
                     BreakfastMealConsumed(),
                     LunchMealConsumed(),
@@ -108,23 +107,25 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
           ),
         ));
   }
+
   Widget DailySummaryPatient() {
     return AspectRatio(
-        aspectRatio: 1.6,
-        child: Container(
-          padding: EdgeInsets.all(18.w),
-          decoration: BoxDecoration(
-            color: AppColors.colorAccent,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [_circleProgress(), _macronutrients()],
-          ),
+      aspectRatio: 1.6,
+      child: Container(
+        padding: EdgeInsets.all(18.w),
+        decoration: BoxDecoration(
+          color: AppColors.colorAccent,
+          borderRadius: BorderRadius.circular(30),
         ),
-      );
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [_circleProgress(), _macronutrients()],
+        ),
+      ),
+    );
   }
+
   Widget _circleProgress() {
     return SizedBox(
       width: 160.w,
@@ -169,19 +170,21 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
                           fontSize: 10.sp,
                         ),
                       ),
-                     fats==0 ? Text(
-                        '0',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold),
-                      ) :Text(
-                        '${(energy - eatenEnergy).toLimitedStringWithComma(1)}',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      fats == 0
+                          ? Text(
+                              '0',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          : Text(
+                              '${(energy - eatenEnergy).toLimitedStringWithComma(1)}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
                       Text(
                         'kcal',
                         style: TextStyle(
@@ -199,22 +202,29 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
       ),
     );
   }
+
   Widget _macronutrients() {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       _macronutrientsTile(
           title: 'Carbs',
           percentValue: carbonhydrate == 0 ? eatenCarbs / carbonhydrate : 0.1,
-          amountInGram:  carbonhydrate != 0 ? '${eatenCarbs.toInt()}/${carbonhydrate.toInt()}g': '0'),
+          amountInGram: carbonhydrate != 0
+              ? '${eatenCarbs.toInt()}/${carbonhydrate.toInt()}g'
+              : '0'),
       _macronutrientsTile(
           title: 'Proteins',
           percentValue: protein == 0 ? eatenProteins / protein : 0.1,
-          amountInGram: protein!=0 ? '${eatenProteins.toInt()}/${protein.toInt()}g' :'0'),
+          amountInGram: protein != 0
+              ? '${eatenProteins.toInt()}/${protein.toInt()}g'
+              : '0'),
       _macronutrientsTile(
           title: 'Fats',
           percentValue: fats == 0 ? eatenFats / fats : 0.1,
-          amountInGram: fats!=0 ? '${eatenFats.toInt()}/${fats.toInt()}g':'0')
+          amountInGram:
+              fats != 0 ? '${eatenFats.toInt()}/${fats.toInt()}g' : '0')
     ]);
   }
+
   Widget _macronutrientsTile(
       {String? title, double? percentValue, String? amountInGram}) {
     return SizedBox(
@@ -253,11 +263,4 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
       ),
     );
   }
-
-
-
-  }
-  
-  
- 
-
+}

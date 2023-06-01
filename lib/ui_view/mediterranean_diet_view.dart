@@ -33,7 +33,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   double protein = 0;
   double fat = 0;
   final storage = FlutterSecureStorage();
-
+  ValueNotifier<double> eatenEnergyNotifier = ValueNotifier(0.0);
   String? energy;
   @override
   void initState() {
@@ -52,6 +52,9 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
             carbs += foods[i].carb!;
             protein += foods[i].protein!;
             fat += foods[i].fat!;
+            eatenEnergyNotifier=ValueNotifier(eatenEnergy);
+            print(eatenEnergyNotifier);
+            print('eatenEnergyNotifier');
           }
         }
       });
@@ -61,6 +64,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
 
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -152,24 +156,29 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                   child: Image.asset(
                                                       "assets/fitness_app/eaten.png"),
                                                 ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 4, bottom: 3),
-                                                  child: Text(
-                                                    '${(eatenEnergy * widget.animation!.value).toInt()}',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontFamily:
-                                                          FitnessAppTheme
-                                                              .fontName,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 16,
-                                                      color: FitnessAppTheme
-                                                          .darkerText,
-                                                    ),
-                                                  ),
+                                                ValueListenableBuilder(
+                                                  valueListenable: eatenEnergyNotifier,
+                                                  builder: (BuildContext context, double eatenEnergy, Widget? child) {
+                                                    return Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 4, bottom: 3),
+                                                      child: Text(
+                                                        '${(eatenEnergy * widget.animation!.value).toInt()}',
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              FitnessAppTheme
+                                                                  .fontName,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 16,
+                                                          color: FitnessAppTheme
+                                                              .darkerText,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
                                                 ),
                                                 Padding(
                                                   padding:
