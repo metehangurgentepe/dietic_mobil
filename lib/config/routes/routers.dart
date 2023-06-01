@@ -34,8 +34,6 @@ class AppRouter {
     ('The Router is: ${settings.name}');
 
     switch (settings.name) {
-      case NavScreen.routeName:
-        return NavScreen.route();
       case LoginScreen.routeName:
         return LoginScreen.route();
       case SignUpScreen.routeName:
@@ -44,8 +42,6 @@ class AppRouter {
         return ProfilesScreen.route();*/
       case HomeScreen.routeName:
         return HomeScreen.route();
-      case ExerciseScreen.routeName:
-        return ExerciseScreen.route();
       case Appointment.routeName:
         return Appointment.route(
           date: settings.arguments as String);

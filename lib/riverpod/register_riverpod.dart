@@ -41,7 +41,7 @@ class RegisterRiverpod extends ChangeNotifier {
         Grock.snackBar(
           title: "Hesabınız oluşturulmuştur", description: 'Hesabınız oluşturulmuştur'
         );
-        Grock.to(NavScreen());
+        Grock.to(HomeScreen());
       }
       if (value == null) {
         Grock.snackBar(

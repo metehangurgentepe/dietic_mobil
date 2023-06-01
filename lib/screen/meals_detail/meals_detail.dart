@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grock/grock.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
+import 'dart:async';
 
 import '../../config/theme/theme.dart';
 import '../../model/diet_plan_model.dart';
@@ -44,6 +46,9 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
   double eatenCarbs = 0;
   double eatenFats = 0;
   double eatenProteins = 0;
+
+  ValueNotifier<double> eatenEnergyNotifier = ValueNotifier<double>(0);
+
   @override
   void initState() {
     print('yalnız');
@@ -58,18 +63,21 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
           energy += dietPlan[i].energy!;
           fats += dietPlan[i].fat!;
           print(carbonhydrate);
-          print('buraburaburabura**********************');
-
           if (dietPlan[i].eaten == 'CHECKED') {
             eatenCarbs += dietPlan[i].carb ?? 0;
             eatenProteins += dietPlan[i].protein!;
             eatenEnergy += dietPlan[i].energy!;
             eatenFats += dietPlan[i].fat!;
+            eatenEnergyNotifier = ValueNotifier(eatenEnergy);
+            print(eatenEnergyNotifier);
           }
         }
       });
     });
-
+    Timer.periodic(Duration(seconds: 2), (timer) {
+      // Update the value of the ValueNotifier here
+      eatenEnergyNotifier.value = eatenEnergy; // Update with your new value
+    });
     super.initState();
   }
 
@@ -94,7 +102,16 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
               child: Container(
                 child: Column(
                   children: [
-                    DailySummaryPatient(),
+                    ValueListenableBuilder<double>(
+                      valueListenable: eatenEnergyNotifier,
+                      builder:
+                          (BuildContext context, double value, Widget? child) {
+                        return DailySummaryPatient(
+                            // Pass the updated value to DailySummaryPatient
+                            // Other necessary properties for DailySummaryPatient
+                            );
+                      },
+                    ),
                     BreakfastMealConsumed(),
                     LunchMealConsumed(),
                     DinnerMealConsumed(),

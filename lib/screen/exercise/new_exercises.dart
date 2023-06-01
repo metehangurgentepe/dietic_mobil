@@ -26,7 +26,6 @@ import '../../service/steps/steps_service.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:permission_handler/permission_handler.dart';
 
-
 class NewExercises extends ConsumerStatefulWidget {
   const NewExercises({Key? key}) : super(key: key);
 
@@ -81,7 +80,6 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     // Uncomment these lines on iOS - only available on iOS
     // HealthDataType.AUDIOGRAM
   ];
-  
 
   final List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -94,18 +92,20 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
 
   var waterNumberData = 0;
   List<int> step = [];
-   String? heartRate;
+  String? heartRate;
   String? bp;
   String? steps;
   String? activeEnergy;
 
   String? bloodPreSys;
   String? bloodPreDia;
+  int stepDatas = 0;
+  double percent=0;
 
   List<HealthDataPoint> healthData = [];
 
   HealthFactory health = HealthFactory();
-    final permissions = types.map((e) => HealthDataAccess.READ_WRITE).toList();
+  final permissions = types.map((e) => HealthDataAccess.READ).toList();
 
   Future authorize() async {
     // If we are trying to read Step Count, Workout, Sleep or other data that requires
@@ -134,7 +134,6 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
         print("Exception in authorize: $error");
       }
     }
-
     setState(() => _state =
         (authorized) ? AppState.AUTHORIZED : AppState.AUTH_NOT_GRANTED);
   }
@@ -207,26 +206,16 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
           date.add(weightsData[i].date!);
           weightsData[i].date!.substring(4, 9);
           weightFl.add(FlSpot(i.toDouble(), weightsData[i].weight!));
-          print(weightsData[i].date!.substring(5, 9).replaceAll('-', '.'));
         }
-        print('charttt');
         weightsValue = ValueNotifier<List<double>>(weights);
-        print(weights);
-        print('zaman');
-        print(date);
       });
     });
-
-    // stepService.getAllSteps().then((value) {
-    //   steps = value;
-    //   for (int i = 0; i < steps.length; i++) {
-    //     stepsFl.add(FlSpot(i.toDouble(), steps[i].steps!.toDouble()));
-    //     stepsDate.add(steps[i].date!);
-    //   }
-      
-    //   print(stepsFl);
-    //   print(stepsDate);
-    // });
+    healthService.fetchTodayStepData().then((value) {
+      setState(() {
+        stepDatas = value;
+        print(stepDatas);
+      });
+    });
   }
 
   final storage = new FlutterSecureStorage();
@@ -240,28 +229,8 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
     water = await storage.read(key: 'water');
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final List<OrdinalSales> data = [
-      OrdinalSales('Jan', 5),
-      OrdinalSales('Feb', 25),
-      OrdinalSales('Mar', 100),
-      OrdinalSales('Apr', 75),
-      OrdinalSales('May', 40),
-    ];
-    final series = [
-      charts.Series(
-        id: 'Sales',
-        data: data,
-        domainFn: (OrdinalSales sales, _) => sales.month,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-      ),
-    ];
-    final chart = charts.BarChart(
-      series,
-      animate: true,
-    );
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -378,34 +347,64 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Icon(Icons.directions_walk,
-                                            size: 30,
-                                            color: Colors.pinkAccent),
-                                        Text(
-                                          '${steps}',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight:
-                                                  FontWeight.bold),
-                                        )
-                                      ],
-                                    ),
+                                    FutureBuilder(
+                                        future: healthService.fetchEnergyData(),
+                                        builder: (context, snapshot) {
+                                          saveEnergy() async {
+                                             String value=snapshot.data;
+                                            print(snapshot.data);
+                                            if (snapshot.data != null) {
+                                              var value = snapshot.data;
+                                              await storage.write(
+                                                  key: 'activeCalories',
+                                                  value: value);
+                                            } else {
+                                              await storage.write(
+                                                  key: 'activeCalories',
+                                                  value: '0');
+                                            }
+                                          percent=int.parse(value)/10000;
+                                          if(percent>1){
+                                            percent=1;
+                                          }
+                                          print(percent);
+                                          }
+                                          saveEnergy();
+                                          return Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Icon(Icons.directions_walk,
+                                                      size: 30,
+                                                      color: Colors.pinkAccent),
+                                                  Text(
+                                                    '${snapshot.data}',
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        }),
                                     Text('Steps',
                                         style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 18)),
-                                    Text("%${0}"),
+                                            color: Colors.black, fontSize: 18)),
+                                    Text("%${percent*100}"),
                                     LinearPercentIndicator(
                                       barRadius: Radius.circular(20),
                                       width: 130,
                                       animation: true,
                                       animationDuration: 10000,
                                       lineHeight: 10,
-                                      percent: 0,
+                                      percent: percent,
                                       progressColor: Colors.pinkAccent,
                                       backgroundColor: Color(0xffE0A0B2),
                                     ),
@@ -523,8 +522,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                           }
                         }
 
-                        saveEnergy();
-
+                        //saveEnergy();
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
