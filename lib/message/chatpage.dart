@@ -72,6 +72,8 @@ class _ChatPageState extends State<ChatPage> {
                                   print(photo);
                                 });
                               });
+                              print(data);
+                              print(photo);
                               print(roomId);
                               onSubmit(photo, roomId);
                             }

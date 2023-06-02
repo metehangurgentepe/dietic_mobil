@@ -49,6 +49,13 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
     });
     super.initState();
   }
+   void onPressedButton() {
+    setState(() {
+      for (int i = 0; i < breakfastFoods.length; i++) {
+        service.checkedEaten(selectedFoods[i]);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,11 +122,7 @@ class _BreakfastMealConsumedState extends State<BreakfastMealConsumed> {
                             shape: BoxShape.circle
                           ),
                           child: FaIcon(FontAwesomeIcons.check)),
-                        onPressed: () {
-                          for (int i = 0; i < breakfastFoods.length; i++) {
-                            service.checkedEaten(selectedFoods[i]);
-                          }
-                        },
+                        onPressed:onPressedButton,
                       )
                     ],
                   ),

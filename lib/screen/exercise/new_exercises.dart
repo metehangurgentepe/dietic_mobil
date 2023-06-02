@@ -177,6 +177,8 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
           if (bloodPreSys != "null" && bloodPreDia != "null") {
             bp = "$bloodPreSys / $bloodPreDia mmHg";
           }
+          print(activeEnergy);
+          print('activeEnergy');
           print(steps);
           print('buradadaaaddaada');
 
@@ -534,9 +536,7 @@ class _NewExercisesState extends ConsumerState<NewExercises> {
                               ),
                             ),
                             Text(
-                              snapshot.data == null
-                                  ? '0 kcal'
-                                  : '${snapshot.data} kcal',
+                             '${activeEnergy} kcal',
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 13.sp,

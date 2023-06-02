@@ -8,7 +8,6 @@ import 'package:grock/grock.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-
 import '../../config/theme/theme.dart';
 import '../../model/diet_plan_model.dart';
 import '../../service/diet_plan/diet_plan_service.dart';
@@ -55,8 +54,6 @@ class _MealsDetailScreenState extends State<MealsDetailScreen> {
     service.getFirstDietPlan().then((value) {
       setState(() {
         dietPlan = value;
-        print('buralar');
-        print(dietPlan);
         for (int i = 0; i < dietPlan.length; i++) {
           carbonhydrate += dietPlan[i].carb ?? 0;
           protein += dietPlan[i].protein!;
