@@ -1,16 +1,37 @@
-# dietic_mobil
 
-A new Flutter project.
+# Dietic Mobile 
 
-## Getting Started
+Dietic is mobile application for dietitian and patients. Dietic facilitates the connection between a dietitian and their clients. The dietitian can view the diet plans they create for their clients, check the calorie content of any meal from the food database, schedule appointments, and communicate with their clients via messaging. In this way, it ensures the satisfaction of the clients. The clients, on the other hand, can access their diet plans, schedule appointments, check the calorie content of desired meals from the food database, and communicate with their dietitian.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## Screenshot
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![Uygulama Ekran Görüntüsü](https://i.ibb.co/31wJ9Dr/1.png)
+![Uygulama Ekran Görüntüsü](https://i.ibb.co/DkRKPrD/2.png)
+![Uygulama Ekran Görüntüsü](https://i.ibb.co/3cNtHhJ/3.png)
+![Uygulama Ekran Görüntüsü](https://i.ibb.co/j3SNqHB/4.png)
+![Uygulama Ekran Görüntüsü](https://i.ibb.co/vmP0QXc/5.png)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+  
+## Associated Projects
+
+
+This project is a dietic frontend
+
+[Dietic Frontend](https://github.com/metehangurgentepe/dietic-frontend)
+
+  
+## Kullanılan Teknolojiler
+
+**Mobile:** Flutter
+
+**Backend:** Java Spring Boot
+
+**Frontend:** Angular TS
+  
+## Other Developers and Thanks
+
+- [@sardicus](https://www.github.com/sardicus) for developed backend RESTful API's
+
+  
