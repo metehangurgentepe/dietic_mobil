@@ -2,6 +2,8 @@ import 'package:Dietic/model/diet_plan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:grock/grock.dart';
+import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:math' as math;
 
 import '../config/theme/fitness_app_theme.dart';
@@ -19,8 +21,22 @@ class MediterranesnDietView extends StatefulWidget {
   @override
   State<MediterranesnDietView> createState() => _MediterranesnDietViewState();
 }
+enum AppState {
+  DATA_NOT_FETCHED,
+  FETCHING_DATA,
+  DATA_READY,
+  NO_DATA,
+  AUTHORIZED,
+  AUTH_NOT_GRANTED,
+  DATA_ADDED,
+  DATA_DELETED,
+  DATA_NOT_ADDED,
+  DATA_NOT_DELETED,
+  STEPS_READY,
+}
 
 class _MediterranesnDietViewState extends State<MediterranesnDietView> {
+  AppState _state = AppState.DATA_NOT_FETCHED;
   DietPlanService service = DietPlanService();
   List<DietPlanModel> foods = [];
   double eatenEnergy = 0;
@@ -34,9 +50,36 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   double fat = 0;
   final storage = FlutterSecureStorage();
   ValueNotifier<double> eatenEnergyNotifier = ValueNotifier(0.0);
+  String? heartRate;
+  String? bp;
+  String? steps;
+  String? activeEnergy;
+
+  String? bloodPreSys;
+  String? bloodPreDia;
+  int stepDatas = 0;
+  double percent=0;
+  static final types = [
+    HealthDataType.WEIGHT,
+    HealthDataType.STEPS,
+    HealthDataType.HEIGHT,
+    HealthDataType.BLOOD_GLUCOSE,
+    HealthDataType.WORKOUT,
+    HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+    HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+    // Uncomment these lines on iOS - only available on iOS
+    // HealthDataType.AUDIOGRAM
+  ];
+
+  List<HealthDataPoint> healthData = [];
+
+  HealthFactory health = HealthFactory();
+  final permissions = types.map((e) => HealthDataAccess.READ).toList();
   String? energy;
   @override
   void initState() {
+    authorize();
+    fetchData();
     service.getFirstDietPlan().then((value) {
       setState(() {
         foods = value;
@@ -64,6 +107,94 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
 
     super.initState();
   }
+  Future authorize() async {
+    // If we are trying to read Step Count, Workout, Sleep or other data that requires
+    // the ACTIVITY_RECOGNITION permission, we need to request the permission first.
+    // This requires a special request authorization call.
+    //
+    // The location permission is requested for Workouts using the Distance information.
+    await Permission.activityRecognition.request();
+    await Permission.location.request();
+
+    // Check if we have permission
+    bool? hasPermissions =
+        await health.hasPermissions(types, permissions: permissions);
+
+    // hasPermissions = false because the hasPermission cannot disclose if WRITE access exists.
+    // Hence, we have to request with WRITE as well.
+    hasPermissions = false;
+
+    bool authorized = false;
+    if (!hasPermissions) {
+      // requesting access to the data types before reading them
+      try {
+        authorized =
+            await health.requestAuthorization(types, permissions: permissions);
+      } catch (error) {
+        print("Exception in authorize: $error");
+      }
+    }
+    setState(() => _state =
+        (authorized) ? AppState.AUTHORIZED : AppState.AUTH_NOT_GRANTED);
+  }
+
+  Future fetchData() async {
+    // define the types to get
+    final types = [
+      HealthDataType.HEART_RATE,
+      HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+      HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+      HealthDataType.STEPS,
+      HealthDataType.ACTIVE_ENERGY_BURNED,
+    ];
+
+    // get data within the last 24 hours
+    final now = DateTime.now();
+    final yesterday = now.subtract(const Duration(days: 1));
+
+    // requesting access to the data types before reading them
+    bool requested = await health.requestAuthorization(types);
+    print(requested);
+
+    if (requested) {
+      try {
+        // fetch health data
+        healthData = await health.getHealthDataFromTypes(yesterday, now, types);
+        if (healthData.isNotEmpty) {
+          for (HealthDataPoint h in healthData) {
+            if (h.type == HealthDataType.HEART_RATE) {
+              heartRate = "${h.value}";
+            } else if (h.type == HealthDataType.BLOOD_PRESSURE_SYSTOLIC) {
+              bloodPreSys = "${h.value}";
+            } else if (h.type == HealthDataType.BLOOD_PRESSURE_DIASTOLIC) {
+              bloodPreDia = "${h.value}";
+            } else if (h.type == HealthDataType.STEPS) {
+              steps = "${h.value}";
+            } else if (h.type == HealthDataType.ACTIVE_ENERGY_BURNED) {
+              activeEnergy = "${h.value}";
+            }
+          }
+          if (bloodPreSys != "null" && bloodPreDia != "null") {
+            bp = "$bloodPreSys / $bloodPreDia mmHg";
+          }
+          print(activeEnergy);
+          print('activeEnergy');
+          print(steps);
+          print('buradadaaaddaada');
+
+          setState(() {});
+        }
+      } catch (error) {
+        print("Exception in getHealthDataFromTypes: $error");
+      }
+
+      // filter out duplicates
+      healthData = HealthFactory.removeDuplicates(healthData);
+    } else {
+      print("Authorization not granted");
+    }
+  }
+
 
 
   @override
@@ -266,7 +397,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                           left: 4, bottom: 3),
                                                   child: energy == null
                                                       ? Text(
-                                                          '${(0 * widget.animation!.value).toInt()}',
+                                                          '${activeEnergy}',
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: TextStyle(
